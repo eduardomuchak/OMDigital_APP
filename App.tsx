@@ -46,9 +46,9 @@ export default function App() {
         OM Digital
       </Text>
       <View className="flex mt-6 w-full px-6">
-        <CustomButton variant={'primary'} title="Primário" />
-        <CustomButton variant={'outline'} title="Outline" />
-        <CustomButton variant={'ghost'} title="Ghost" />
+        <CustomButton variant={'primary'}>Primário</CustomButton>
+        <CustomButton variant={'outline'}>Outline</CustomButton>
+        <CustomButton variant={'ghost'}>Ghost</CustomButton>
         <Input label="NOME" />
         <Select
           label="SELECIONE"

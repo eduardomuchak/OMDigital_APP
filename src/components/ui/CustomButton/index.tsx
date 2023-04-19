@@ -2,11 +2,11 @@ import { TouchableOpacityProps, TouchableOpacity, Text } from 'react-native';
 import clsx from 'clsx';
 
 interface Props extends TouchableOpacityProps {
-  title: string;
+  children: string | JSX.Element;
   variant: 'primary' | 'outline' | 'ghost';
 }
 
-export function CustomButton({ title, variant, ...rest }: Props) {
+export function CustomButton({ variant, children, ...rest }: Props) {
   return (
     <TouchableOpacity
       className={clsx('rounded-lg h-14 flex items-center justify-center', {
@@ -26,7 +26,7 @@ export function CustomButton({ title, variant, ...rest }: Props) {
           },
         )}
       >
-        {title}
+        {children}
       </Text>
     </TouchableOpacity>
   );
