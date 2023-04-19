@@ -25,6 +25,7 @@ export function Select({ label, selected, setSelected, options }: SelectProps) {
             top: 0,
             bottom: 0,
           }}
+          mode="dropdown"
         >
           {options.length ? (
             options.map((option, index) => (
