@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
     "@expo-google-fonts/poppins": "^0.2.3",
@@ -15,11 +16,15 @@
     "@react-navigation/stack": "^6.3.16",
     "autoprefixer": "^10.4.14",
     "clsx": "^1.2.1",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react-native": "^4.0.0",
     "expo": "~48.0.11",
     "expo-status-bar": "~1.4.4",
     "nativewind": "^2.0.11",
     "phosphor-react-native": "^1.1.2",
     "postcss": "^8.4.22",
+    "prettier": "^2.8.7",
     "react": "18.2.0",
     "react-native": "0.71.6",
     "react-native-elements": "^3.4.3",
@@ -35,6 +40,8 @@
   "devDependencies": {
     "@babel/core": "^7.21.4",
     "@types/react": "~18.0.37",
+    "@typescript-eslint/eslint-plugin": "^5.59.0",
+    "@typescript-eslint/parser": "^5.59.0",
     "typescript": "^4.9.4"
   },
   "private": true
