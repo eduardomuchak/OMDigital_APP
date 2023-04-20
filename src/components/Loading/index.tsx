@@ -1,6 +1,6 @@
-import { ActivityIndicator, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from "react-native";
 
-function Loading() {
+export function Loading() {
   return (
     <View className="h-screen items-center justify-center flex flex-col flex-1 gap-2">
       <ActivityIndicator color="#556AEB" size={30} />
@@ -8,5 +8,3 @@ function Loading() {
     </View>
   );
 }
-
-export default Loading;
