@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler';
 
 import { createStackNavigator } from '@react-navigation/stack';
-import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import {
   useFonts,
@@ -17,6 +16,7 @@ import {
 import { Loading } from './src/components/Loading';
 import { Login } from './src/screens/Login';
 import { Home } from './src/screens/Home';
+import { StatusBar } from 'expo-status-bar';
 
 const Stack = createStackNavigator();
 
@@ -37,11 +37,12 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StatusBar
+      <StatusBar style="auto" />
+      {/* <StatusBar
         barStyle={'dark-content'}
         backgroundColor={'transparent'}
         translucent={true}
-      />
+      /> */}
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{
