@@ -1,7 +1,17 @@
-export declare global {
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+declare global {
   namespace ReactNavigation {
-    interface RootParamList {
+    interface RootParamList extends Record<string, object | undefined> {
       home: undefined;
+      login: undefined;
     }
   }
+
+  type RootStackNavigation = StackNavigationProp<RootParamList>;
+  type RootStackRouteProp<T extends keyof RootParamList> = RouteProp<
+    RootParamList,
+    T
+  >;
 }
