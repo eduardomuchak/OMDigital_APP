@@ -33,6 +33,8 @@ module.exports = {
         'status-red': '#B50202',
         'status-yellow': '#FFA500',
         'status-blue': '#12235B',
+        // Cor de fundo com opacidade
+        overlay: 'rgba(33, 37, 41, 0.4)',
       },
       fontFamily: {
         poppinsLight: 'Poppins_300Light',
