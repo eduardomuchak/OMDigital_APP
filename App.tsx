@@ -16,7 +16,7 @@ import {
 import { Loading } from './src/components/Loading';
 import { Login } from './src/screens/Login';
 import { Home } from './src/screens/Home';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -37,12 +37,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
-      {/* <StatusBar
-        barStyle={'dark-content'}
-        backgroundColor={'transparent'}
-        translucent={true}
-      /> */}
+      <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} translucent={true} />
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{

@@ -12,10 +12,7 @@ import { Input } from '../components/ui/Input';
 import { CustomButton } from '../components/ui/CustomButton';
 import { Eye, EyeSlash } from 'phosphor-react-native';
 
-type LoginScreenNavigationProp = NavigationProp<
-  ReactNavigation.RootParamList,
-  'Login'
->;
+type LoginScreenNavigationProp = NavigationProp<ReactNavigation.RootParamList, 'Login'>;
 type LoginScreenRouteProp = RouteProp<ReactNavigation.RootParamList, 'Login'>;
 
 interface LoginProps {
@@ -32,9 +29,7 @@ export function Login({ navigation }: LoginProps) {
     setCpf(event.nativeEvent.text);
   };
 
-  const handlePassword = (
-    event: NativeSyntheticEvent<TextInputChangeEventData>,
-  ) => {
+  const handlePassword = (event: NativeSyntheticEvent<TextInputChangeEventData>) => {
     setPassword(event.nativeEvent.text);
   };
 
@@ -49,21 +44,14 @@ export function Login({ navigation }: LoginProps) {
   };
 
   return (
-    <View className="flex-1 p-6 bg-white">
+    <View className="flex-1 p-6 bg-white justify-center">
       <Text className="font-poppinsBold text-primary-500 text-5xl text-center py-5">
         OM Digital
       </Text>
-      <Text className="font-poppinsBold text-base text-center mb-5">
-        Entre com seu cpf e senha
-      </Text>
+      <Text className="font-poppinsBold text-base text-center mb-5">Entre com seu cpf e senha</Text>
       <View className="gap-7">
         <View>
-          <Input
-            label="USUÁRIO"
-            placeholder="Digite o CPF"
-            value={cpf}
-            onChange={handleCpf}
-          />
+          <Input label="USUÁRIO" placeholder="Digite o CPF" value={cpf} onChange={handleCpf} />
         </View>
 
         <View>
