@@ -1,8 +1,8 @@
-import "react-native-gesture-handler";
+import 'react-native-gesture-handler';
 
-import { createStackNavigator } from "@react-navigation/stack";
-import { StatusBar } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from '@react-navigation/stack';
+import { StatusBar } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import {
   useFonts,
   Poppins_300Light,
@@ -12,11 +12,11 @@ import {
   Poppins_700Bold,
   Poppins_800ExtraBold,
   Poppins_900Black,
-} from "@expo-google-fonts/poppins";
+} from '@expo-google-fonts/poppins';
 
-import { Loading } from "./src/components/Loading";
-import { Login } from "./src/screens/Login";
-import { Home } from "./src/screens/Home";
+import { Loading } from './src/components/Loading';
+import { Login } from './src/screens/Login';
+import { Home } from './src/screens/Home';
 
 const Stack = createStackNavigator();
 
@@ -38,11 +38,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <StatusBar
-        barStyle={"dark-content"}
-        backgroundColor={"transparent"}
+        barStyle={'dark-content'}
+        backgroundColor={'transparent'}
         translucent={true}
       />
-      <Stack.Navigator initialRouteName="Login">
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
