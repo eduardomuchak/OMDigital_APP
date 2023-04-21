@@ -1,7 +1,7 @@
 import { Text, TextInput, View } from 'react-native';
-import { InputProps } from './interface';
+import { TextAreaProps } from './interface';
 
-export function Input({ label, required, ...rest }: InputProps) {
+export function TextArea({ label, required, ...rest }: TextAreaProps) {
   return (
     <>
       <View className="flex flex-row gap-1">
@@ -13,8 +13,11 @@ export function Input({ label, required, ...rest }: InputProps) {
         </Text>
       </View>
       <TextInput
-        className="bg-neutral-100 px-5 py-2 rounded-lg h-14 m-0 font-poppinsSemibold"
         placeholder="Digite"
+        multiline={true}
+        textAlignVertical="top"
+        numberOfLines={6}
+        className="bg-neutral-100 px-5 py-4 rounded-lg m-0 font-poppinsSemibold"
         {...rest}
       />
     </>
