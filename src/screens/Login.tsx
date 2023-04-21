@@ -40,7 +40,7 @@ export function Login({ navigation }: LoginProps) {
 
   const handleLogin = () => {
     console.log(cpf, password);
-    navigation.navigate('Home');
+    navigation.navigate('OM');
   };
 
   return (
