@@ -33,6 +33,11 @@ module.exports = {
         'status-red': '#B50202',
         'status-yellow': '#FFA500',
         'status-blue': '#12235B',
+
+        //Cores de status concluído e cancelado
+        statusConcluido: 'rgba(4, 103, 0, 0.2)',
+        statusCancelado: 'rgba(181, 2, 2, 0.2)',
+
         // Cor de fundo com opacidade
         overlay: 'rgba(33, 37, 41, 0.4)',
       },

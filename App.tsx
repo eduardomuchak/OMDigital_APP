@@ -17,6 +17,7 @@ import { Loading } from './src/components/Loading';
 import { Login } from './src/screens/Login';
 import { Home } from './src/screens/Home';
 import { StatusBar } from 'react-native';
+import { OM } from './src/screens/OM';
 
 const Stack = createStackNavigator();
 
@@ -46,6 +47,7 @@ export default function App() {
       >
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="OM" component={OM} />
       </Stack.Navigator>
     </NavigationContainer>
   );
