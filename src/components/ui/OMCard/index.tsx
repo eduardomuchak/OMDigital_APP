@@ -7,6 +7,7 @@ import clsx from 'clsx';
 
 interface OMCardProps {
   onPress?: () => void;
+  id: number;
   codigoBem: string;
   ordemManutencao: string;
   operacao: string;
@@ -28,7 +29,7 @@ export function OMCard(props: OMCardProps) {
         })}
       >
         <View className="py-3">
-          <CardTitle isFinishOrCancel={props.isFinishOrCancel}>{props.codigoBem}</CardTitle>
+          <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
         </View>
         <CardInfo
           codigoBem={props.codigoBem}
