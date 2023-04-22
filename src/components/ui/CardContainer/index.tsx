@@ -1,19 +1,21 @@
-import { View, ScrollView, FlatList } from 'react-native';
+import React from 'react';
+
+import { View, FlatList } from 'react-native';
 
 interface CardContainerProps {
-  children: React.ReactNode;
+  children: React.ReactNode[];
 }
 
 export function CardContainer({ children }: CardContainerProps) {
   return (
-    <View className="flex-1">
-      <ScrollView
+    <View style={{ flex: 1 }}>
+      <FlatList
         overScrollMode="never"
         contentContainerStyle={{ padding: 24, paddingBottom: 96 }}
         showsVerticalScrollIndicator={false}
-      >
-        {children}
-      </ScrollView>
+        data={children}
+        renderItem={({ item }) => <React.Fragment>{item}</React.Fragment>}
+      />
     </View>
   );
 }

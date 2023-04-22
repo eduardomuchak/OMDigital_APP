@@ -10,53 +10,15 @@ export function OM() {
     <SafeAreaView className="flex flex-col flex-1 bg-white">
       <Header isHomeScreen title={'Olá, Alan José'} />
       <CardContainer>
-        <OMCard
-          codigoBem={OMMock.codigoBem}
-          ordemManutencao={OMMock.ordemManutencao}
-          operacao={OMMock.operacao}
-          paradaReal={OMMock.paradaReal}
-          prevFim={OMMock.prevFim}
-          onPress={() => console.log('clicou')}
-          status="Aberta"
-        />
-        <OMCard
-          codigoBem={OMMock.codigoBem}
-          ordemManutencao={OMMock.ordemManutencao}
-          operacao={OMMock.operacao}
-          paradaReal={OMMock.paradaReal}
-          prevFim={OMMock.prevFim}
-          onPress={() => console.log('clicou')}
-          status="Atrasada"
-        />
-        <OMCard
-          codigoBem={OMMock.codigoBem}
-          ordemManutencao={OMMock.ordemManutencao}
-          operacao={OMMock.operacao}
-          paradaReal={OMMock.paradaReal}
-          prevFim={OMMock.prevFim}
-          onPress={() => console.log('clicou')}
-          status="Aguardando"
-        />
-        <OMCard
-          codigoBem={OMMock.codigoBem}
-          ordemManutencao={OMMock.ordemManutencao}
-          operacao={OMMock.operacao}
-          paradaReal={OMMock.paradaReal}
-          prevFim={OMMock.prevFim}
-          onPress={() => console.log('clicou')}
-          status="Cancelada"
-          isFinishOrCancel={true}
-        />
-        <OMCard
-          codigoBem={OMMock.codigoBem}
-          ordemManutencao={OMMock.ordemManutencao}
-          operacao={OMMock.operacao}
-          paradaReal={OMMock.paradaReal}
-          prevFim={OMMock.prevFim}
-          onPress={() => console.log('clicou')}
-          status="Concluída"
-          isFinishOrCancel={true}
-        />
+        {OMMock.map((item) => (
+          <OMCard
+            isFinishOrCancel={
+              item.status === 'Cancelada' || item.status === 'Concluída' ? true : false
+            }
+            key={item.id}
+            {...item}
+          />
+        ))}
       </CardContainer>
       <AddNewActivityButton />
     </SafeAreaView>
