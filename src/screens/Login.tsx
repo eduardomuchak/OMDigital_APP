@@ -5,22 +5,19 @@ import {
   GestureResponderEvent,
   NativeSyntheticEvent,
   TextInputChangeEventData,
+  Image,
 } from 'react-native';
 import { useState } from 'react';
-import { RouteProp, NavigationProp } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { Input } from '../components/ui/Input';
 import { CustomButton } from '../components/ui/CustomButton';
 import { Eye, EyeSlash } from 'phosphor-react-native';
 
-type LoginScreenNavigationProp = NavigationProp<ReactNavigation.RootParamList, 'Login'>;
-type LoginScreenRouteProp = RouteProp<ReactNavigation.RootParamList, 'Login'>;
+import circles from '../assets/circles.png';
 
-interface LoginProps {
-  navigation: LoginScreenNavigationProp;
-  route: LoginScreenRouteProp;
-}
+export function Login() {
+  const { navigate } = useNavigation();
 
-export function Login({ navigation }: LoginProps) {
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -38,23 +35,26 @@ export function Login({ navigation }: LoginProps) {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const handleLogin = () => {
-    console.log(cpf, password);
-    navigation.navigate('OM');
-  };
-
   return (
-    <View className="flex-1 p-6 bg-white justify-center">
-      <Text className="font-poppinsBold text-primary-500 text-5xl text-center py-5">
-        OM Digital
-      </Text>
-      <Text className="font-poppinsBold text-base text-center mb-5">Entre com seu cpf e senha</Text>
-      <View className="gap-7">
-        <View>
+    <View className="flex-1 bg-primary-800">
+      <View className="absolute top-0">
+        <Image source={circles} />
+      </View>
+      <View className="flex-1 items-center justify-center">
+        <Text className="font-poppinsBold text-white text-6xl text-center py-5 mt-10">
+          OM Digital
+        </Text>
+      </View>
+      <View className="bg-white px-6 py-8 flex-1 rounded-t-xl">
+        <Text className="font-poppinsBold text-base text-center mb-5">
+          Entre com seu usuário e senha
+        </Text>
+
+        <View className="mb-3">
           <Input label="USUÁRIO" placeholder="Digite o CPF" value={cpf} onChange={handleCpf} />
         </View>
 
-        <View>
+        <View className="mb-2">
           <Input
             label="SENHA"
             placeholder="Senha"
@@ -73,17 +73,16 @@ export function Login({ navigation }: LoginProps) {
             )}
           </TouchableOpacity>
         </View>
-
-        <Text className="font-poppinsSemibold text-[10px]">
+        <Text className="font-poppinsSemibold text-xs mb-5">
           ESQUECEU SUA SENHA?{' '}
           <Text
             className="font-poppinsSemibold text-primary-500 underline"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigate('PasswordRecovery')}
           >
             RECUPERE AQUI
           </Text>
         </Text>
-        <CustomButton variant="primary" onPress={handleLogin}>
+        <CustomButton variant="primary" onPress={() => navigate('OM')}>
           Entrar
         </CustomButton>
       </View>

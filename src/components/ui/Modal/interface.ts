@@ -7,6 +7,7 @@ export namespace IModal {
     isOpen: boolean;
     onClose: Dispatch<SetStateAction<boolean>>;
     showCloseButton?: boolean;
+    defaultPadding?: boolean;
   }
 
   export interface CloseButtonProps {

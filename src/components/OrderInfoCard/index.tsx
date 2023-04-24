@@ -8,7 +8,7 @@ export function OrderInfoCard() {
         <Text className="font-poppinsMedium text-base ">GKY-7G22</Text>
       </View>
       <View className="flex mb-2">
-        <Text className="font-poppinsBold text-lg">Order de Manutenção:</Text>
+        <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>
         <Text className="font-poppinsMedium text-base">GKY-7G22</Text>
       </View>
       <View className="flex flex-row gap-4">
