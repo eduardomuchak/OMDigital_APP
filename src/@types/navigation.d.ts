@@ -7,6 +7,9 @@ declare global {
       home: undefined;
       login: undefined;
       registerNewActivity: undefined;
+      registerNewActivity: undefined;
+      registeredActivities: undefined;
+      passwordRecovery: undefined;
     }
   }
 

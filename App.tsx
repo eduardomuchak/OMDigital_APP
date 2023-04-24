@@ -19,6 +19,8 @@ import { Home } from './src/screens/Home';
 import { StatusBar } from 'react-native';
 import { RegisterNewActivity } from './src/screens/RegisterNewActivity';
 import { OM } from './src/screens/OM';
+import { RegisteredActivities } from './src/screens/RegisteredActivities';
+import { PasswordRecovery } from './src/screens/PasswordRecovery';
 
 const Stack = createStackNavigator();
 
@@ -47,8 +49,10 @@ export default function App() {
         }}
       >
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="RegisterNewActivity" component={RegisterNewActivity} />
+        <Stack.Screen name="RegisteredActivities" component={RegisteredActivities} />
         <Stack.Screen name="OM" component={OM} />
       </Stack.Navigator>
     </NavigationContainer>
