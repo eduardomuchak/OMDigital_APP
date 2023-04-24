@@ -1,13 +1,13 @@
 import { SafeAreaView, Text, TouchableOpacity } from 'react-native';
-import { CardContainer } from '../components/ui/CardContainer';
-import { OMCard } from '../components/ui/OMCard';
-import { OMMock } from '../components/ui/OMCard/OMMock';
-import { Header } from '../components/Header';
-import { AddNewActivityButton } from '../components/AddNewActivityButton';
-import { FooterModal } from '../components/FooterModal';
+import { CardContainer } from '../../components/CardContainer';
+import { OMCard } from '../../components/OMCard';
+import { OMMock } from '../../components/OMCard/OMMock';
+import { Header } from '../../components/Header';
+import { AddNewActivityButton } from '../../components/AddNewActivityButton';
+import { FooterModal } from '../../components/FooterModal';
 import { useNavigation } from '@react-navigation/core';
 
-export function OM() {
+export function Home() {
   const { navigate } = useNavigation();
 
   return (

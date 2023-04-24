@@ -82,7 +82,7 @@ export function Login() {
             RECUPERE AQUI
           </Text>
         </Text>
-        <CustomButton variant="primary" onPress={() => navigate('OM')}>
+        <CustomButton variant="primary" onPress={() => navigate('Home')}>
           Entrar
         </CustomButton>
       </View>

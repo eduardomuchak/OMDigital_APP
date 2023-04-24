@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { Header } from '../components/Header';
-import { OrderInfoCard } from '../components/OrderInfoCard';
-import { Input } from '../components/ui/Input';
-import { CustomButton } from '../components/ui/CustomButton';
-import { CustomDateTimePicker } from '../components/ui/CustomDateTimePicker';
-import { TextArea } from '../components/ui/TextArea';
+import { Header } from '../../components/Header';
+import { OrderInfoCard } from '../../components/OrderInfoCard';
+import { Input } from '../../components/ui/Input';
+import { CustomButton } from '../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../components/ui/CustomDateTimePicker';
+import { TextArea } from '../../components/ui/TextArea';
 
 export function RegisterNewActivity() {
   const [activity, setActivity] = useState('');

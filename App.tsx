@@ -15,11 +15,10 @@ import {
 
 import { Loading } from './src/components/Loading';
 import { Login } from './src/screens/Login';
-import { Home } from './src/screens/Home';
+import { Home } from './src/screens/VisaoControladorLogistica/Home';
 import { StatusBar } from 'react-native';
-import { RegisterNewActivity } from './src/screens/RegisterNewActivity';
-import { OM } from './src/screens/OM';
-import { RegisteredActivities } from './src/screens/RegisteredActivities';
+import { RegisterNewActivity } from './src/screens/VisaoOperador/RegisterNewActivity';
+import { RegisteredActivities } from './src/screens/VisaoControladorManutencao/RegisteredActivities';
 import { PasswordRecovery } from './src/screens/PasswordRecovery';
 
 const Stack = createStackNavigator();
@@ -53,7 +52,6 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="RegisterNewActivity" component={RegisterNewActivity} />
         <Stack.Screen name="RegisteredActivities" component={RegisteredActivities} />
-        <Stack.Screen name="OM" component={OM} />
       </Stack.Navigator>
     </NavigationContainer>
   );
