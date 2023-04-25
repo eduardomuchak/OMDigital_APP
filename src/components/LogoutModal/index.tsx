@@ -1,10 +1,12 @@
 import { Text, View } from 'react-native';
 import { CustomModal } from '../ui/Modal';
-import { SignOut } from 'phosphor-react-native';
 import { CustomButton } from '../ui/CustomButton';
 import { useState } from 'react';
+import { useAuth } from '../../contexts/auth';
+import { SignOut } from 'phosphor-react-native';
 
 export function LogoutModal() {
+  const { signOut } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
@@ -24,7 +26,7 @@ export function LogoutModal() {
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="cancel" onPress={() => {}}>
+            <CustomButton variant="cancel" onPress={signOut}>
               Confirmar
             </CustomButton>
           </View>

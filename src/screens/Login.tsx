@@ -14,9 +14,11 @@ import { CustomButton } from '../components/ui/CustomButton';
 import { Eye, EyeSlash } from 'phosphor-react-native';
 
 import circles from '../assets/circles.png';
+import { useAuth } from '../contexts/auth';
 
 export function Login() {
   const { navigate } = useNavigation();
+  const { signIn } = useAuth();
 
   const [cpf, setCpf] = useState('');
   const [password, setPassword] = useState('');
@@ -82,7 +84,7 @@ export function Login() {
             RECUPERE AQUI
           </Text>
         </Text>
-        <CustomButton variant="primary" onPress={() => navigate('HomeSolicitante')}>
+        <CustomButton variant="primary" onPress={() => signIn({ userCPF: cpf, password })}>
           Entrar
         </CustomButton>
       </View>

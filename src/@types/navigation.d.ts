@@ -11,6 +11,7 @@ declare global {
       registeredActivities: undefined;
       passwordRecovery: undefined;
       registerNewRequest: undefined;
+      homeSolicitante: undefined;
     }
   }
 
