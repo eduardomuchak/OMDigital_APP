@@ -11,7 +11,7 @@ export function CardContainer({ children }: CardContainerProps) {
     <View style={{ flex: 1 }}>
       <FlatList
         overScrollMode="never"
-        contentContainerStyle={{ padding: 24, paddingBottom: 96 }}
+        contentContainerStyle={{ padding: 24 }}
         showsVerticalScrollIndicator={false}
         data={children}
         renderItem={({ item }) => <React.Fragment>{item}</React.Fragment>}
