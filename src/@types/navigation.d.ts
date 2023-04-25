@@ -10,6 +10,7 @@ declare global {
       registerNewActivity: undefined;
       registeredActivities: undefined;
       passwordRecovery: undefined;
+      registerNewRequest: undefined;
     }
   }
 

@@ -1,3 +1,4 @@
+import 'react-native-reanimated';
 import 'react-native-gesture-handler';
 
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,6 +21,7 @@ import { StatusBar } from 'react-native';
 import { RegisterNewActivity } from './src/screens/VisaoOperador/RegisterNewActivity';
 import { RegisteredActivities } from './src/screens/VisaoControladorManutencao/RegisteredActivities';
 import { PasswordRecovery } from './src/screens/PasswordRecovery';
+import { RegisterNewRequest } from './src/screens/VisaoSolicitante/RegisterNewRequest';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +54,7 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="RegisterNewActivity" component={RegisterNewActivity} />
         <Stack.Screen name="RegisteredActivities" component={RegisteredActivities} />
+        <Stack.Screen name="RegisterNewRequest" component={RegisterNewRequest} />
       </Stack.Navigator>
     </NavigationContainer>
   );

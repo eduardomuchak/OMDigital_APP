@@ -30,6 +30,12 @@ export function Home() {
       >
         <Text className="text-white font-poppinsBold text-xl">Atividades Lançadas</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigate('RegisterNewRequest')}
+        className="w-full h-10 bg-green-500 flex items-center justify-center"
+      >
+        <Text className="text-white font-poppinsBold text-xl">Nova solicitação</Text>
+      </TouchableOpacity>
       <FooterModal />
       {/* <AddNewActivityButton /> */}
     </SafeAreaView>
