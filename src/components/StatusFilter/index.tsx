@@ -1,13 +1,20 @@
-import { Text, View } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { Funnel } from 'phosphor-react-native';
 
-export function StatusFilter() {
+interface StatusFilterProps {
+  openFilterModal: () => void;
+}
+
+export function StatusFilter({ openFilterModal }: StatusFilterProps) {
   return (
-    <View className="flex-row items-center justify-center mt-4 mb-5 relative">
+    <TouchableOpacity
+      className="flex-row items-center justify-center mt-4 mb-5 relative"
+      onPress={openFilterModal}
+    >
       <Text className="font-poppinsBold text-lg text-center text-neutral">Status - TODAS</Text>
       <View className="absolute right-8 top-0">
         <Funnel size={26} color="#556AEB" weight="fill" />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
