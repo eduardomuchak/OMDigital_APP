@@ -22,6 +22,7 @@ import { RegisterNewActivity } from './src/screens/VisaoOperador/RegisterNewActi
 import { RegisteredActivities } from './src/screens/VisaoControladorManutencao/RegisteredActivities';
 import { PasswordRecovery } from './src/screens/PasswordRecovery';
 import { RegisterNewRequest } from './src/screens/VisaoSolicitante/RegisterNewRequest';
+import { HomeSolicitante } from './src/screens/VisaoSolicitante/HomeSolicitante';
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="HomeSolicitante" component={HomeSolicitante} />
         <Stack.Screen name="RegisterNewActivity" component={RegisterNewActivity} />
         <Stack.Screen name="RegisteredActivities" component={RegisteredActivities} />
         <Stack.Screen name="RegisterNewRequest" component={RegisterNewRequest} />
