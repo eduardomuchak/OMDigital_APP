@@ -26,7 +26,7 @@ export function Checkbox({ checked = true, title, ...rest }: Props) {
 
       <Text
         className={clsx(`ml-3 text-neutral-900 font-poppinsSemibold`, {
-          'line-through text-gray-400': checked,
+          // 'line-through text-gray-400': checked,
         })}
       >
         {title}
