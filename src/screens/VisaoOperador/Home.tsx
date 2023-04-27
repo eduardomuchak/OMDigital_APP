@@ -1,6 +1,6 @@
 import { SafeAreaView, Text, View } from 'react-native';
 import { Header } from '../../components/Header';
-import { AddNewActivityButton } from '../../components/AddNewActivityButton';
+import { AddNewMaintenanceOrderButton } from '../../components/AddNewMaintenanceOrderButton';
 import { CardContainer } from '../../components/CardContainer';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
@@ -93,7 +93,7 @@ export function Home() {
           ))}
         </CardContainer>
       </View>
-      <AddNewActivityButton />
+      <AddNewMaintenanceOrderButton />
     </SafeAreaView>
   );
 }

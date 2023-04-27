@@ -5,7 +5,7 @@ import { GoToPreviousScreen } from '../GoToPreviousScreen';
 
 export function Header({ title, isHomeScreen }: HeaderProps) {
   return (
-    <View className="bg-primary-600 h-28 flex justify-end">
+    <View className="bg-primary-500 h-28 flex justify-end">
       {isHomeScreen ? (
         <View className="flex items-center justify-between flex-row pl-6 pr-2">
           <Text className="text-white font-poppinsBold text-lg">{title}</Text>

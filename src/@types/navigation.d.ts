@@ -4,15 +4,16 @@ import { StackNavigationProp } from '@react-navigation/stack';
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends Record<string, object | undefined> {
-      home: undefined;
-      login: undefined;
-      registerNewActivity: undefined;
-      registerNewActivity: undefined;
-      registeredActivities: undefined;
-      passwordRecovery: undefined;
-      registerNewRequest: undefined;
-      homeSolicitante: undefined;
-      homeOperador: undefined;
+      Home: undefined;
+      Login: undefined;
+      RegisterNewActivity: undefined;
+      RegisterNewActivity: undefined;
+      RegisteredActivities: undefined;
+      PasswordRecovery: undefined;
+      RegisterNewRequest: undefined;
+      HomeSolicitante: undefined;
+      HomeOperador: undefined;
+      RegisterNewMaintenanceOrder: undefined;
     }
   }
 

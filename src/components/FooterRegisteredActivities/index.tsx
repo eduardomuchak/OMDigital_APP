@@ -2,7 +2,7 @@ import { Text, View } from 'react-native';
 
 export function FooterRegisteredActivities() {
   return (
-    <View className="bg-primary-600 py-5 px-6">
+    <View className="bg-primary-500 py-5 px-6">
       <View className="mb-2">
         <Text className="font-poppinsBold text-lg text-white">Local de Manutenção:</Text>
         <Text className="font-poppinsMedium text-base text-white">Matriz Lavras:</Text>

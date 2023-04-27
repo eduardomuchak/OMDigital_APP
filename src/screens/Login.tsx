@@ -82,7 +82,7 @@ export function Login() {
         <Text className="font-poppinsSemibold text-xs mb-5">
           ESQUECEU SUA SENHA?{' '}
           <Text
-            className="font-poppinsSemibold text-primary-600 underline"
+            className="font-poppinsSemibold text-primary-500 underline"
             onPress={() => navigate('PasswordRecovery')}
           >
             RECUPERE AQUI
