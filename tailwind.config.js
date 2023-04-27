@@ -4,6 +4,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Cores Expresso Nepomuceno
+        'nepomuceno-dark-blue': '#1F295B',
+        'nepomuceno-light-blue': '#3FB4E7',
+        'nepomuceno-orange': '#F37021',
+        'nepomuceno-gray': '#E6E7E8',
         // Cores neutras da escala de cinza
         'neutral-900': '#212529',
         'neutral-800': '#343A40',
@@ -15,15 +20,15 @@ module.exports = {
         'neutral-200': '#E9ECEF',
         'neutral-100': '#F8F9FA',
         // Cores primárias do cliente
-        'primary-900': '#020A33',
-        'primary-800': '#0C1A66',
-        'primary-700': '#1D2F99',
-        'primary-600': '#354ACB',
-        'primary-500': '#556AEB',
-        'primary-400': '#6E82FE',
-        'primary-300': '#8FA0FF',
-        'primary-200': '#B9C4FF',
-        'primary-100': '#EBEFFF',
+        'primary-900': '#02040F',
+        'primary-800': '#090B2A',
+        'primary-700': '#121F4C',
+        'primary-600': '#1D2F6E',
+        'primary-500': '#1D2F99',
+        'primary-400': '#3D51B9',
+        'primary-300': '#6373D1',
+        'primary-200': '#8B97E6',
+        'primary-100': '#C0C7F9',
         // Cores de alerta
         'alert-green': '#22C55E',
         'alert-red': '#F40606',
@@ -33,11 +38,8 @@ module.exports = {
         'status-red': '#B50202',
         'status-yellow': '#FFA500',
         'status-blue': '#12235B',
-
-        //Cores de status concluído e cancelado
-        statusConcluido: 'rgba(4, 103, 0, 0.2)',
-        statusCancelado: 'rgba(181, 2, 2, 0.2)',
-
+        'status-concluido': 'rgba(4, 103, 0, 0.2)',
+        'status-cancelado': 'rgba(181, 2, 2, 0.2)',
         // Cor de fundo com opacidade
         overlay: 'rgba(33, 37, 41, 0.4)',
       },

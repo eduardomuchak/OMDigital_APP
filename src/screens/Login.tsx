@@ -14,6 +14,7 @@ import { CustomButton } from '../components/ui/CustomButton';
 import { Eye, EyeSlash } from 'phosphor-react-native';
 
 import circles from '../assets/circles.png';
+import logo from '../assets/logo/logo.png';
 import { useAuth } from '../contexts/auth';
 
 export function Login() {
@@ -38,14 +39,17 @@ export function Login() {
   };
 
   return (
-    <View className="flex-1 bg-primary-800">
+    <View className="flex-1 bg-nepomuceno-dark-blue">
       <View className="absolute top-0">
         <Image source={circles} />
       </View>
-      <View className="flex-1 items-center justify-center">
+      <View className="flex-1 items-center justify-end py-8">
         <Text className="font-poppinsBold text-white text-6xl text-center py-5 mt-10">
           OM Digital
         </Text>
+      </View>
+      <View className="h-32 items-center justify-end py-8">
+        <Image source={logo} />
       </View>
       <View className="bg-white px-6 py-8 flex-1 rounded-t-xl">
         <Text className="font-poppinsBold text-base text-center mb-5">
@@ -78,7 +82,7 @@ export function Login() {
         <Text className="font-poppinsSemibold text-xs mb-5">
           ESQUECEU SUA SENHA?{' '}
           <Text
-            className="font-poppinsSemibold text-primary-500 underline"
+            className="font-poppinsSemibold text-primary-600 underline"
             onPress={() => navigate('PasswordRecovery')}
           >
             RECUPERE AQUI

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "om-digital",
+    "name": "OM Digital",
     "slug": "om-digital",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,12 +8,10 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#1F295B"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.omdigital"
@@ -21,12 +19,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1F295B"
       },
       "package": "com.omdigital"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "28ce8ee1-d84d-4c05-88af-669223fa998b"
+      }
     }
   }
 }

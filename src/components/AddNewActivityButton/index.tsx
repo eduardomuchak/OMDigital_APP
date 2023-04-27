@@ -7,7 +7,7 @@ export function AddNewActivityButton() {
   return (
     <TouchableOpacity
       onPress={() => navigate('RegisterNewActivity')}
-      className="bg-primary-800 rounded-full w-16 h-16 items-center justify-center absolute bottom-6 right-6 shadow-lg z-50"
+      className="bg-nepomuceno-dark-blue rounded-full w-16 h-16 items-center justify-center absolute bottom-6 right-6 shadow-lg z-50"
       activeOpacity={0.7}
     >
       <Plus size={32} color="#FFFFFF" weight="bold" />

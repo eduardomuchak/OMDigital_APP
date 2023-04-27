@@ -9,6 +9,7 @@ import { SolicitationCard } from '../../components/SolicitationCard';
 import { CustomButton } from '../../components/ui/CustomButton';
 import { StatusFilter } from '../../components/StatusFilter';
 import { StatusFilterModal } from './StatusFilterModal';
+import { useNavigation } from '@react-navigation/native';
 
 export interface FilterState {
   todas: boolean;
@@ -20,6 +21,7 @@ export interface FilterState {
 }
 
 export function HomeSolicitante() {
+  const { navigate } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allStatus, setAllStatus] = useState({
     todas: true,
@@ -68,7 +70,9 @@ export function HomeSolicitante() {
         {filteredSolicitations.map((item) => (
           <SolicitationCard key={item.id} {...item} />
         ))}
-        <CustomButton variant="primary">Relatar Problema</CustomButton>
+        <CustomButton onPress={() => navigate('RegisterNewRequest')} variant="primary">
+          Relatar Problema
+        </CustomButton>
       </CardContainer>
     </SafeAreaView>
   );

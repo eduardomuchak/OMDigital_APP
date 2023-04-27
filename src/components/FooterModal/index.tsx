@@ -15,7 +15,7 @@ export function FooterModal() {
       <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.8}
-        className="bg-primary-500 h-32 flex flex-row items-center justify-around"
+        className="bg-primary-600 h-32 flex flex-row items-center justify-around"
       >
         {footerInfoMock.map((item, index) => (
           <View
@@ -49,7 +49,7 @@ export function FooterModal() {
               <Text className="font-poppinsMedium text-sm">(Total de Veículos por Usuário)</Text>
             </View>
           </View>
-          <View className="bg-primary-500 flex-1 rounded-b-xl px-5 py-6 flex justify-center flex-col">
+          <View className="bg-primary-600 flex-1 rounded-b-xl px-5 py-6 flex justify-center flex-col">
             {footerInfoMock.map((item, index) => (
               <View
                 className="flex flex-row items-center justify-start"

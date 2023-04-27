@@ -24,8 +24,8 @@ export function OMCard(props: OMCardProps) {
         className={clsx('bg-status-green gap-1 px-5 h-44 rounded-xl justify-center', {
           ['bg-status-red']: props.status === 'Atrasada',
           ['bg-status-yellow']: props.status === 'Aguardando',
-          ['bg-statusCancelado border-2 border-status-red']: props.status === 'Cancelada',
-          ['bg-statusConcluido border-2 border-status-green']: props.status === 'Concluída',
+          ['bg-status-cancelado border-2 border-status-red']: props.status === 'Cancelada',
+          ['bg-status-concluido border-2 border-status-green']: props.status === 'Concluída',
         })}
       >
         <View className="py-3">
