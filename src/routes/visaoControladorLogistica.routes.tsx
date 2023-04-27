@@ -1,6 +1,6 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Home } from '../screens/VisaoControladorLogistica/Home';
+import { Home } from '../screens/VisaoControladorLogistica/HomeLogistica';
 
 const Stack = createStackNavigator();
 
