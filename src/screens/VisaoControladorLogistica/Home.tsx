@@ -3,7 +3,7 @@ import { CardContainer } from '../../components/CardContainer';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
 import { Header } from '../../components/Header';
-import { AddNewActivityButton } from '../../components/AddNewActivityButton';
+import { AddNewMaintenanceOrderButton } from '../../components/AddNewMaintenanceOrderButton';
 import { FooterModal } from '../../components/FooterModal';
 import { useNavigation } from '@react-navigation/core';
 
@@ -37,7 +37,7 @@ export function Home() {
         <Text className="text-white font-poppinsBold text-xl">Nova solicitação</Text>
       </TouchableOpacity>
       <FooterModal />
-      {/* <AddNewActivityButton /> */}
+      {/* <AddNewMaintenanceOrderButton /> */}
     </SafeAreaView>
   );
 }
