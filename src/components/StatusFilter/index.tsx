@@ -13,7 +13,7 @@ export function StatusFilter({ openFilterModal }: StatusFilterProps) {
     >
       <Text className="font-poppinsBold text-lg text-center text-neutral">Status - TODAS</Text>
       <View className="absolute right-8 top-0">
-        <Funnel size={26} color="#556AEB" weight="fill" />
+        <Funnel size={26} color="#1D2F99" weight="fill" />
       </View>
     </TouchableOpacity>
   );

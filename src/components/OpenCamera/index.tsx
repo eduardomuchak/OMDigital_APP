@@ -26,7 +26,7 @@ export function OpenCamera({ label, required }: Props) {
           borderStyle: 'dashed',
         }}
       >
-        <Camera size={30} color="#556AEB" weight="bold" />
+        <Camera size={30} color="#1D2F99" weight="bold" />
       </TouchableOpacity>
     </>
   );

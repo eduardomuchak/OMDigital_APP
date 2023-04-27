@@ -12,6 +12,7 @@ declare global {
       passwordRecovery: undefined;
       registerNewRequest: undefined;
       homeSolicitante: undefined;
+      homeOperador: undefined;
     }
   }
 

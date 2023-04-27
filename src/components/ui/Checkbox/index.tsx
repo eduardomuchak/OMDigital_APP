@@ -24,13 +24,7 @@ export function Checkbox({ checked = true, title, ...rest }: Props) {
         <View className="h-8 w-8 bg-white rounded-lg border-2 border-neutral-200" />
       )}
 
-      <Text
-        className={clsx(`ml-3 text-neutral-900 font-poppinsSemibold`, {
-          // 'line-through text-gray-400': checked,
-        })}
-      >
-        {title}
-      </Text>
+      <Text className={clsx(`ml-3 text-neutral-900 font-poppinsRegular text-base`)}>{title}</Text>
     </TouchableOpacity>
   );
 }

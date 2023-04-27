@@ -1,5 +1,6 @@
 import 'react-native-reanimated';
 import 'react-native-gesture-handler';
+import SplashScreen from './SplashScreen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import {
@@ -18,7 +19,7 @@ import { StatusBar } from 'react-native';
 import { AuthProvider } from './src/contexts/auth';
 import Routes from './src/routes';
 
-export default function App() {
+function App() {
   const [fontsLoaded] = useFonts({
     Poppins_300Light,
     Poppins_400Regular,
@@ -42,3 +43,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+export default App;

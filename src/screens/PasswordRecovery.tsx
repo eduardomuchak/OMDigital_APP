@@ -13,24 +13,29 @@ import { CustomButton } from '../components/ui/CustomButton';
 import { GoToPreviousScreen } from '../components/GoToPreviousScreen';
 
 import circles from '../assets/circles.png';
+import logo from '../assets/logo/logo.png';
 
 export function PasswordRecovery() {
   const { navigate } = useNavigation();
   const [cpf, setCpf] = useState('');
 
   return (
-    <View className="flex-1 bg-primary-800">
+    <View className="flex-1 bg-nepomuceno-dark-blue">
       <View className="absolute top-0">
         <Image source={circles} />
       </View>
       <TouchableOpacity className="absolute top-10 z-50">
         <GoToPreviousScreen />
       </TouchableOpacity>
-      <View className="flex-1 items-center justify-center">
+      <View className="flex-1 items-center justify-end py-8">
         <Text className="font-poppinsBold text-white text-6xl text-center py-5 mt-10">
           OM Digital
         </Text>
       </View>
+      <View className="h-32 items-center justify-end py-8">
+        <Image source={logo} />
+      </View>
+
       <View className="bg-white px-6 py-8 flex-1 rounded-t-xl">
         <Text className="font-poppinsBold text-base text-center mb-5">Recuperar senha</Text>
 
