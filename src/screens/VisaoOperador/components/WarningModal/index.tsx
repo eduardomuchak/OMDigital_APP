@@ -1,24 +1,24 @@
 import { Text, View } from 'react-native';
-import { CustomModal } from '../ui/Modal';
-import { CustomButton } from '../ui/CustomButton';
 import { useState } from 'react';
-import { useAuth } from '../../contexts/auth';
-import { SignOut } from 'phosphor-react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
 
-export function LogoutModal() {
-  const { signOut } = useAuth();
+export function WarningModal({ children }: { children: JSX.Element }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
     <>
       {/* Modal Trigger */}
       <CustomButton variant="ghost" onPress={() => setIsModalVisible(true)} activeOpacity={0.7}>
-        <SignOut size={24} color="#FFFFFF" weight="bold" />
+        {children}
       </CustomButton>
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
-        <Text className="font-poppinsRegular text-base">Você deseja sair da sua conta?</Text>
+        <Text className="font-poppinsRegular text-base">
+          Esta Ordem de Manutenção (OM) foi aberta por outro usuário. Apontar as suas atividades na
+          mesma OM?
+        </Text>
         <View className="flex flex-row justify-between mt-16">
           <View className="w-[48%]">
             <CustomButton variant="ghost" onPress={() => setIsModalVisible(false)}>
@@ -26,7 +26,7 @@ export function LogoutModal() {
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="cancel" onPress={signOut}>
+            <CustomButton variant="cancel" onPress={() => {}}>
               Confirmar
             </CustomButton>
           </View>

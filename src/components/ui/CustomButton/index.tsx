@@ -3,7 +3,7 @@ import clsx from 'clsx';
 
 interface Props extends TouchableOpacityProps {
   children: string | JSX.Element;
-  variant: 'primary' | 'outline' | 'ghost' | 'cancel';
+  variant: 'primary' | 'outline' | 'ghost' | 'cancel' | 'finish';
 }
 
 export function CustomButton({ variant, children, ...rest }: Props) {
@@ -14,13 +14,14 @@ export function CustomButton({ variant, children, ...rest }: Props) {
         ['border-2 border-primary-500']: variant === 'outline',
         ['bg-transparent']: variant === 'ghost',
         ['bg-status-red']: variant === 'cancel',
+        ['bg-status-green']: variant === 'finish',
       })}
       {...rest}
       activeOpacity={0.7}
     >
       <Text
         className={clsx('font-poppinsBold text-base leading-5 text-center px-4', {
-          ['text-white ']: variant === 'primary' || variant === 'cancel',
+          ['text-white ']: variant === 'primary' || variant === 'cancel' || variant === 'finish',
           ['text-primary-500']: variant === 'outline' || variant === 'ghost',
         })}
       >

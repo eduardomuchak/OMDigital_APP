@@ -7,13 +7,14 @@ declare global {
       Home: undefined;
       Login: undefined;
       RegisterNewActivity: undefined;
-      RegisterNewActivity: undefined;
       RegisteredActivities: undefined;
       PasswordRecovery: undefined;
       RegisterNewRequest: undefined;
       HomeSolicitante: undefined;
       HomeOperador: undefined;
       RegisterNewMaintenanceOrder: undefined;
+      RegisteredActivitiesOperador: undefined;
+      CloseMaintenanceOrder: undefined;
     }
   }
 
