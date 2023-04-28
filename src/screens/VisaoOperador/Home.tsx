@@ -1,6 +1,6 @@
-import { SafeAreaView, Text, View } from 'react-native';
+import { Button, SafeAreaView, Text, View } from 'react-native';
 import { Header } from '../../components/Header';
-import { AddNewMaintenanceOrderButton } from '../../components/AddNewMaintenanceOrderButton';
+import { AddNewMaintenanceOrderButton } from './components/AddNewMaintenanceOrderButton';
 import { CardContainer } from '../../components/CardContainer';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
@@ -8,11 +8,13 @@ import { FilterModal } from './components/FilterModal';
 import { OperationsStatus } from '../../components/OperationsStatus';
 import { useState } from 'react';
 import { OMMockProps } from './components/FilterModal/interface';
+import { useNavigation } from '@react-navigation/native';
 
 export function Home() {
   const [filteredOrders, setFilteredOrders] = useState<OMMockProps[]>(OMMock);
   const [startPeriod, setStartPeriod] = useState(new Date());
   const [endPeriod, setEndPeriod] = useState(new Date());
+  const { navigate } = useNavigation();
 
   const [allStatus, setAllStatus] = useState([
     {
@@ -92,6 +94,7 @@ export function Home() {
             />
           ))}
         </CardContainer>
+        <Button title="Atividades" onPress={() => navigate('RegisteredActivitiesOperador')} />
       </View>
       <AddNewMaintenanceOrderButton />
     </SafeAreaView>

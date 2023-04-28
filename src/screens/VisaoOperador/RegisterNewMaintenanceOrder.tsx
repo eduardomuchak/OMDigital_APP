@@ -33,7 +33,7 @@ export function RegisterNewMaintenanceOrder() {
             </View>
             <View className="flex justify-end items-center">
               <TouchableOpacity
-                className={'h-14 w-14 flex items-center justify-center rounded-lg '}
+                className={'h-14 w-14 flex items-center justify-center rounded-lg'}
                 activeOpacity={0.7}
               >
                 <Camera size={30} color="#1D2F99" weight="bold" />
