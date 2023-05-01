@@ -8,7 +8,7 @@ export function SignInWithCredentials({
   return {
     data: {
       user: 'Eduardo',
-      role: 'operador',
+      role: 'manutencao',
       session: '123456789',
     },
     error: null,
