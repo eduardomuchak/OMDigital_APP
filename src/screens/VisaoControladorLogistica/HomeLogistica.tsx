@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
 import { CardContainer } from '../../components/CardContainer';
+import { FooterModal } from '../../components/FooterModal';
+import { Header } from '../../components/Header';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
-import { Header } from '../../components/Header';
-import { FooterModal } from '../../components/FooterModal';
 import { StatusFilter } from '../../components/StatusFilter';
 import { FilterModalLogistica } from './components/FilterModalLogistica';
-import { StatusLegendLogistica } from './components/StatusLegendLogistica';
 
-import { Logistica } from './interfaces';
 import { OperationsStatus } from '../../components/OperationsStatus';
+import { useAuth } from '../../contexts/auth';
+import { Logistica } from './interfaces';
 
 const operationsMock = [
   {
@@ -45,6 +45,7 @@ export function Home() {
       };
     })
   );
+  const { user } = useAuth();
 
   function handleOpenModal() {
     setIsModalVisible(true);
@@ -79,7 +80,7 @@ export function Home() {
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header isHomeScreen title={'Olá, Controlador de Logística'} />
+      <Header isHomeScreen title={`Olá, ${user?.user}`} />
       {isModalVisible && (
         <FilterModalLogistica
           onClose={handleCloseModal}

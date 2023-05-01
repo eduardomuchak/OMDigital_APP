@@ -1,17 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 import { CardContainer } from '../../components/CardContainer';
+import { FooterModal } from '../../components/FooterModal';
+import { Header } from '../../components/Header';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
-import { Header } from '../../components/Header';
-import { FooterModal } from '../../components/FooterModal';
 import { StatusFilter } from '../../components/StatusFilter';
 import { FilterModalLogistica } from '../VisaoControladorLogistica/components/FilterModalLogistica';
 
-import { Logistica } from '../VisaoControladorLogistica/interfaces';
 import { OperationsStatus } from '../../components/OperationsStatus';
+import { useAuth } from '../../contexts/auth';
+import { Logistica } from '../VisaoControladorLogistica/interfaces';
 
 const operationsMock = [
   {
@@ -30,6 +31,8 @@ const operationsMock = [
 
 export function Home() {
   const { navigate } = useNavigation();
+  const { user } = useAuth();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
     todas: true,
@@ -80,7 +83,7 @@ export function Home() {
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header isHomeScreen title={'Olá, Controlador de Logística'} />
+      <Header isHomeScreen title={`Olá, ${user?.user}`} />
       {isModalVisible && (
         <FilterModalLogistica
           onClose={handleCloseModal}
