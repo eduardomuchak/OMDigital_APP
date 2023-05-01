@@ -3,35 +3,22 @@ import { View, Text } from 'react-native';
 
 import { Checkbox } from '../../../../components/ui/Checkbox';
 
-export interface Operation {
-  id: number;
-  name: string;
-}
-
-export interface OperationState {
-  showAll: boolean;
-  [key: string]: boolean;
-}
-
-interface OperationsFilterOptionsProps {
-  changeOperation: Dispatch<SetStateAction<OperationState[]>>;
-  operations: OperationState[];
-}
+import { Logistica } from '../../interfaces';
 
 export function OperationsFilterOptions({
   operations,
   changeOperation,
-}: OperationsFilterOptionsProps) {
+}: Logistica.OperationsFilterOptionsProps) {
   function handleChangeOperations(key: string) {
     if (key === 'Todas') {
-      changeOperation((prevState: OperationState[]) => {
+      changeOperation((prevState: Logistica.OperationState[]) => {
         const updatedOperations = prevState.map((operation) => {
           return { ...operation, showAll: !operation.showAll };
         });
         return updatedOperations;
       });
     } else {
-      changeOperation((prevState: OperationState[]) => {
+      changeOperation((prevState: Logistica.OperationState[]) => {
         const updatedOperations = prevState.map((operation) => {
           if (operation.hasOwnProperty(key)) {
             return { ...operation, [key]: !operation[key], showAll: false };
@@ -51,7 +38,7 @@ export function OperationsFilterOptions({
         checked={operations.every((operation) => operation.showAll)}
         onPress={handleChangeOperations.bind(null, 'Todas')}
       />
-      {operations.map((operation: OperationState) => {
+      {operations.map((operation: Logistica.OperationState) => {
         let option;
         const keys = Object.keys(operation);
 

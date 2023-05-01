@@ -7,7 +7,8 @@ declare global {
       Home: undefined;
       Login: undefined;
       RegisterNewActivity: undefined;
-      RegisteredActivities: undefined;
+      RegisterNewActivity: undefined;
+      RegisteredActivities: { id: number };
       PasswordRecovery: undefined;
       RegisterNewRequest: undefined;
       HomeSolicitante: undefined;

@@ -3,15 +3,10 @@ import { Text, View } from 'react-native';
 
 import { CustomModal } from '../../../../components/ui/Modal';
 import { CustomButton } from '../../../../components/ui/CustomButton';
-import { StatusFilterOptions, StatusFilterStateOptions } from './StatusFilterOptions';
-import { OperationState, OperationsFilterOptions } from './OperationsFilterOptions';
+import { StatusFilterOptions } from './StatusFilterOptions';
+import { OperationsFilterOptions } from './OperationsFilterOptions';
 
-interface StatusFilterModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: (pickedStatus: StatusFilterStateOptions, pickedOperation: OperationState[]) => void;
-  allStatus: StatusFilterStateOptions;
-}
+import { Logistica } from '../../interfaces';
 
 const operationsMock = [
   {
@@ -28,12 +23,13 @@ const operationsMock = [
   },
 ];
 
-export function FilterModalLogistica({ isOpen, onClose, onConfirm }: StatusFilterModalProps) {
+export function FilterModalLogistica({ isOpen, onClose, onConfirm }: Logistica.FilterModalProps) {
   const [allStatus, setAllStatus] = useState({
     todas: true,
     abertas: false,
     aguardando: false,
-    finalizadas: false,
+    concluidas: false,
+    canceladas: false,
   });
   const [operations, setOperations] = useState(
     operationsMock.map((operation) => {
@@ -57,7 +53,8 @@ export function FilterModalLogistica({ isOpen, onClose, onConfirm }: StatusFilte
               todas: true,
               abertas: false,
               aguardando: false,
-              finalizadas: false,
+              concluidas: false,
+              canceladas: false,
             });
             onClose();
           }}

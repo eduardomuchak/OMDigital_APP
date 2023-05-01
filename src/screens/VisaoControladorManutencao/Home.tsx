@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { CardContainer } from '../../components/CardContainer';
 import { OMCard } from '../../components/OMCard';
@@ -7,10 +8,9 @@ import { OMMock } from '../../components/OMCard/OMMock';
 import { Header } from '../../components/Header';
 import { FooterModal } from '../../components/FooterModal';
 import { StatusFilter } from '../../components/StatusFilter';
-import { FilterModalLogistica } from './components/FilterModalLogistica';
-import { StatusLegendLogistica } from './components/StatusLegendLogistica';
+import { FilterModalLogistica } from '../VisaoControladorLogistica/components/FilterModalLogistica';
 
-import { Logistica } from './interfaces';
+import { Logistica } from '../VisaoControladorLogistica/interfaces';
 import { OperationsStatus } from '../../components/OperationsStatus';
 
 const operationsMock = [
@@ -29,6 +29,7 @@ const operationsMock = [
 ];
 
 export function Home() {
+  const { navigate } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
     todas: true,
@@ -97,6 +98,7 @@ export function Home() {
               item.status === 'Cancelada' || item.status === 'Concluída' ? true : false
             }
             key={item.id}
+            onPress={() => navigate('RegisteredActivities', { id: item.id })}
             {...item}
           />
         ))}

@@ -2,27 +2,17 @@ import { View, Text } from 'react-native';
 
 import { Checkbox } from '../../../../components/ui/Checkbox';
 
-export interface StatusFilterStateOptions {
-  todas: boolean;
-  abertas: boolean;
-  aguardando: boolean;
-  finalizadas: boolean;
-  [key: string]: boolean;
-}
+import { Logistica } from '../../interfaces';
 
-interface FilterOptionsProps {
-  changeStatus: (status: StatusFilterStateOptions) => void;
-  allStatus: StatusFilterStateOptions;
-}
-
-export function StatusFilterOptions({ changeStatus, allStatus }: FilterOptionsProps) {
+export function StatusFilterOptions({ changeStatus, allStatus }: Logistica.FilterOptionsProps) {
   function handleChangeStatus(status: string) {
     if (status === 'todas') {
       changeStatus({
         todas: !allStatus.todas,
         abertas: false,
         aguardando: false,
-        finalizadas: false,
+        concluidas: false,
+        canceladas: false,
       });
     } else {
       changeStatus({
@@ -51,15 +41,14 @@ export function StatusFilterOptions({ changeStatus, allStatus }: FilterOptionsPr
         checked={allStatus.aguardando}
       />
       <Checkbox
-        title={'Finalizadas'}
-        onPress={() =>
-          changeStatus({
-            ...allStatus,
-            todas: false,
-            finalizadas: !allStatus.finalizadas,
-          })
-        }
-        checked={allStatus.finalizadas}
+        title={'Canceladas'}
+        onPress={() => handleChangeStatus('canceladas')}
+        checked={allStatus.canceladas}
+      />
+      <Checkbox
+        title={'Concluídas'}
+        onPress={() => handleChangeStatus('concluidas')}
+        checked={allStatus.concluidas}
       />
     </View>
   );
