@@ -1,20 +1,22 @@
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 import { Button, SafeAreaView, Text, View } from 'react-native';
-import { Header } from '../../components/Header';
-import { AddNewMaintenanceOrderButton } from './components/AddNewMaintenanceOrderButton';
 import { CardContainer } from '../../components/CardContainer';
+import { Header } from '../../components/Header';
 import { OMCard } from '../../components/OMCard';
 import { OMMock } from '../../components/OMCard/OMMock';
-import { FilterModal } from './components/FilterModal';
 import { OperationsStatus } from '../../components/OperationsStatus';
-import { useState } from 'react';
+import { useAuth } from '../../contexts/auth';
+import { AddNewMaintenanceOrderButton } from './components/AddNewMaintenanceOrderButton';
+import { FilterModal } from './components/FilterModal';
 import { OMMockProps } from './components/FilterModal/interface';
-import { useNavigation } from '@react-navigation/native';
 
 export function Home() {
   const [filteredOrders, setFilteredOrders] = useState<OMMockProps[]>(OMMock);
   const [startPeriod, setStartPeriod] = useState(new Date());
   const [endPeriod, setEndPeriod] = useState(new Date());
   const { navigate } = useNavigation();
+  const { user } = useAuth();
 
   const [allStatus, setAllStatus] = useState([
     {
@@ -69,7 +71,7 @@ export function Home() {
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header isHomeScreen title={'Olá, Operador'} />
+      <Header isHomeScreen title={`Olá, ${user?.user}`} />
       <View className="px-6 py-5 flex-row justify-between items-center">
         <View className="flex-1 items-center justify-center">
           <Text className="font-poppinsBold text-lg">Operação - TODAS</Text>

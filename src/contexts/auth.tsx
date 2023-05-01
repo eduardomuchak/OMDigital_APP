@@ -1,9 +1,10 @@
-import 'react-native-url-polyfill/auto';
 import { MMKV } from 'react-native-mmkv';
+import 'react-native-url-polyfill/auto';
 
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { Alert } from 'react-native';
+import { LoginFormData } from '../validations/LoginScreen';
 import { SignInWithCredentials } from './mock';
 
 interface User {
@@ -17,7 +18,7 @@ interface AuthContextData {
   token: string | null;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  signIn({ userCPF, password }: { userCPF: string; password: string }): Promise<void>;
+  signIn(data: LoginFormData): Promise<void>;
   signOut(): void;
 }
 
@@ -30,7 +31,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  async function signIn({ userCPF, password }: { userCPF: string; password: string }) {
+  async function signIn({ userCPF, password }: LoginFormData) {
     setIsLoading(true);
     const { error, data } = SignInWithCredentials({
       userCPF: userCPF,
@@ -46,7 +47,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     if (error) {
-      Alert.alert('Email ou senha inválidos');
+      Alert.alert(error.message);
     }
     setIsLoading(false);
   }

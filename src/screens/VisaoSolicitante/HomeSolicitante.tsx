@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
-import { CardContainer } from '../../components/CardContainer';
-import { SolicitationMock } from '../../components/SolicitationCard/SolicitationMock';
-import { Header } from '../../components/Header';
-import { StatusLegend } from '../../components/StatusLegend';
-import { SolicitationCard } from '../../components/SolicitationCard';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { StatusFilter } from '../../components/StatusFilter';
-import { StatusFilterModal } from './StatusFilterModal';
 import { useNavigation } from '@react-navigation/native';
+import { CardContainer } from '../../components/CardContainer';
+import { Header } from '../../components/Header';
+import { SolicitationCard } from '../../components/SolicitationCard';
+import { SolicitationMock } from '../../components/SolicitationCard/SolicitationMock';
+import { StatusFilter } from '../../components/StatusFilter';
+import { StatusLegend } from '../../components/StatusLegend';
+import { CustomButton } from '../../components/ui/CustomButton';
+import { useAuth } from '../../contexts/auth';
+import { StatusFilterModal } from './StatusFilterModal';
 
 export interface FilterState {
   todas: boolean;
@@ -21,6 +22,7 @@ export interface FilterState {
 }
 
 export function HomeSolicitante() {
+  const { user } = useAuth();
   const { navigate } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allStatus, setAllStatus] = useState({
@@ -54,7 +56,8 @@ export function HomeSolicitante() {
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header isHomeScreen title={'Olá, João Motorista'} />
+      <Header isHomeScreen title={`Olá, ${user?.user}`} />
+
       {isModalVisible && (
         <StatusFilterModal
           onClose={handleCloseModal}
