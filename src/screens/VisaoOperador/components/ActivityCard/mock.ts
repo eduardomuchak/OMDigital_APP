@@ -1,7 +1,7 @@
 export const activitiesMock = [
   {
     id: 1,
-    name: 'Substituição de lâmapada de posição',
+    name: 'Substituição de lâmpada de posição',
     images: ['true'],
     startDate: '2021-05-01T00:00:00.000Z',
     endDate: '2021-05-02T00:00:00.000Z',

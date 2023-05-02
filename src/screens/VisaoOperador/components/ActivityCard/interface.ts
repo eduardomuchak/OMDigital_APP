@@ -1,6 +1,6 @@
 export interface ActivityCardProps {
   activity: {
-    id: number;
+    id: string;
     name: string;
     startDate: string;
     endDate: string;
