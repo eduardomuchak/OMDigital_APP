@@ -1,7 +1,7 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { HomeSolicitante } from '../screens/VisaoSolicitante/HomeSolicitante';
-import { RegisterNewRequest } from '../screens/VisaoSolicitante/RegisterNewRequest';
+import React from 'react';
+import { Home } from '../screens/VisaoSolicitante/screens/Home';
+import { RegisterNewRequest } from '../screens/VisaoSolicitante/screens/RegisterNewRequest';
 
 const Stack = createStackNavigator();
 
@@ -11,7 +11,7 @@ export const VisaoSolicitanteRoutes: React.FC = () => (
       headerShown: false,
     }}
   >
-    <Stack.Screen name="HomeSolicitante" component={HomeSolicitante} />
+    <Stack.Screen name="HomeSolicitante" component={Home} />
     <Stack.Screen name="RegisterNewRequest" component={RegisterNewRequest} />
   </Stack.Navigator>
 );

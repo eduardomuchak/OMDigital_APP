@@ -1,17 +1,18 @@
+import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
-import { CardContainer } from '../../components/CardContainer';
-import { FooterModal } from '../../components/FooterModal';
-import { Header } from '../../components/Header';
-import { OMCard } from '../../components/OMCard';
-import { OMMock } from '../../components/OMCard/OMMock';
-import { StatusFilter } from '../../components/StatusFilter';
-import { FilterModalLogistica } from './components/FilterModalLogistica';
+import { CardContainer } from '../../../components/CardContainer';
+import { FooterModal } from '../../../components/FooterModal';
+import { Header } from '../../../components/Header';
+import { OMCard } from '../../../components/OMCard';
+import { OMMock } from '../../../components/OMCard/OMMock';
+import { StatusFilter } from '../../../components/StatusFilter';
+import { FilterModalLogistica } from '../../VisaoControladorLogistica/components/FilterModalLogistica';
 
-import { OperationsStatus } from '../../components/OperationsStatus';
-import { useAuth } from '../../contexts/auth';
-import { Logistica } from './interfaces';
+import { OperationsStatus } from '../../../components/OperationsStatus';
+import { useAuth } from '../../../contexts/auth';
+import { Logistica } from '../../VisaoControladorLogistica/interfaces';
 
 const operationsMock = [
   {
@@ -29,6 +30,9 @@ const operationsMock = [
 ];
 
 export function Home() {
+  const { navigate } = useNavigation();
+  const { user } = useAuth();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
     todas: true,
@@ -45,7 +49,6 @@ export function Home() {
       };
     })
   );
-  const { user } = useAuth();
 
   function handleOpenModal() {
     setIsModalVisible(true);
@@ -98,6 +101,7 @@ export function Home() {
               item.status === 'Cancelada' || item.status === 'Concluída' ? true : false
             }
             key={item.id}
+            onPress={() => navigate('RegisteredActivities', { id: item.id })}
             {...item}
           />
         ))}

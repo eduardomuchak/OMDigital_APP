@@ -1,7 +1,7 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Login } from '../screens/Login';
-import { PasswordRecovery } from '../screens/PasswordRecovery';
+import React from 'react';
+import { Login } from '../screens/common/Login';
+import { PasswordRecovery } from '../screens/common/PasswordRecovery';
 
 const Stack = createStackNavigator();
 

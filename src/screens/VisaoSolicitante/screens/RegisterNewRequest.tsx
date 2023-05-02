@@ -1,9 +1,9 @@
 import { SafeAreaView, Text, View } from 'react-native';
-import { Header } from '../../components/Header';
-import { Input } from '../../components/ui/Input';
-import { TextArea } from '../../components/ui/TextArea';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { OpenCamera } from '../../components/OpenCamera';
+import { Header } from '../../../components/Header';
+import { OpenCamera } from '../../../components/OpenCamera';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
 
 export function RegisterNewRequest() {
   return (

@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import { CardContainer } from '../../components/CardContainer';
-import { Header } from '../../components/Header';
-import { SolicitationCard } from '../../components/SolicitationCard';
-import { SolicitationMock } from '../../components/SolicitationCard/SolicitationMock';
-import { StatusFilter } from '../../components/StatusFilter';
-import { StatusLegend } from '../../components/StatusLegend';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { useAuth } from '../../contexts/auth';
-import { StatusFilterModal } from './StatusFilterModal';
+import { CardContainer } from '../../../components/CardContainer';
+import { Header } from '../../../components/Header';
+import { SolicitationCard } from '../../../components/SolicitationCard';
+import { SolicitationMock } from '../../../components/SolicitationCard/SolicitationMock';
+import { StatusFilter } from '../../../components/StatusFilter';
+import { StatusLegend } from '../../../components/StatusLegend';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { useAuth } from '../../../contexts/auth';
+import { StatusFilterModal } from '../components/StatusFilterModal';
 
 export interface FilterState {
   todas: boolean;
@@ -21,7 +21,7 @@ export interface FilterState {
   [key: string]: boolean;
 }
 
-export function HomeSolicitante() {
+export function Home() {
   const { user } = useAuth();
   const { navigate } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);

@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
 
-import { CustomModal } from '../../components/ui/Modal';
-import { Checkbox } from '../../components/ui/Checkbox';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { FilterState } from './HomeSolicitante';
+import { Checkbox } from '../../../components/ui/Checkbox';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomModal } from '../../../components/ui/Modal';
+import { FilterState } from '../screens/Home';
 
 interface StatusFilterModalProps {
   isOpen: boolean;

@@ -1,8 +1,8 @@
-import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
-import { RegisteredActivities } from '../screens/VisaoControladorManutencao/RegisteredActivities';
-import { Home } from '../screens/VisaoControladorManutencao/Home';
+import { Home } from '../screens/VisaoControladorManutencao/screens/Home';
+import { RegisteredActivities } from '../screens/VisaoControladorManutencao/screens/RegisteredActivities';
 
 const Stack = createStackNavigator();
 

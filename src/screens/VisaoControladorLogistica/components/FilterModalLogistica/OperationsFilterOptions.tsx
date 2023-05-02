@@ -1,5 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { Checkbox } from '../../../../components/ui/Checkbox';
 
