@@ -14,10 +14,10 @@ import { OperationInfoCard } from '../components/OperationInfoCard';
 
 // interfaces
 import { Loading } from '../../../components/Loading';
-import { Activity } from '../components/interfaces/Activity';
+import { Activity } from '../interfaces/Activity';
 
 // mocks
-import { OMMock } from '../../../components/OMCard/OMMock';
+import { OMMock } from '../mock';
 
 const activitiesMock = [
   {

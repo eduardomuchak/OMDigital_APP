@@ -14,7 +14,7 @@ declare global {
       HomeSolicitante: undefined;
       HomeOperador: undefined;
       RegisterNewMaintenanceOrder: undefined;
-      RegisteredActivitiesOperador: undefined;
+      RegisteredActivitiesOperador: { id: number };
       CloseMaintenanceOrder: undefined;
     }
   }

@@ -27,7 +27,7 @@ export namespace Activity {
     paradaReal: string;
     prevFim: string;
     status: string;
-    latitude: string;
-    longitude: string;
+    latitude?: string;
+    longitude?: string;
   }
 }

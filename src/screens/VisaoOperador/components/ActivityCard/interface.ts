@@ -5,6 +5,6 @@ export interface ActivityCardProps {
     startDate: string;
     endDate: string;
     status: string;
-    images: string[] | null;
+    images?: string[] | null;
   };
 }
