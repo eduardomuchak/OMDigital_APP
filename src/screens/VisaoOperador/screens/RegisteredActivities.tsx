@@ -1,11 +1,11 @@
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { Header } from '../../components/Header';
-import { OrderInfoCard } from '../../components/OrderInfoCard';
-import { ActivitiesStatus } from '../../components/ActivitiesStatus';
-import { ActivityCard } from './components/ActivityCard';
-import { CustomButton } from '../../components/ui/CustomButton';
 import { useNavigation } from '@react-navigation/native';
-import { activitiesMock } from './components/ActivityCard/mock';
+import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivitiesStatus } from '../../../components/ActivitiesStatus';
+import { Header } from '../../../components/Header';
+import { OrderInfoCard } from '../../../components/OrderInfoCard';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { ActivityCard } from '../components/ActivityCard';
+import { activitiesMock } from '../components/ActivityCard/mock';
 
 export function RegisteredActivities() {
   const { navigate } = useNavigation();

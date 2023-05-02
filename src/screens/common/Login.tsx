@@ -2,23 +2,27 @@ import { useNavigation } from '@react-navigation/native';
 import { Eye, EyeSlash } from 'phosphor-react-native';
 import { useState } from 'react';
 import { GestureResponderEvent, Image, Text, TouchableOpacity, View } from 'react-native';
-import { CustomButton } from '../components/ui/CustomButton';
-import { Input } from '../components/ui/Input';
+import { CustomButton } from '../../components/ui/CustomButton';
+import { Input } from '../../components/ui/Input';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import circles from '../assets/circles.png';
-import logo from '../assets/logo/logo.png';
-import { ErrorText } from '../components/ui/ErrorText';
-import { useAuth } from '../contexts/auth';
-import { regexCPF } from '../utils/validateCPF';
-import { LoginFormData, loginSchema } from '../validations/LoginScreen';
+import circles from '../../assets/circles.png';
+import logo from '../../assets/logo/logo.png';
+import { ErrorText } from '../../components/ui/ErrorText';
+import { useAuth } from '../../contexts/auth';
+import { regexCPF } from '../../utils/validateCPF';
+import { LoginFormData, loginSchema } from '../../validations/LoginScreen';
 
 export function Login() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const { navigate } = useNavigation();
   const { signIn } = useAuth();
-  const { control, handleSubmit, formState } = useForm<LoginFormData>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
     defaultValues: {
       userCPF: '',
       password: '',
@@ -58,9 +62,6 @@ export function Login() {
         <View className="mb-3">
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 onBlur={onBlur}
@@ -73,15 +74,10 @@ export function Login() {
             )}
             name="userCPF"
           />
-          {formState.errors.userCPF?.message ? (
-            <ErrorText>{formState.errors.userCPF?.message}</ErrorText>
-          ) : null}
+          {errors.userCPF?.message ? <ErrorText>{errors.userCPF?.message}</ErrorText> : null}
         </View>
         <Controller
           control={control}
-          rules={{
-            required: true,
-          }}
           render={({ field: { onChange, onBlur, value } }) => (
             <View className="mb-2">
               <Input
@@ -103,9 +99,7 @@ export function Login() {
                   <Eye size={24} color="#000000" weight="bold" />
                 )}
               </TouchableOpacity>
-              {formState.errors.password?.message ? (
-                <ErrorText>{formState.errors.password?.message}</ErrorText>
-              ) : null}
+              {errors.password?.message ? <ErrorText>{errors.password?.message}</ErrorText> : null}
             </View>
           )}
           name="password"

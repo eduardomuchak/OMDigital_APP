@@ -1,10 +1,9 @@
-import { SafeAreaView, Text, View } from 'react-native';
-import { Header } from '../../components/Header';
-import { Input } from '../../components/ui/Input';
-import { CustomDateTimePicker } from '../../components/ui/CustomDateTimePicker';
 import { useState } from 'react';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { FinishMaintenanceOrderModal } from './components/FinishMaintenanceOrderModal';
+import { SafeAreaView, Text, View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { Input } from '../../../components/ui/Input';
+import { FinishMaintenanceOrderModal } from '../components/FinishMaintenanceOrderModal';
 
 export function CloseMaintenanceOrder() {
   const [counter, setCounter] = useState<string>('');

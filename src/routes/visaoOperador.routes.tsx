@@ -1,9 +1,9 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { RegisterNewActivity } from '../screens/VisaoOperador/RegisterNewActivity';
-import { Home } from '../screens/VisaoOperador/Home';
-import { RegisterNewMaintenanceOrder } from '../screens/VisaoOperador/RegisterNewMaintenanceOrder';
-import { CloseMaintenanceOrder } from '../screens/VisaoOperador/CloseMaintenanceOrder';
-import { RegisteredActivities } from '../screens/VisaoOperador/RegisteredActivities';
+import { CloseMaintenanceOrder } from '../screens/VisaoOperador/screens/CloseMaintenanceOrder';
+import { Home } from '../screens/VisaoOperador/screens/Home';
+import { RegisterNewActivity } from '../screens/VisaoOperador/screens/RegisterNewActivity';
+import { RegisterNewMaintenanceOrder } from '../screens/VisaoOperador/screens/RegisterNewMaintenanceOrder';
+import { RegisteredActivities } from '../screens/VisaoOperador/screens/RegisteredActivities';
 
 const Stack = createStackNavigator();
 

@@ -1,23 +1,23 @@
 // React and React Native
+import { useRoute } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { SafeAreaView, Text } from 'react-native';
-import { useRoute } from '@react-navigation/native';
 
 //components
-import { Header } from '../../components/Header';
-import { FooterRegisteredActivities } from '../../components/FooterRegisteredActivities';
-import { OperationInfoCard } from './components/OperationInfoCard';
-import { ActivitiesStatusLegend } from './components/ActivitiesStatusLegend';
-import { ActivityCard } from './components/ActivityCard';
-import { CardContainer } from './components/ActivityCard/CardContainer';
-import { LocationModal } from './components/LocationModal';
+import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
+import { Header } from '../../../components/Header';
+import { ActivitiesStatusLegend } from '../components/ActivitiesStatusLegend';
+import { ActivityCard } from '../components/ActivityCard';
+import { CardContainer } from '../components/ActivityCard/CardContainer';
+import { LocationModal } from '../components/LocationModal';
+import { OperationInfoCard } from '../components/OperationInfoCard';
 
 // interfaces
-import { Activity } from './interfaces/Activity';
-import { Loading } from '../../components/Loading';
+import { Loading } from '../../../components/Loading';
+import { Activity } from '../components/interfaces/Activity';
 
 // mocks
-import { OMMock } from '../VisaoControladorManutencao/mock';
+import { OMMock } from '../../../components/OMCard/OMMock';
 
 const activitiesMock = [
   {
@@ -107,8 +107,6 @@ export function RegisteredActivities() {
     operacao: operationInfo[0]?.operacao,
     paradaReal: operationInfo[0]?.paradaReal,
     prevFim: operationInfo[0]?.prevFim,
-    latitude: operationInfo[0]?.latitude,
-    longitude: operationInfo[0]?.longitude,
   };
 
   return (
@@ -122,8 +120,10 @@ export function RegisteredActivities() {
         <LocationModal
           onClose={handleCloseLocationModal}
           isModalVisible={isModalVisible}
-          latitude={operationInfoProps.latitude}
-          longitude={operationInfoProps.longitude}
+          latitude="
+        -21.264681596194617"
+          longitude="
+        -44.985687115219225"
         />
       )}
       <Text className="font-poppinsBold text-[18px] px-6 mb-3 mt-4">Atividades:</Text>

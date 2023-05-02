@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { SafeAreaView, ScrollView, View } from 'react-native';
 
-import { Header } from '../../components/Header';
-import { Input } from '../../components/ui/Input';
-import { CustomButton } from '../../components/ui/CustomButton';
-import { CustomDateTimePicker } from '../../components/ui/CustomDateTimePicker';
-import { TextArea } from '../../components/ui/TextArea';
 import { Camera } from 'phosphor-react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Header } from '../../../components/Header';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
 
 export function RegisterNewMaintenanceOrder() {
   const [propertyCode, setPropertyCode] = useState('');

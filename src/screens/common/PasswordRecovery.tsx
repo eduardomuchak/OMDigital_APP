@@ -1,19 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
-import { GoToPreviousScreen } from '../components/GoToPreviousScreen';
-import { CustomButton } from '../components/ui/CustomButton';
-import { Input } from '../components/ui/Input';
+import { GoToPreviousScreen } from '../../components/GoToPreviousScreen';
+import { CustomButton } from '../../components/ui/CustomButton';
+import { Input } from '../../components/ui/Input';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, useForm } from 'react-hook-form';
-import circles from '../assets/circles.png';
-import logo from '../assets/logo/logo.png';
-import { ErrorText } from '../components/ui/ErrorText';
-import { regexCPF } from '../utils/validateCPF';
+import circles from '../../assets/circles.png';
+import logo from '../../assets/logo/logo.png';
+import { ErrorText } from '../../components/ui/ErrorText';
+import { regexCPF } from '../../utils/validateCPF';
 import {
   PasswordRecoveryFormData,
   passwordRecoverySchema,
-} from '../validations/PasswordRecoveryScreen';
+} from '../../validations/PasswordRecoveryScreen';
 
 export function PasswordRecovery() {
   const { navigate } = useNavigation();

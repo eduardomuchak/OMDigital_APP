@@ -1,15 +1,15 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Button, SafeAreaView, Text, View } from 'react-native';
-import { CardContainer } from '../../components/CardContainer';
-import { Header } from '../../components/Header';
-import { OMCard } from '../../components/OMCard';
-import { OMMock } from '../../components/OMCard/OMMock';
-import { OperationsStatus } from '../../components/OperationsStatus';
-import { useAuth } from '../../contexts/auth';
-import { AddNewMaintenanceOrderButton } from './components/AddNewMaintenanceOrderButton';
-import { FilterModal } from './components/FilterModal';
-import { OMMockProps } from './components/FilterModal/interface';
+import { CardContainer } from '../../../components/CardContainer';
+import { Header } from '../../../components/Header';
+import { OMCard } from '../../../components/OMCard';
+import { OMMock } from '../../../components/OMCard/OMMock';
+import { OperationsStatus } from '../../../components/OperationsStatus';
+import { useAuth } from '../../../contexts/auth';
+import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
+import { FilterModal } from '../components/FilterModal';
+import { OMMockProps } from '../components/FilterModal/interface';
 
 export function Home() {
   const [filteredOrders, setFilteredOrders] = useState<OMMockProps[]>(OMMock);
