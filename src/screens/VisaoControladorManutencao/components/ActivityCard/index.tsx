@@ -2,12 +2,11 @@ import { Text, View } from 'react-native';
 
 import { Image } from 'phosphor-react-native';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
-import { Activity } from '../interfaces/Activity';
+import { Activity } from '../../interfaces/Activity';
 
 import clsx from 'clsx';
 
 export function ActivityCard({ activity }: Activity.ActivityCardProps) {
-  console.log(activity);
   return (
     <View className="bg-neutral-100 rounded-xl flex flex-row mb-2">
       <View className="flex-1 p-4 relative">

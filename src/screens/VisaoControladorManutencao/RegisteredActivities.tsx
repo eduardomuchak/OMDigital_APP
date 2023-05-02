@@ -13,11 +13,11 @@ import { CardContainer } from './components/ActivityCard/CardContainer';
 import { LocationModal } from './components/LocationModal';
 
 // interfaces
-import { Activity } from './components/interfaces/Activity';
+import { Activity } from './interfaces/Activity';
 import { Loading } from '../../components/Loading';
 
 // mocks
-import { OMMock } from '../../components/OMCard/OMMock';
+import { OMMock } from '../VisaoControladorManutencao/mock';
 
 const activitiesMock = [
   {
@@ -107,6 +107,8 @@ export function RegisteredActivities() {
     operacao: operationInfo[0]?.operacao,
     paradaReal: operationInfo[0]?.paradaReal,
     prevFim: operationInfo[0]?.prevFim,
+    latitude: operationInfo[0]?.latitude,
+    longitude: operationInfo[0]?.longitude,
   };
 
   return (
@@ -120,10 +122,8 @@ export function RegisteredActivities() {
         <LocationModal
           onClose={handleCloseLocationModal}
           isModalVisible={isModalVisible}
-          latitude="
-        -21.264681596194617"
-          longitude="
-        -44.985687115219225"
+          latitude={operationInfoProps.latitude}
+          longitude={operationInfoProps.longitude}
         />
       )}
       <Text className="font-poppinsBold text-[18px] px-6 mb-3 mt-4">Atividades:</Text>
