@@ -10,7 +10,7 @@ interface OperationInfoCardProps {
     paradaReal: string;
     prevFim: string;
   };
-  onLocationShow: () => void;
+  onLocationShow?: () => void;
 }
 
 export function OperationInfoCard({ operationInfo, onLocationShow }: OperationInfoCardProps) {
@@ -19,12 +19,14 @@ export function OperationInfoCard({ operationInfo, onLocationShow }: OperationIn
       <View className="flex mb-2">
         <Text className="font-poppinsBold text-lg">Placa:</Text>
         <Text className="font-poppinsMedium text-base ">{operationInfo.codigoBem}</Text>
-        <TouchableOpacity
-          className="flex items-center justify-start px-4 absolute top-1 right-0"
-          onPress={onLocationShow}
-        >
-          <MapPin size={30} weight="bold" color="#000000" />
-        </TouchableOpacity>
+        {onLocationShow && (
+          <TouchableOpacity
+            className="flex items-center justify-start px-4 absolute top-1 right-0"
+            onPress={onLocationShow}
+          >
+            <MapPin size={30} weight="bold" color="#000000" />
+          </TouchableOpacity>
+        )}
       </View>
       <View className="flex mb-2">
         <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>

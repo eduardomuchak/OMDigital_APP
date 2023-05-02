@@ -93,10 +93,14 @@ export function Home() {
               }
               key={item.id}
               {...item}
+              onPress={() =>
+                navigate('RegisteredActivitiesOperador', {
+                  id: item.id,
+                })
+              }
             />
           ))}
         </CardContainer>
-        <Button title="Atividades" onPress={() => navigate('RegisteredActivitiesOperador')} />
       </View>
       <AddNewMaintenanceOrderButton />
     </SafeAreaView>

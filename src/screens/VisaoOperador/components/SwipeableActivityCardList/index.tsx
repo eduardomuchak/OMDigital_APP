@@ -12,7 +12,13 @@ import { FinishActivityModal } from '../FinishActivityModal';
 import { PauseActivityModal } from '../PauseActivityModal';
 import { StartActivityModal } from '../StartActivityModal';
 
-export const SwipeableActivityCardList: React.FC = () => {
+import { Activity } from '../../../VisaoControladorManutencao/interfaces/Activity';
+
+interface SwipeableActivityCardListProps {
+  activities: Activity.Activity[];
+}
+
+export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
 
   const screenWidth = Dimensions.get('window').width;
@@ -23,7 +29,7 @@ export const SwipeableActivityCardList: React.FC = () => {
       case 'Concluída':
         return (
           <View className="items-center justify-center">
-            <CheckCircle size={56} color="#3a9b15" weight="bold" />
+            <CheckCircle size={56} color="#3a9b15" weight="bold" /> 
 
             <Text className="font-poppinsMedium text-sm mt-2">Atividade Finalizada!</Text>
           </View>
@@ -90,7 +96,7 @@ export const SwipeableActivityCardList: React.FC = () => {
   return (
     <SwipeListView
       style={{ flex: 1, paddingHorizontal: 24, paddingTop: 12 }}
-      data={activitiesMock}
+      data={activities}
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
       leftOpenValue={halfScreenWidth}
