@@ -1,10 +1,9 @@
 import clsx from 'clsx';
-import { Image, Trash } from 'phosphor-react-native';
-import { Text } from 'react-native';
-import { View } from 'react-native';
+import { Image } from 'phosphor-react-native';
+import { Text, View } from 'react-native';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
-import { ActivityCardProps } from './interface';
 import { DeleteActivityModal } from '../DeleteActivityModal';
+import { ActivityCardProps } from './interface';
 
 export function ActivityCard({ activity }: ActivityCardProps) {
   return (
