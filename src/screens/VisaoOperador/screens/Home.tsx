@@ -35,7 +35,7 @@ export function Home() {
   const { navigate } = useNavigation();
   const { user } = useAuth();
 
-  const [isModalVisible, setIsModalVisible] = useState(true);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
     todas: true,
     abertas: false,
