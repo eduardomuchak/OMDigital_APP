@@ -9,18 +9,6 @@ import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
 import { OMMockProps } from '../FilterModal/interface';
 import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
 
-interface MaintenanceOrderCardProps {
-  id: number;
-  codigoBem: string;
-  ordemManutencao: string;
-  operacao: string;
-  paradaReal: string;
-  prevFim: string;
-  status: string;
-  latitude: string;
-  longitude: string;
-}
-
 interface SwipeableOMCardListProps {
   maintenanceOrders: OMMockProps;
 }

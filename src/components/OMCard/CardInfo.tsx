@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 
 import clsx from 'clsx';
+import { formatISOStringToPTBRDateString } from '../../utils/formatISOStringToPTBRDateString';
 
 interface CardInfoProps {
   isFinishOrCancel?: boolean;
@@ -41,7 +42,7 @@ export function CardInfo(props: CardInfoProps) {
             ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
           })}
         >
-          {props.paradaReal}
+          {formatISOStringToPTBRDateString(props.paradaReal)}
         </Text>
       </View>
       <View className="flex-row justify-between">
@@ -57,7 +58,7 @@ export function CardInfo(props: CardInfoProps) {
             ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
           })}
         >
-          {props.prevFim}
+          {formatISOStringToPTBRDateString(props.prevFim)}
         </Text>
       </View>
     </>
