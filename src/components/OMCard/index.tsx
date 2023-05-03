@@ -1,7 +1,7 @@
-import { View, Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 
-import { CardTitle } from './CardTitle';
 import { CardInfo } from './CardInfo';
+import { CardTitle } from './CardTitle';
 
 import clsx from 'clsx';
 
@@ -19,18 +19,16 @@ interface OMCardProps {
 
 export function OMCard(props: OMCardProps) {
   return (
-    <Pressable className="py-4" onPress={props.onPress}>
+    <Pressable onPress={props.onPress}>
       <View
-        className={clsx('bg-status-green gap-1 px-5 h-44 rounded-xl justify-center', {
+        className={clsx('bg-status-green p-5 rounded-xl justify-center', {
           ['bg-status-red']: props.status === 'Atrasada',
           ['bg-status-yellow']: props.status === 'Aguardando',
           ['bg-status-cancelado border-2 border-status-red']: props.status === 'Cancelada',
           ['bg-status-concluido border-2 border-status-green']: props.status === 'Concluída',
         })}
       >
-        <View className="py-3">
-          <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
-        </View>
+        <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
         <CardInfo
           codigoBem={props.codigoBem}
           ordemManutencao={props.ordemManutencao}

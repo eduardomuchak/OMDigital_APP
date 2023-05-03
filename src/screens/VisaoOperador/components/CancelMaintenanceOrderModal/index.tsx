@@ -1,13 +1,13 @@
-import { Square } from 'phosphor-react-native';
+import { Prohibit } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
-import { FinishMaintenanceOrdemModalProps } from './interface';
+import { CancelMaintenanceOrderModalProps } from './interface';
 
-export function FinishMaintenanceOrderModal({
+export function CancelMaintenanceOrderModal({
   isSwipeableTrigger = false,
-}: FinishMaintenanceOrdemModalProps) {
+}: CancelMaintenanceOrderModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   return (
@@ -17,13 +17,13 @@ export function FinishMaintenanceOrderModal({
       {isSwipeableTrigger ? (
         <View className="gap-1 items-center">
           <TouchableOpacity
-            className="bg-status-green rounded-lg w-11 h-11 flex items-center justify-center"
+            className="bg-status-red rounded-lg w-11 h-11 flex items-center justify-center"
             onPress={() => setIsModalVisible(true)}
             activeOpacity={0.7}
           >
-            <Square size={30} color="#FFFFFF" weight="bold" />
+            <Prohibit size={30} color="#FFFFFF" weight="bold" />
           </TouchableOpacity>
-          <Text className="font-poppinsMedium text-sm">Finalizar</Text>
+          <Text className="font-poppinsMedium text-sm">Cancelar</Text>
         </View>
       ) : (
         <CustomButton variant="finish" onPress={() => setIsModalVisible(true)}>
@@ -34,16 +34,16 @@ export function FinishMaintenanceOrderModal({
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
         <Text className="font-poppinsRegular text-base">
-          Você tem certeza que deseja encerrar a Ordem de Manutenção?
+          Você tem certeza que deseja cancelar esta Ordem de Manutenção?
         </Text>
         <View className="flex flex-row justify-between mt-16">
           <View className="w-[48%]">
-            <CustomButton variant="cancel" onPress={() => setIsModalVisible(false)}>
+            <CustomButton variant="ghost" onPress={() => setIsModalVisible(false)}>
               Cancelar
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton variant="cancel" onPress={() => setIsModalVisible(false)}>
               Confirmar
             </CustomButton>
           </View>

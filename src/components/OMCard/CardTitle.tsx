@@ -1,5 +1,5 @@
-import { Text, View } from 'react-native';
 import { CheckCircle, WarningCircle } from 'phosphor-react-native';
+import { Text, View } from 'react-native';
 
 import clsx from 'clsx';
 
@@ -10,13 +10,13 @@ interface CardTitleProps {
 
 export function CardTitle({ children, status }: CardTitleProps) {
   return (
-    <View className="flex-row items-center gap-1 justify-center -mt-6">
+    <View className="flex-row items-center justify-center mb-2">
       {status === 'Concluída' && (
         <CheckCircle
           color="#046700"
           weight="bold"
           size={18}
-          style={{ marginRight: 5, marginBottom: 3 }}
+          style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
       {status === 'Cancelada' && (
@@ -24,7 +24,7 @@ export function CardTitle({ children, status }: CardTitleProps) {
           color="#B50202"
           weight="bold"
           size={18}
-          style={{ marginRight: 5, marginBottom: 3 }}
+          style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
       <Text
