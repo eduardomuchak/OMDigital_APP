@@ -84,7 +84,6 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
   const renderHiddenItem = ({
     item,
   }: ListRenderItemInfo<SwipeableOMCardListProps['maintenanceOrders']>): JSX.Element => {
-    console.log('item', item);
     return (
       <View
         className={`flex-1 justify-center items-center`}
