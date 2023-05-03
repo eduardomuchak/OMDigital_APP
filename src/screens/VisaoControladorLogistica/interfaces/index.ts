@@ -25,6 +25,11 @@ export namespace Logistica {
     onClose: () => void;
     onConfirm: (pickedStatus: StatusFilterStateOptions, pickedOperation: OperationState[]) => void;
     allStatus: StatusFilterStateOptions;
+    isOperador?: boolean;
+    startPeriod?: Date;
+    endPeriod?: Date;
+    setStartPeriod?: Dispatch<SetStateAction<Date>>;
+    setEndPeriod?: Dispatch<SetStateAction<Date>>;
   }
 
   export interface OperationsFilterOptionsProps {
