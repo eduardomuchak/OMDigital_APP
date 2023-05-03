@@ -1,3 +1,3 @@
-export interface FinishActivityModalProps {
+export interface MaintenanceOrderModalProps {
   isSwipeableTrigger?: boolean;
 }

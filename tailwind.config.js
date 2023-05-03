@@ -38,8 +38,8 @@ module.exports = {
         'status-red': '#B50202',
         'status-yellow': '#FFA500',
         'status-blue': '#12235B',
-        'status-concluido': 'rgba(4, 103, 0, 0.2)',
-        'status-cancelado': 'rgba(181, 2, 2, 0.2)',
+        'status-concluido': '#A2D2A0',
+        'status-cancelado': '#DCBDBD',
         // Cor de fundo com opacidade
         overlay: 'rgba(33, 37, 41, 0.4)',
       },

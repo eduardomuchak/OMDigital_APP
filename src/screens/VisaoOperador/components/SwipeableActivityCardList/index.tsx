@@ -7,7 +7,6 @@ import { ActivitiesStatus } from '../../../../components/ActivitiesStatus';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { ActivityCard } from '../ActivityCard';
 import { ActivityCardProps } from '../ActivityCard/interface';
-import { activitiesMock } from '../ActivityCard/mock';
 import { FinishActivityModal } from '../FinishActivityModal';
 import { PauseActivityModal } from '../PauseActivityModal';
 import { StartActivityModal } from '../StartActivityModal';
@@ -29,7 +28,7 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
       case 'Concluída':
         return (
           <View className="items-center justify-center">
-            <CheckCircle size={56} color="#3a9b15" weight="bold" /> 
+            <CheckCircle size={56} color="#3a9b15" weight="bold" />
 
             <Text className="font-poppinsMedium text-sm mt-2">Atividade Finalizada!</Text>
           </View>
@@ -61,11 +60,16 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
           Adicionar Atividade
         </CustomButton>
       </View>
-      <View className="mb-10">
-        <CustomButton variant="finish" onPress={() => navigate('CloseMaintenanceOrder')}>
-          Finalizar OM
-        </CustomButton>
-      </View>
+      {
+        // If all activities are finished (status === "Concluida"), show the button to close the maintenance order
+        activities.every((activity) => activity.status === 'Concluída') ? (
+          <View className="mb-10">
+            <CustomButton variant="finish" onPress={() => navigate('CloseMaintenanceOrder')}>
+              Finalizar OM
+            </CustomButton>
+          </View>
+        ) : null
+      }
     </>
   );
 
@@ -95,7 +99,7 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
 
   return (
     <SwipeListView
-      style={{ flex: 1, paddingHorizontal: 24, paddingTop: 12 }}
+      style={{ flex: 1, paddingHorizontal: 24, paddingTop: 12, marginBottom: 96 }}
       data={activities}
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
@@ -108,6 +112,7 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
       ListHeaderComponent={listHeaderComponent}
       ListFooterComponent={listFooterComponent}
       ItemSeparatorComponent={() => <View className="h-3" />}
+      showsVerticalScrollIndicator={false}
     />
   );
 };

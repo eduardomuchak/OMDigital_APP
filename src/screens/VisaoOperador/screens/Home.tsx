@@ -1,15 +1,14 @@
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Button, SafeAreaView, Text, View } from 'react-native';
-import { CardContainer } from '../../../components/CardContainer';
+import { SafeAreaView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
-import { OMCard } from '../../../components/OMCard';
 import { OMMock } from '../../../components/OMCard/OMMock';
 import { OperationsStatus } from '../../../components/OperationsStatus';
 import { useAuth } from '../../../contexts/auth';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
 import { FilterModal } from '../components/FilterModal';
 import { OMMockProps } from '../components/FilterModal/interface';
+import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 
 export function Home() {
   const [filteredOrders, setFilteredOrders] = useState<OMMockProps[]>(OMMock);
@@ -69,6 +68,8 @@ export function Home() {
     },
   ]);
 
+  // console.log('filteredOrders', filteredOrders);
+
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
       <Header isHomeScreen title={`Olá, ${user?.user}`} />
@@ -84,24 +85,9 @@ export function Home() {
         />
       </View>
       <OperationsStatus />
-      <View className="flex-1 bg-white">
-        <CardContainer>
-          {filteredOrders.map((item) => (
-            <OMCard
-              isFinishOrCancel={
-                item.status === 'Cancelada' || item.status === 'Concluída' ? true : false
-              }
-              key={item.id}
-              {...item}
-              onPress={() =>
-                navigate('RegisteredActivitiesOperador', {
-                  id: item.id,
-                })
-              }
-            />
-          ))}
-        </CardContainer>
-      </View>
+
+      <SwipeableOMCardList maintenanceOrders={filteredOrders} />
+
       <AddNewMaintenanceOrderButton />
     </SafeAreaView>
   );
