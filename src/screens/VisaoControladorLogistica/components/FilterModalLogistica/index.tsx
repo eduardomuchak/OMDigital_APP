@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { CustomModal } from '../../../../components/ui/Modal';
 import { CustomButton } from '../../../../components/ui/CustomButton';
-import { StatusFilterOptions } from './StatusFilterOptions';
+import { CustomModal } from '../../../../components/ui/Modal';
 import { OperationsFilterOptions } from './OperationsFilterOptions';
+import { StatusFilterOptions } from './StatusFilterOptions';
 
 import { Logistica } from '../../interfaces';
 
@@ -66,25 +66,29 @@ export function FilterModalLogistica({
             setEndPeriod={setEndPeriod!}
           />
         )}
-        <View className="flex-row justify-center gap-5 mt-0.5">
-          <CustomButton
-            onPress={() => {
-              setAllStatus({
-                todas: true,
-                abertas: false,
-                aguardando: false,
-                concluidas: false,
-                canceladas: false,
-              });
-              onClose();
-            }}
-            variant="cancel"
-          >
-            Cancelar
-          </CustomButton>
-          <CustomButton onPress={() => onConfirm(allStatus, operations)} variant="primary">
-            Confirmar
-          </CustomButton>
+        <View className="flex flex-row justify-between mt-4">
+          <View className="w-[48%]">
+            <CustomButton
+              onPress={() => {
+                setAllStatus({
+                  todas: true,
+                  abertas: false,
+                  aguardando: false,
+                  concluidas: false,
+                  canceladas: false,
+                });
+                onClose();
+              }}
+              variant="cancel"
+            >
+              Cancelar
+            </CustomButton>
+          </View>
+          <View className="w-[48%]">
+            <CustomButton onPress={() => onConfirm(allStatus, operations)} variant="primary">
+              Confirmar
+            </CustomButton>
+          </View>
         </View>
       </ScrollView>
     </CustomModal>

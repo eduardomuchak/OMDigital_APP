@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { SafeAreaView, Text, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
 import { Input } from '../../../components/ui/Input';
+import { CloseMaintenanceOrderCardInfo } from '../components/CloseMaintenanceOrderCardInfo';
 import { FinishMaintenanceOrderModal } from '../components/FinishMaintenanceOrderModal';
 
 export function CloseMaintenanceOrder() {
@@ -12,20 +13,7 @@ export function CloseMaintenanceOrder() {
   return (
     <SafeAreaView className="flex-1 flex flex-col bg-white">
       <Header title={'Encerrar Ordem de Manutenção'} />
-      <View className="bg-neutral-100 px-6 py-5 mb-5">
-        <View className="flex mb-2">
-          <Text className="font-poppinsBold text-lg">Encerramento de Solicitação:</Text>
-          <Text className="font-poppinsMedium text-base">OM12345 - O S034567</Text>
-        </View>
-        <View className="flex mb-2">
-          <Text className="font-poppinsBold text-lg">Par. Real:</Text>
-          <Text className="font-poppinsMedium text-base">06/01/2023 - 08h57</Text>
-        </View>
-        <View className="flex">
-          <Text className="font-poppinsBold text-lg">Placa:</Text>
-          <Text className="font-poppinsMedium text-base">GKY-7G22</Text>
-        </View>
-      </View>
+      <CloseMaintenanceOrderCardInfo />
       <View className="px-6">
         <View className="mb-4">
           <Input label="Contador" onChangeText={(text) => setCounter(text)} value={counter} />
