@@ -76,25 +76,30 @@ export function StatusFilterModal({
           checked={allStatus.concluido}
         />
       </View>
-      <View className="flex-row justify-center gap-5 mt-0.5">
-        <CustomButton
-          onPress={() => {
-            changeStatus({
-              todas: true,
-              aguardandoAnalise: false,
-              manutencaoNegada: false,
-              emAtendimento: false,
-              concluido: false,
-            });
-            onClose();
-          }}
-          variant="cancel"
-        >
-          Cancelar
-        </CustomButton>
-        <CustomButton onPress={onConfirm} variant="primary">
-          Confirmar
-        </CustomButton>
+
+      <View className="flex flex-row justify-between mt-4">
+        <View className="w-[48%]">
+          <CustomButton
+            onPress={() => {
+              changeStatus({
+                todas: true,
+                aguardandoAnalise: false,
+                manutencaoNegada: false,
+                emAtendimento: false,
+                concluido: false,
+              });
+              onClose();
+            }}
+            variant="cancel"
+          >
+            Cancelar
+          </CustomButton>
+        </View>
+        <View className="w-[48%]">
+          <CustomButton onPress={onConfirm} variant="primary">
+            Confirmar
+          </CustomButton>
+        </View>
       </View>
     </CustomModal>
   );

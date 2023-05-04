@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import { CardContainer } from '../../../components/CardContainer';
 import { Header } from '../../../components/Header';
 import { SolicitationCard } from '../../../components/SolicitationCard';
 import { SolicitationMock } from '../../../components/SolicitationCard/SolicitationMock';
 import { StatusFilter } from '../../../components/StatusFilter';
 import { StatusLegend } from '../../../components/StatusLegend';
-import { CustomButton } from '../../../components/ui/CustomButton';
 import { useAuth } from '../../../contexts/auth';
 import { StatusFilterModal } from '../components/StatusFilterModal';
 
@@ -23,7 +21,6 @@ export interface FilterState {
 
 export function Home() {
   const { user } = useAuth();
-  const { navigate } = useNavigation();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allStatus, setAllStatus] = useState({
     todas: true,
@@ -69,13 +66,10 @@ export function Home() {
       )}
       <StatusFilter openFilterModal={handleOpenModal} filterTitle="Status - TODAS" />
       <StatusLegend />
-      <CardContainer>
+      <CardContainer renderFooterComponent>
         {filteredSolicitations.map((item) => (
           <SolicitationCard key={item.id} {...item} />
         ))}
-        <CustomButton onPress={() => navigate('RegisterNewRequest')} variant="primary">
-          Relatar Problema
-        </CustomButton>
       </CardContainer>
     </SafeAreaView>
   );
