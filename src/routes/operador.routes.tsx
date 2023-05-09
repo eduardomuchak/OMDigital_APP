@@ -1,5 +1,4 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { CameraScreen } from '../screens/common/Camera';
 import { CloseMaintenanceOrder } from '../screens/operador/screens/CloseMaintenanceOrder';
 import { Home } from '../screens/operador/screens/Home';
 import { RegisterNewActivity } from '../screens/operador/screens/RegisterNewActivity';
@@ -29,6 +28,5 @@ export const OperadorRoutes: React.FC = () => (
       name="RegisteredActivitiesOperador"
       component={RegisteredActivities}
     />
-    <Stack.Screen name="camera" component={CameraScreen} />
   </Stack.Navigator>
 );

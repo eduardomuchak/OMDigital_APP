@@ -1,22 +1,38 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
-import { OpenCamera } from '../../../components/OpenCamera';
-import { PicturesPreview } from '../../../components/PicturesPreview';
+import { ImagePicker } from '../../../components/ImagePicker';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
-import { useNewRequestCameraAttachments } from '../../../contexts/newRequestCameraAttachments';
+import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringToPTBRDateString';
 import {
   RegisterNewRequestFormData,
   registerNewRequestSchema,
 } from '../../../validations/RegisterNewRequestScreen';
 
+export interface AttachmentProps {
+  assetId?: null;
+  base64: string;
+  duration?: null;
+  exif?: null;
+  height: number;
+  rotation?: null;
+  type: string;
+  uri: string;
+  width: number;
+}
+
 export function RegisterNewRequest() {
-  const { attachments, setAttachments } = useNewRequestCameraAttachments();
+  const { goBack } = useNavigation();
+
+  const [attachment, setAttachment] = useState<AttachmentProps>(
+    {} as AttachmentProps,
+  );
   const {
     control,
     handleSubmit,
@@ -31,17 +47,24 @@ export function RegisterNewRequest() {
     resolver: zodResolver(registerNewRequestSchema),
   });
 
-  const onSubmit = (data: RegisterNewRequestFormData) => {
-    console.log('DADOS =>', { ...data, attachments });
-    setAttachments([]);
-    reset();
+  const now = new Date().toISOString();
+
+  const takeImageHandler = (image: AttachmentProps) => {
+    console.log('IMAGE URI =>', image.uri);
+    setAttachment(image);
   };
 
-  useEffect(() => {
-    if (attachments.length) {
-      setAttachments([]);
-    }
-  }, []);
+  const onSubmit = (data: RegisterNewRequestFormData) => {
+    const payload = {
+      ...data,
+      attachment: attachment ? attachment.base64 : null,
+    };
+
+    console.log('DADOS =>', payload);
+    setAttachment({} as AttachmentProps);
+    reset();
+    goBack();
+  };
 
   return (
     <SafeAreaView className="bg-white flex-1">
@@ -49,7 +72,9 @@ export function RegisterNewRequest() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="bg-neutral-100 py-4 px-6">
           <Text className="font-poppinsBold text-lg">Data de Solicitação:</Text>
-          <Text className="font-poppinsMedium text-lg">07/01/2023 - 08h15</Text>
+          <Text className="font-poppinsMedium text-lg">
+            {formatISOStringToPTBRDateString(now)}
+          </Text>
         </View>
         <View className="p-6">
           <View className="mb-4">
@@ -62,7 +87,7 @@ export function RegisterNewRequest() {
                   onChangeText={onChange}
                   value={value}
                   label="Codigo do bem"
-                  placeholder="Digite o Código do Bem"
+                  placeholder="Digite o código do bem"
                   maxLength={30}
                 />
               )}
@@ -82,7 +107,7 @@ export function RegisterNewRequest() {
                   onChangeText={onChange}
                   value={value}
                   label="Contador"
-                  placeholder="Digite o Contador"
+                  placeholder="Digite o contador"
                   maxLength={30}
                 />
               )}
@@ -111,20 +136,12 @@ export function RegisterNewRequest() {
               <ErrorText>{errors.comments?.message}</ErrorText>
             ) : null}
           </View>
+
           <View className="mb-5">
-            {attachments.length > 0 ? (
-              <>
-                <Text className="font-poppinsBold text-sm leading-4 text-neutral-900 mb-2">
-                  ANEXOS
-                </Text>
-                <PicturesPreview
-                  capturedImages={attachments}
-                  showCameraButton
-                />
-              </>
-            ) : (
-              <OpenCamera label="ANEXO (OPCIONAL)" />
-            )}
+            <Text className="font-poppinsBold text-sm leading-4 text-neutral-900 mb-1">
+              ANEXO (OPCIONAL)
+            </Text>
+            <ImagePicker onTakeImage={takeImageHandler} />
           </View>
 
           <CustomButton variant="primary" onPress={handleSubmit(onSubmit)}>
