@@ -28,8 +28,8 @@ export function PicturesPreview({
                 style={{
                   width: width / 6,
                   height: width / 6,
-                  borderColor: 'red',
-                  borderWidth: 1,
+                  // borderColor: 'red',
+                  // borderWidth: 1,
                   borderRadius: 8,
                   marginHorizontal: 2,
                 }}
