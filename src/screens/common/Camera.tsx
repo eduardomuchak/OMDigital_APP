@@ -6,11 +6,11 @@ import {
   CameraRotate,
   Check,
   Image,
-  X,
 } from 'phosphor-react-native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { DeleteAllAttachmentsModal } from '../../components/DeleteAllAttachmentsModal';
 import { Loading } from '../../components/Loading';
 import { PicturesPreview } from '../../components/PicturesPreview';
 import { CustomButton } from '../../components/ui/CustomButton';
@@ -119,18 +119,7 @@ export function CameraScreen() {
               entering={FadeInDown}
               exiting={FadeOutDown}
             >
-              <TouchableOpacity
-                className="bg-alert-red w-12 h-12 rounded-full p-3 mx-auto items-center justify-center"
-                onPress={() => {
-                  goBack();
-                  setTimeout(() => {
-                    setAttachments([]);
-                  }, 1000);
-                }}
-                activeOpacity={0.7}
-              >
-                <X size={28} color="#FFF" weight="bold" />
-              </TouchableOpacity>
+              <DeleteAllAttachmentsModal />
               <TouchableOpacity
                 className="bg-alert-green w-12 h-12 rounded-full p-3 mx-auto items-center justify-center"
                 onPress={() => goBack()}
