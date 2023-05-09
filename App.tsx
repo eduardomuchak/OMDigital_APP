@@ -14,6 +14,7 @@ import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import { Loading } from './src/components/Loading';
 import { AuthProvider } from './src/contexts/auth';
+import { NewRequestCameraProvider } from './src/contexts/newRequestCameraAttachments';
 import Routes from './src/routes';
 
 export default function App() {
@@ -41,7 +42,9 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" />
       <AuthProvider>
-        <Routes />
+        <NewRequestCameraProvider>
+          <Routes />
+        </NewRequestCameraProvider>
       </AuthProvider>
     </NavigationContainer>
   );
