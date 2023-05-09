@@ -1,5 +1,4 @@
 import { createStackNavigator } from '@react-navigation/stack';
-import { CameraScreen } from '../screens/common/Camera';
 import { Login } from '../screens/common/Login';
 import { PasswordRecovery } from '../screens/common/PasswordRecovery';
 
@@ -14,6 +13,5 @@ export const AuthRoutes = () => (
   >
     <Stack.Screen name="Login" component={Login} />
     <Stack.Screen name="PasswordRecovery" component={PasswordRecovery} />
-    <Stack.Screen name="camera" component={CameraScreen} />
   </Stack.Navigator>
 );

@@ -5,19 +5,20 @@ import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import { ActivitiesStatus } from '../../../../components/ActivitiesStatus';
 import { CustomButton } from '../../../../components/ui/CustomButton';
+import { Activity } from '../../../manutencao/interfaces/Activity';
 import { ActivityCard } from '../ActivityCard';
 import { ActivityCardProps } from '../ActivityCard/interface';
 import { FinishActivityModal } from '../FinishActivityModal';
 import { PauseActivityModal } from '../PauseActivityModal';
 import { StartActivityModal } from '../StartActivityModal';
 
-import { Activity } from '../../../VisaoControladorManutencao/interfaces/Activity';
-
 interface SwipeableActivityCardListProps {
   activities: Activity.Activity[];
 }
 
-export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardListProps) => {
+export const SwipeableActivityCardList = ({
+  activities,
+}: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
 
   const screenWidth = Dimensions.get('window').width;
@@ -30,7 +31,9 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
 
-            <Text className="font-poppinsMedium text-sm mt-2">Atividade Finalizada!</Text>
+            <Text className="font-poppinsMedium text-sm mt-2">
+              Atividade Finalizada!
+            </Text>
           </View>
         );
       case 'Em andamento':
@@ -56,7 +59,10 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
   const listFooterComponent = () => (
     <>
       <View className="mt-5 mb-3">
-        <CustomButton variant="primary" onPress={() => navigate('RegisterNewActivity')}>
+        <CustomButton
+          variant="primary"
+          onPress={() => navigate('RegisterNewActivity')}
+        >
           Adicionar Atividade
         </CustomButton>
       </View>
@@ -64,7 +70,10 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
         // If all activities are finished (status === "Concluida"), show the button to close the maintenance order
         activities.every((activity) => activity.status === 'Concluída') ? (
           <View className="mb-10">
-            <CustomButton variant="finish" onPress={() => navigate('CloseMaintenanceOrder')}>
+            <CustomButton
+              variant="finish"
+              onPress={() => navigate('CloseMaintenanceOrder')}
+            >
               Finalizar OM
             </CustomButton>
           </View>
@@ -73,7 +82,9 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
     </>
   );
 
-  const renderItem = ({ item }: ListRenderItemInfo<ActivityCardProps['activity']>): JSX.Element => {
+  const renderItem = ({
+    item,
+  }: ListRenderItemInfo<ActivityCardProps['activity']>): JSX.Element => {
     return <ActivityCard activity={item} />;
   };
 
@@ -99,7 +110,12 @@ export const SwipeableActivityCardList = ({ activities }: SwipeableActivityCardL
 
   return (
     <SwipeListView
-      style={{ flex: 1, paddingHorizontal: 24, paddingTop: 12, marginBottom: 96 }}
+      style={{
+        flex: 1,
+        paddingHorizontal: 24,
+        paddingTop: 12,
+        marginBottom: 96,
+      }}
       data={activities}
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}
