@@ -32,12 +32,6 @@
     },
     "plugins": [
       [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
-        }
-      ],
-      [
         "expo-build-properties",
         {
           "android": {
@@ -56,6 +50,12 @@
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow app to use your location."
+        }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ]
     ],

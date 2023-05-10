@@ -64,7 +64,10 @@ export function Home() {
           changeStatus={setAllStatus}
         />
       )}
-      <StatusFilter openFilterModal={handleOpenModal} filterTitle="Status - TODAS" />
+      <StatusFilter
+        openFilterModal={handleOpenModal}
+        filterTitle="Status - TODAS"
+      />
       <StatusLegend />
       <CardContainer renderFooterComponent>
         {filteredSolicitations.map((item) => (
