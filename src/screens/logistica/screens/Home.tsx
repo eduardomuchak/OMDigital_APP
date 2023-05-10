@@ -1,34 +1,35 @@
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { useContext, useState } from "react";
+import { SafeAreaView } from "react-native";
 
-import { CardContainer } from '../../../components/CardContainer';
-import { FooterModal } from '../../../components/FooterModal';
-import { Header } from '../../../components/Header';
-import { OMCard } from '../../../components/OMCard';
-import { OMMock } from '../../../components/OMCard/OMMock';
-import { StatusFilter } from '../../../components/StatusFilter';
-import { FilterModalLogistica } from '../components/FilterModalLogistica';
+import { CardContainer } from "../../../components/CardContainer";
+import { FooterModal } from "../../../components/FooterModal";
+import { Header } from "../../../components/Header";
+import { OMCard } from "../../../components/OMCard";
+import { StatusFilter } from "../../../components/StatusFilter";
+import { FilterModalLogistica } from "../components/FilterModalLogistica";
 
-import { OperationsStatus } from '../../../components/OperationsStatus';
-import { useAuth } from '../../../contexts/auth';
-import { Logistica } from '../interfaces';
+import { OperationsStatus } from "../../../components/OperationsStatus";
+import { useAuth } from "../../../contexts/auth";
+import { OMContext } from "../../../contexts/om-context";
+import { Logistica } from "../interfaces";
 
 const operationsMock = [
   {
     id: 1,
-    name: 'Operação 1',
+    name: "Operação 1",
   },
   {
     id: 2,
-    name: 'Operação 2',
+    name: "Operação 2",
   },
   {
     id: 3,
-    name: 'Operação 3',
+    name: "Operação 3",
   },
 ];
 
 export function Home() {
+  const { om } = useContext(OMContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
     todas: true,
@@ -64,13 +65,13 @@ export function Home() {
     setIsModalVisible(false);
   }
 
-  const filteredOperations = OMMock.filter((item) => {
+  const filteredOperations = om.filter((item) => {
     const matchStatus =
       status.todas ||
-      (item.status === 'Aberta' && status.abertas) ||
-      (item.status === 'Aguardando' && status.aguardando) ||
-      (item.status === 'Concluída' && status.concluidas) ||
-      (item.status === 'Cancelada' && status.canceladas);
+      (item.status === "Aberta" && status.abertas) ||
+      (item.status === "Aguardando" && status.aguardando) ||
+      (item.status === "Concluída" && status.concluidas) ||
+      (item.status === "Cancelada" && status.canceladas);
     const matchOperacao = operations.every(
       (operation) => operation.showAll || operation[item.operacao]
     );
@@ -89,13 +90,18 @@ export function Home() {
           allStatus={status}
         />
       )}
-      <StatusFilter openFilterModal={handleOpenModal} filterTitle="Operação - TODAS" />
+      <StatusFilter
+        openFilterModal={handleOpenModal}
+        filterTitle="Operação - TODAS"
+      />
       <OperationsStatus />
       <CardContainer>
         {filteredOperations.map((item) => (
           <OMCard
             isFinishOrCancel={
-              item.status === 'Cancelada' || item.status === 'Concluída' ? true : false
+              item.status === "Cancelada" || item.status === "Concluída"
+                ? true
+                : false
             }
             key={item.id}
             {...item}

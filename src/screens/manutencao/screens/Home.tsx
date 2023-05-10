@@ -1,37 +1,39 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { useContext, useState } from "react";
+import { SafeAreaView } from "react-native";
 
-import { CardContainer } from '../../../components/CardContainer';
-import { FooterModal } from '../../../components/FooterModal';
-import { Header } from '../../../components/Header';
-import { OMCard } from '../../../components/OMCard';
-import { OMMock } from '../../../components/OMCard/OMMock';
-import { StatusFilter } from '../../../components/StatusFilter';
+import { CardContainer } from "../../../components/CardContainer";
+import { FooterModal } from "../../../components/FooterModal";
+import { Header } from "../../../components/Header";
+import { OMCard } from "../../../components/OMCard";
+import { OMMock } from "../../../components/OMCard/OMMock";
+import { StatusFilter } from "../../../components/StatusFilter";
 
-import { OperationsStatus } from '../../../components/OperationsStatus';
-import { useAuth } from '../../../contexts/auth';
-import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
-import { Logistica } from '../../logistica/interfaces';
+import { OperationsStatus } from "../../../components/OperationsStatus";
+import { useAuth } from "../../../contexts/auth";
+import { OMContext } from "../../../contexts/om-context";
+import { FilterModalLogistica } from "../../logistica/components/FilterModalLogistica";
+import { Logistica } from "../../logistica/interfaces";
 
 const operationsMock = [
   {
     id: 1,
-    name: 'Operação 1',
+    name: "Operação 1",
   },
   {
     id: 2,
-    name: 'Operação 2',
+    name: "Operação 2",
   },
   {
     id: 3,
-    name: 'Operação 3',
+    name: "Operação 3",
   },
 ];
 
 export function Home() {
   const { navigate } = useNavigation();
   const { user } = useAuth();
+  const { om } = useContext(OMContext);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState({
@@ -47,7 +49,7 @@ export function Home() {
         showAll: true,
         [operation.name]: false,
       };
-    }),
+    })
   );
 
   function handleOpenModal() {
@@ -60,22 +62,22 @@ export function Home() {
 
   function handleFilterOptionsConfirmation(
     pickedStatus: Logistica.StatusFilterStateOptions,
-    pickedOperations: Logistica.OperationState[],
+    pickedOperations: Logistica.OperationState[]
   ) {
     setStatus(pickedStatus);
     setOperations(pickedOperations);
     setIsModalVisible(false);
   }
 
-  const filteredOperations = OMMock.filter((item) => {
+  const filteredOperations = om.filter((item) => {
     const matchStatus =
       status.todas ||
-      (item.status === 'Aberta' && status.abertas) ||
-      (item.status === 'Aguardando' && status.aguardando) ||
-      (item.status === 'Concluída' && status.concluidas) ||
-      (item.status === 'Cancelada' && status.canceladas);
+      (item.status === "Aberta" && status.abertas) ||
+      (item.status === "Aguardando" && status.aguardando) ||
+      (item.status === "Concluída" && status.concluidas) ||
+      (item.status === "Cancelada" && status.canceladas);
     const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao],
+      (operation) => operation.showAll || operation[item.operacao]
     );
 
     return matchStatus && matchOperacao;
@@ -101,12 +103,12 @@ export function Home() {
         {filteredOperations.map((item) => (
           <OMCard
             isFinishOrCancel={
-              item.status === 'Cancelada' || item.status === 'Concluída'
+              item.status === "Cancelada" || item.status === "Concluída"
                 ? true
                 : false
             }
             key={item.id}
-            onPress={() => navigate('RegisteredActivities', { id: item.id })}
+            onPress={() => navigate("RegisteredActivities", { id: item.id })}
             {...item}
           />
         ))}
