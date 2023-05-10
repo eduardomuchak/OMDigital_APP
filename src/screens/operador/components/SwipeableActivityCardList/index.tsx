@@ -1,19 +1,19 @@
-import { useNavigation } from '@react-navigation/native';
-import { CheckCircle } from 'phosphor-react-native';
-import React from 'react';
-import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
-import { SwipeListView } from 'react-native-swipe-list-view';
-import { ActivitiesStatus } from '../../../../components/ActivitiesStatus';
-import { CustomButton } from '../../../../components/ui/CustomButton';
-import { Activity } from '../../../manutencao/interfaces/Activity';
-import { ActivityCard } from '../ActivityCard';
-import { ActivityCardProps } from '../ActivityCard/interface';
-import { FinishActivityModal } from '../FinishActivityModal';
-import { PauseActivityModal } from '../PauseActivityModal';
-import { StartActivityModal } from '../StartActivityModal';
+import { useNavigation } from "@react-navigation/native";
+import { CheckCircle } from "phosphor-react-native";
+import React from "react";
+import { Dimensions, ListRenderItemInfo, Text, View } from "react-native";
+import { SwipeListView } from "react-native-swipe-list-view";
+import { ActivitiesStatus } from "../../../../components/ActivitiesStatus";
+import { CustomButton } from "../../../../components/ui/CustomButton";
+import { ActivityCard } from "../ActivityCard";
+import { FinishActivityModal } from "../FinishActivityModal";
+import { PauseActivityModal } from "../PauseActivityModal";
+import { StartActivityModal } from "../StartActivityModal";
+
+import { OM } from "../../../../interfaces/om-context.interface";
 
 interface SwipeableActivityCardListProps {
-  activities: Activity.Activity[];
+  activities: OM.Activity[];
 }
 
 export const SwipeableActivityCardList = ({
@@ -21,12 +21,12 @@ export const SwipeableActivityCardList = ({
 }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
 
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
-  const HandleStatus = ({ activity }: ActivityCardProps) => {
+  const HandleStatus = ({ activity }: OM.ActivityProps) => {
     switch (activity.status) {
-      case 'Concluída':
+      case "Concluída":
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -36,7 +36,7 @@ export const SwipeableActivityCardList = ({
             </Text>
           </View>
         );
-      case 'Em andamento':
+      case "Em andamento":
         return (
           <View className="flex flex-row">
             <PauseActivityModal />
@@ -61,18 +61,18 @@ export const SwipeableActivityCardList = ({
       <View className="mt-5 mb-3">
         <CustomButton
           variant="primary"
-          onPress={() => navigate('RegisterNewActivity')}
+          onPress={() => navigate("RegisterNewActivity")}
         >
           Adicionar Atividade
         </CustomButton>
       </View>
       {
         // If all activities are finished (status === "Concluida"), show the button to close the maintenance order
-        activities.every((activity) => activity.status === 'Concluída') ? (
+        activities.every((activity) => activity.status === "Concluída") ? (
           <View className="mb-10">
             <CustomButton
               variant="finish"
-              onPress={() => navigate('CloseMaintenanceOrder')}
+              onPress={() => navigate("CloseMaintenanceOrder")}
             >
               Finalizar OM
             </CustomButton>
@@ -84,13 +84,13 @@ export const SwipeableActivityCardList = ({
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<ActivityCardProps['activity']>): JSX.Element => {
+  }: ListRenderItemInfo<OM.ActivityProps["activity"]>): JSX.Element => {
     return <ActivityCard activity={item} />;
   };
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<ActivityCardProps['activity']>): JSX.Element => (
+  }: ListRenderItemInfo<OM.ActivityProps["activity"]>): JSX.Element => (
     <View
       className={`flex-1 justify-center items-center`}
       style={{

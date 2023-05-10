@@ -1,54 +1,21 @@
 // React and React Native
-import { useRoute } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
-import { SafeAreaView, Text } from 'react-native';
+import { useRoute } from "@react-navigation/native";
+import { useContext, useState } from "react";
+import { SafeAreaView, Text } from "react-native";
 
 //components
-import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
-import { Header } from '../../../components/Header';
-import { ActivitiesStatusLegend } from '../components/ActivitiesStatusLegend';
-import { ActivityCard } from '../components/ActivityCard';
-import { CardContainer } from '../components/ActivityCard/CardContainer';
-import { LocationModal } from '../components/LocationModal';
-import { OperationInfoCard } from '../components/OperationInfoCard';
+import { FooterRegisteredActivities } from "../../../components/FooterRegisteredActivities";
+import { Header } from "../../../components/Header";
+import { ActivitiesStatusLegend } from "../components/ActivitiesStatusLegend";
+import { ActivityCard } from "../components/ActivityCard";
+import { CardContainer } from "../components/ActivityCard/CardContainer";
+import { LocationModal } from "../components/LocationModal";
+import { OperationInfoCard } from "../components/OperationInfoCard";
 
-// interfaces
-import { Loading } from '../../../components/Loading';
-import { Activity } from '../interfaces/Activity';
-
-// mocks
-import { OMMock } from '../mock';
-
-const activitiesMock = [
-  {
-    id: 1,
-    name: 'Troca de óleo',
-    startDate: '2021-08-01T00:00:00.000Z',
-    endDate: '2021-08-01T00:00:00.000Z',
-    status: 'Concluída',
-    images: ['image1', 'image2', 'image3'],
-  },
-  {
-    id: 2,
-    name: 'Troca da lona de freio',
-    startDate: '2021-08-01T00:00:00.000Z',
-    endDate: '2021-08-01T00:00:00.000Z',
-    status: 'Em andamento',
-  },
-  {
-    id: 3,
-    name: 'Verificar o óleo da caixa de marcha',
-    startDate: '2021-08-01T00:00:00.000Z',
-    endDate: '2021-08-01T00:00:00.000Z',
-    status: 'Atrasada',
-    // acrescentar array de imagens
-  },
-];
+import { OMContext } from "../../../contexts/om-context";
 
 export function RegisteredActivities() {
-  const [activities, setActivities] = useState<Activity.Activity[]>([]);
-  const [operationInfo, setOperationInfo] = useState<Activity.OperationInfo[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { om } = useContext(OMContext);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   function handleOpenLocationModal() {
@@ -63,55 +30,26 @@ export function RegisteredActivities() {
   const route = useRoute();
   const { id } = route.params as { id?: number };
 
-  // uses the id to call the API and get the activities
-  function mockFetchActivities(id: number): Promise<Activity.Activity[]> {
-    return new Promise((resolve) => {
-      const filteredActivity = activitiesMock.filter((activity) => activity.id === id);
-      resolve(filteredActivity);
-    });
-  }
-
-  function MockFetchOperationInfo(id: number): Promise<Activity.OperationInfo[]> {
-    return new Promise((resolve) => {
-      const filteredOperation = OMMock.filter((operation) => operation.id === id);
-      resolve(filteredOperation);
-    });
-  }
-
-  useEffect(() => {
-    async function fetchActivity() {
-      setLoading(true);
-      const data = await mockFetchActivities(id as number);
-      setActivities(data);
-      setLoading(false);
-    }
-
-    async function fetchOperationInfo() {
-      setLoading(true);
-      const data = await MockFetchOperationInfo(id as number);
-      setOperationInfo(data);
-      setLoading(false);
-    }
-
-    fetchActivity();
-    fetchOperationInfo();
-  }, [id]);
-
-  if (loading) {
-    return <Loading />;
-  }
+  const filteredOM = om.filter((om) => om.id === id);
+  const activities = filteredOM[0]?.atividades;
 
   const operationInfoProps = {
-    codigoBem: operationInfo[0]?.codigoBem,
-    ordemManutencao: operationInfo[0]?.ordemManutencao,
-    operacao: operationInfo[0]?.operacao,
-    paradaReal: operationInfo[0]?.paradaReal,
-    prevFim: operationInfo[0]?.prevFim,
+    codigoBem: filteredOM[0]?.codigoBem,
+    ordemManutencao: filteredOM[0]?.ordemManutencao,
+    operacao: filteredOM[0]?.operacao,
+    paradaReal: filteredOM[0]?.paradaReal,
+    prevFim: filteredOM[0]?.prevFim,
+  };
+
+  const footerInfo = {
+    localDeManutencao: filteredOM[0].localDeManutencao!,
+    controlador: filteredOM[0].controlador!,
+    telefone: filteredOM[0].telefone!,
   };
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header title={'Atividades Lançadas'} />
+      <Header title={"Atividades Lançadas"} />
       <OperationInfoCard
         operationInfo={operationInfoProps}
         onLocationShow={handleOpenLocationModal}
@@ -120,20 +58,20 @@ export function RegisteredActivities() {
         <LocationModal
           onClose={handleCloseLocationModal}
           isModalVisible={isModalVisible}
-          latitude="
-        -21.264681596194617"
-          longitude="
-        -44.985687115219225"
+          latitude={filteredOM[0]?.latitude!}
+          longitude={filteredOM[0]?.longitude!}
         />
       )}
-      <Text className="font-poppinsBold text-[18px] px-6 mb-3 mt-4">Atividades:</Text>
+      <Text className="font-poppinsBold text-[18px] px-6 mb-3 mt-4">
+        Atividades:
+      </Text>
       <ActivitiesStatusLegend />
       <CardContainer>
         {activities.map((activity) => (
           <ActivityCard activity={activity} key={activity.id} />
         ))}
       </CardContainer>
-      <FooterRegisteredActivities />
+      <FooterRegisteredActivities controladorInfo={footerInfo} />
     </SafeAreaView>
   );
 }

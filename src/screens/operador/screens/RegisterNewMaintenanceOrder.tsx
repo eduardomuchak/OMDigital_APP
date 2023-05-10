@@ -1,25 +1,29 @@
-import { useState } from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { useState } from "react";
+import { SafeAreaView, ScrollView, View } from "react-native";
 
-import { useNavigation } from '@react-navigation/native';
-import { Camera } from 'phosphor-react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Header } from '../../../components/Header';
-import { CustomButton } from '../../../components/ui/CustomButton';
-import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
-import { Input } from '../../../components/ui/Input';
-import { TextArea } from '../../../components/ui/TextArea';
+import { useNavigation } from "@react-navigation/native";
+import { Camera } from "phosphor-react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { Header } from "../../../components/Header";
+import { CustomButton } from "../../../components/ui/CustomButton";
+import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
+import { Input } from "../../../components/ui/Input";
+import { TextArea } from "../../../components/ui/TextArea";
+import { useGetLocation } from "../../../hooks/useGetLocation";
 
 export function RegisterNewMaintenanceOrder() {
-  const [propertyCode, setPropertyCode] = useState('');
-  const [counter, setCounter] = useState('');
-  const [reason, setReason] = useState('');
+  const { location } = useGetLocation();
+  const [propertyCode, setPropertyCode] = useState("");
+  const [counter, setCounter] = useState("");
+  const [reason, setReason] = useState("");
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(
-    new Date(new Date().setHours(new Date().getHours() + 1)),
+    new Date(new Date().setHours(new Date().getHours() + 1))
   );
 
   const { navigate } = useNavigation();
+
+  console.log(location);
 
   return (
     <SafeAreaView className="flex flex-col flex-1 bg-white">
@@ -37,10 +41,10 @@ export function RegisterNewMaintenanceOrder() {
             <View className="flex justify-end items-center">
               <TouchableOpacity
                 className={
-                  'h-14 w-14 flex items-center justify-center rounded-lg'
+                  "h-14 w-14 flex items-center justify-center rounded-lg"
                 }
                 activeOpacity={0.7}
-                onPress={() => navigate('camera')}
+                onPress={() => navigate("camera")}
               >
                 <Camera size={30} color="#1D2F99" weight="bold" />
               </TouchableOpacity>

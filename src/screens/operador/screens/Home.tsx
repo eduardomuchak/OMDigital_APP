@@ -1,38 +1,36 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { useContext, useState } from "react";
+import { SafeAreaView } from "react-native";
 
-import { Header } from '../../../components/Header';
-import { OMMock } from '../../../components/OMCard/OMMock';
-import { OperationsStatus } from '../../../components/OperationsStatus';
-import { StatusFilter } from '../../../components/StatusFilter';
-import { useAuth } from '../../../contexts/auth';
-import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
-import { Logistica } from '../../logistica/interfaces';
-import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
-import { OMMockProps } from '../components/FilterModal/interface';
-import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
+import { Header } from "../../../components/Header";
+import { OMMock } from "../../../components/OMCard/OMMock";
+import { OperationsStatus } from "../../../components/OperationsStatus";
+import { StatusFilter } from "../../../components/StatusFilter";
+import { useAuth } from "../../../contexts/auth";
+import { OMContext } from "../../../contexts/om-context";
+import { FilterModalLogistica } from "../../logistica/components/FilterModalLogistica";
+import { Logistica } from "../../logistica/interfaces";
+import { AddNewMaintenanceOrderButton } from "../components/AddNewMaintenanceOrderButton";
+import { SwipeableOMCardList } from "../components/SwipeableOMCardList";
 
 const operationsMock = [
   {
     id: 1,
-    name: 'Operação 1',
+    name: "Operação 1",
   },
   {
     id: 2,
-    name: 'Operação 2',
+    name: "Operação 2",
   },
   {
     id: 3,
-    name: 'Operação 3',
+    name: "Operação 3",
   },
 ];
 
 export function Home() {
-  const [orders, _setOrders] = useState<OMMockProps[]>(OMMock);
+  const { om } = useContext(OMContext);
   const [startPeriod, setStartPeriod] = useState(new Date());
   const [endPeriod, setEndPeriod] = useState(new Date());
-  const { navigate } = useNavigation();
   const { user } = useAuth();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -49,7 +47,7 @@ export function Home() {
         showAll: true,
         [operation.name]: false,
       };
-    }),
+    })
   );
 
   function handleOpenModal() {
@@ -62,22 +60,22 @@ export function Home() {
 
   function handleFilterOptionsConfirmation(
     pickedStatus: Logistica.StatusFilterStateOptions,
-    pickedOperations: Logistica.OperationState[],
+    pickedOperations: Logistica.OperationState[]
   ) {
     setStatus(pickedStatus);
     setOperations(pickedOperations);
     setIsModalVisible(false);
   }
 
-  const filteredOperations = orders.filter((item) => {
+  const filteredOperations = om.filter((item) => {
     const matchStatus =
       status.todas ||
-      (item.status === 'Aberta' && status.abertas) ||
-      (item.status === 'Aguardando' && status.aguardando) ||
-      (item.status === 'Concluída' && status.concluidas) ||
-      (item.status === 'Cancelada' && status.canceladas);
+      (item.status === "Aberta" && status.abertas) ||
+      (item.status === "Aguardando" && status.aguardando) ||
+      (item.status === "Concluída" && status.concluidas) ||
+      (item.status === "Cancelada" && status.canceladas);
     const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao],
+      (operation) => operation.showAll || operation[item.operacao]
     );
 
     // const matchPeriod =
