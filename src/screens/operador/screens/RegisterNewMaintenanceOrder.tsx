@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Header } from '../../../components/Header';
 import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
@@ -22,7 +22,7 @@ export function RegisterNewMaintenanceOrder() {
 
   return (
     <>
-      <SafeAreaView className="flex flex-col flex-1 bg-white">
+      <View className="flex flex-col flex-1 bg-white">
         <Header title="Cadastrar Ordem de Manutenção" />
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -76,7 +76,7 @@ export function RegisterNewMaintenanceOrder() {
           </View>
           <View className="h-96 mb-20"></View>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </>
   );
 }

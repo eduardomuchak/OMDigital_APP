@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SafeAreaView, ScrollView, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Header } from '../../../components/Header';
 import { OrderInfoCard } from '../../../components/OrderInfoCard';
@@ -13,11 +13,11 @@ export function RegisterNewActivity() {
   const [note, setNote] = useState('');
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(
-    new Date(new Date().setHours(new Date().getHours() + 1))
+    new Date(new Date().setHours(new Date().getHours() + 1)),
   );
 
   return (
-    <SafeAreaView className="flex flex-col flex-1 bg-white">
+    <View className="flex flex-col flex-1 bg-white">
       <Header title="Adicionar nova atividade" />
       <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1">
         <OrderInfoCard />
@@ -47,13 +47,17 @@ export function RegisterNewActivity() {
             />
           </View>
           <View className="mb-4">
-            <TextArea label="Observações" onChangeText={(text) => setNote(text)} value={note} />
+            <TextArea
+              label="Observações"
+              onChangeText={(text) => setNote(text)}
+              value={note}
+            />
           </View>
           <View className="">
             <CustomButton variant="primary">Cadastrar</CustomButton>
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

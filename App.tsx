@@ -18,7 +18,7 @@ import Routes from './src/routes';
 
 export default function App() {
   async function SetBackgroundColor() {
-    await SystemUI.setBackgroundColorAsync('#1D2F99');
+    await SystemUI.setBackgroundColorAsync('#FFF');
   }
   const [fontsLoaded] = useFonts({
     Poppins_300Light,

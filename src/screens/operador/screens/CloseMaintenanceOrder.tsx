@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SafeAreaView, View } from 'react-native';
+import { View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
 import { Input } from '../../../components/ui/Input';
@@ -11,12 +11,16 @@ export function CloseMaintenanceOrder() {
   const [endDate, setEndDate] = useState<Date>(new Date());
 
   return (
-    <SafeAreaView className="flex-1 flex flex-col bg-white">
+    <View className="flex-1 flex flex-col bg-white">
       <Header title={'Encerrar Ordem de Manutenção'} />
       <CloseMaintenanceOrderCardInfo />
       <View className="px-6">
         <View className="mb-4">
-          <Input label="Contador" onChangeText={(text) => setCounter(text)} value={counter} />
+          <Input
+            label="Contador"
+            onChangeText={(text) => setCounter(text)}
+            value={counter}
+          />
         </View>
         <View className="mb-7">
           <CustomDateTimePicker
@@ -28,6 +32,6 @@ export function CloseMaintenanceOrder() {
         </View>
         <FinishMaintenanceOrderModal />
       </View>
-    </SafeAreaView>
+    </View>
   );
 }

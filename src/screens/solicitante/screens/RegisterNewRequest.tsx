@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
 import { CustomButton } from '../../../components/ui/CustomButton';
@@ -67,7 +67,7 @@ export function RegisterNewRequest() {
   };
 
   return (
-    <SafeAreaView className="bg-white flex-1">
+    <View className="bg-white flex-1">
       <Header title="Abertura de Solicitação" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View className="bg-neutral-100 py-4 px-6">
@@ -149,6 +149,6 @@ export function RegisterNewRequest() {
           </CustomButton>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
