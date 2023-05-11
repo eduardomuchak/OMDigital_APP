@@ -1,12 +1,12 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { SafeAreaView } from "react-native";
+import { useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { View } from 'react-native';
 
-import { Header } from "../../../components/Header";
+import { Header } from '../../../components/Header';
 
-import { OMContext } from "../../../contexts/om-context";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
-import { SwipeableActivityCardList } from "../components/SwipeableActivityCardList";
+import { OMContext } from '../../../contexts/om-context';
+import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
+import { SwipeableActivityCardList } from '../components/SwipeableActivityCardList';
 
 export function RegisteredActivities() {
   const { om } = useContext(OMContext);
@@ -25,10 +25,10 @@ export function RegisteredActivities() {
   };
 
   return (
-    <SafeAreaView className="flex flex-col flex-1 bg-white">
-      <Header title={"Atividades Lançadas"} />
+    <View className="flex flex-col flex-1 bg-white">
+      <Header title={'Atividades Lançadas'} />
       <OperationInfoCard operationInfo={operationInfoProps} />
       <SwipeableActivityCardList activities={activities} />
-    </SafeAreaView>
+    </View>
   );
 }

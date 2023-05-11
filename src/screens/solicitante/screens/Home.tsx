@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { SafeAreaView } from 'react-native';
+import { View } from 'react-native';
 
 import { CardContainer } from '../../../components/CardContainer';
 import { Header } from '../../../components/Header';
@@ -52,7 +52,7 @@ export function Home() {
   });
 
   return (
-    <SafeAreaView className="flex flex-col flex-1 bg-white">
+    <View className="flex flex-col flex-1 bg-white">
       <Header isHomeScreen title={`Olá, ${user?.user}`} />
 
       {isModalVisible && (
@@ -74,6 +74,6 @@ export function Home() {
           <SolicitationCard key={item.id} {...item} />
         ))}
       </CardContainer>
-    </SafeAreaView>
+    </View>
   );
 }

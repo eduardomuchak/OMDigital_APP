@@ -1,7 +1,5 @@
-import { MMKV } from 'react-native-mmkv';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
 import { Alert } from 'react-native';
 import { LoginFormData } from '../validations/LoginScreen';
 import { SignInWithCredentials } from './mock';
@@ -21,8 +19,6 @@ interface AuthContextData {
   signOut(): void;
 }
 
-const storage = new MMKV({ id: 'auth' });
-
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -38,57 +34,47 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (data) {
-      const user = data;
-      const accessToken = data.session;
-
-      storage.set('user', JSON.stringify(user));
-      storage.set('token', accessToken);
+      await AsyncStorage.setItem('@Auth:user', JSON.stringify(data));
+      await AsyncStorage.setItem('@Auth:token', data.session);
+      setUser(data);
     }
 
     if (error) {
       Alert.alert(error.message);
     }
-    setIsLoading(false);
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 100);
   }
 
   async function signOut() {
     setIsLoading(true);
-    storage.delete('user');
-    storage.delete('token');
+    await AsyncStorage.removeItem('@Auth:user');
+    await AsyncStorage.removeItem('@Auth:token');
     setUser(null);
     setTimeout(() => {
       setIsLoading(false);
     }, 100);
   }
 
-  function loadStorageData() {
-    const storagedUser = storage.getString('user');
-    const storagedToken = storage.getString('token');
-    // storage.clearAll();
+  async function loadStorageData() {
+    try {
+      const storagedUser = await AsyncStorage.getItem('@Auth:user');
+      const storagedToken = await AsyncStorage.getItem('@Auth:token');
 
-    if (storagedUser && storagedToken) {
-      setUser(JSON.parse(storagedUser));
-      setToken(storagedToken);
+      if (storagedUser && storagedToken) {
+        setUser(JSON.parse(storagedUser));
+        setToken(storagedToken);
+      }
+    } catch (error) {
+      console.log('Error loading storage data:', error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }
 
   useEffect(() => {
     loadStorageData();
-    const listener = storage.addOnValueChangedListener((changedKey) => {
-      const newValue = storage.getString(changedKey);
-      // console.log(`The value of ${changedKey} changed to ${newValue}`);
-
-      if (changedKey === 'user') {
-        if (!newValue) return setUser(null);
-        setUser(JSON.parse(newValue));
-      }
-      if (changedKey === 'token') {
-        if (!newValue) return setToken(null);
-        setToken(newValue);
-      }
-    });
-    return () => listener.remove();
   }, []);
 
   return (
