@@ -1,5 +1,5 @@
-import { Picker } from '@react-native-picker/picker';
-import { Text, View } from 'react-native';
+import { Picker } from "@react-native-picker/picker";
+import { Text, View } from "react-native";
 
 interface SelectProps {
   label: string;
@@ -11,13 +11,15 @@ interface SelectProps {
 export function Select({ label, selected, setSelected, options }: SelectProps) {
   return (
     <>
-      <Text className="font-poppinsBold text-sm leading-4 text-neutral-900">{label}</Text>
-      <View className="bg-neutral-100 px-5 py-2 rounded-lg h-14 relative">
+      <Text className="font-poppinsBold text-sm leading-4 text-neutral-900">
+        {label}
+      </Text>
+      <View className="relative h-14 rounded-lg bg-neutral-100 px-5 py-2">
         <Picker
           selectedValue={selected}
           onValueChange={(itemValue) => setSelected(itemValue)}
           style={{
-            position: 'absolute',
+            position: "absolute",
             left: 6,
             right: 0,
             top: 0,
@@ -32,10 +34,10 @@ export function Select({ label, selected, setSelected, options }: SelectProps) {
                 label={option}
                 value={option}
                 style={{
-                  fontFamily: 'Poppins_600SemiBold',
+                  fontFamily: "Poppins_600SemiBold",
                   fontSize: 14,
                   lineHeight: 24,
-                  color: '#212529',
+                  color: "#212529",
                 }}
               />
             ))

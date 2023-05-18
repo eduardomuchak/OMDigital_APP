@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 
-import { FlatList, View } from 'react-native';
+import { Dimensions, FlatList, View } from 'react-native';
 import { CustomButton } from '../ui/CustomButton';
 
 interface CardContainerProps {
@@ -9,7 +9,10 @@ interface CardContainerProps {
   renderFooterComponent?: boolean;
 }
 
-export function CardContainer({ children, renderFooterComponent = false }: CardContainerProps) {
+export function CardContainer({
+  children,
+  renderFooterComponent = false,
+}: CardContainerProps) {
   const { getState, navigate } = useNavigation();
   const { routes } = getState();
 
@@ -25,6 +28,8 @@ export function CardContainer({ children, renderFooterComponent = false }: CardC
     );
   };
 
+  const screenWidth = Dimensions.get('window').width;
+
   return (
     <View style={{ flex: 1 }}>
       <FlatList
@@ -32,7 +37,10 @@ export function CardContainer({ children, renderFooterComponent = false }: CardC
         contentContainerStyle={
           routes[0].name === 'HomeOperador'
             ? { paddingBottom: 96, paddingHorizontal: 24, paddingTop: 4 }
-            : { paddingHorizontal: 24, paddingBottom: 24 }
+            : {
+                paddingHorizontal: screenWidth > 500 ? 200 : 24,
+                paddingBottom: 24,
+              }
         }
         showsVerticalScrollIndicator={false}
         data={children}

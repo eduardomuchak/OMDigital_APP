@@ -1,21 +1,21 @@
 {
-  // ESLint:
-  "editor.renderLineHighlight": "gutter",
-  "emmet.syntaxProfiles": {
-    "javascript": "jsx"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.organizeImports": true,
-    "source.fixAll.stylelint": true
-  },
-  // Prettier:
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "prettier.singleQuote": true,
-  "prettier.trailingComma": "all",
+  // // ESLint:
+  // "editor.renderLineHighlight": "gutter",
+  // "emmet.syntaxProfiles": {
+  //   "javascript": "jsx"
+  // },
+  // "editor.codeActionsOnSave": {
+  //   "source.fixAll.eslint": true,
+  //   "source.organizeImports": true,
+  //   "source.fixAll.stylelint": true
+  // },
+  // // Prettier:
+  // "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // "[javascript]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode"
+  // },
+  // "prettier.singleQuote": true,
+  // "prettier.trailingComma": "all",
   // InlineFold:
   "inlineFold.regex": "(class|className)=[`'{\"]([^`'\"}]{30,})[`'\"}]",
   "inlineFold.regexFlags": "g",

@@ -1,8 +1,8 @@
-import { Play } from 'phosphor-react-native';
-import { useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { CustomButton } from '../ui/CustomButton';
-import { CustomModal } from '../ui/Modal';
+import { Play } from "phosphor-react-native";
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
+import { CustomButton } from "../ui/CustomButton";
+import { CustomModal } from "../ui/Modal";
 
 export function CameraPermissionModal() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -10,9 +10,9 @@ export function CameraPermissionModal() {
   return (
     <>
       {/* Modal Trigger */}
-      <View className="gap-1 items-center">
+      <View className="items-center gap-1">
         <TouchableOpacity
-          className="bg-status-green rounded-lg w-11 h-11 flex items-center justify-center"
+          className="flex h-11 w-11 items-center justify-center rounded-lg bg-status-green"
           onPress={() => setIsModalVisible(true)}
           activeOpacity={0.7}
         >
@@ -28,7 +28,7 @@ export function CameraPermissionModal() {
         <Text className="font-poppinsRegular text-base">
           Você deseja conceder acesso à câmera?
         </Text>
-        <View className="flex flex-row justify-between mt-16">
+        <View className="mt-16 flex flex-row justify-between">
           <View className="w-[48%]">
             <CustomButton
               variant="cancel"

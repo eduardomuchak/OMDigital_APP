@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction } from 'react';
-import { Text, View } from 'react-native';
+import { Dispatch, SetStateAction } from "react";
+import { Text, View } from "react-native";
 
-import { CustomDateTimePicker } from '../../../../components/ui/CustomDateTimePicker';
+import { CustomDateTimePicker } from "../../../../components/ui/CustomDateTimePicker";
 
 interface DateFilterOptionsProps {
   startPeriod: Date;
@@ -18,7 +18,9 @@ export function DateFilterOptions({
 }: DateFilterOptionsProps) {
   return (
     <View className="mb-3 mt-3">
-      <Text className="font-poppinsBold text-base mb-3">Selecione o período:</Text>
+      <Text className="mb-3 font-poppinsBold text-base">
+        Selecione o período:
+      </Text>
       <View className="mb-2">
         <CustomDateTimePicker
           label="De"

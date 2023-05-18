@@ -1,6 +1,6 @@
-import { ArrowLeft } from 'phosphor-react-native';
-import { CustomButton } from '../ui/CustomButton';
-import { useNavigation } from '@react-navigation/native';
+import { ArrowLeft } from "phosphor-react-native";
+import { CustomButton } from "../ui/CustomButton";
+import { useNavigation } from "@react-navigation/native";
 
 export function GoToPreviousScreen() {
   const { goBack } = useNavigation();

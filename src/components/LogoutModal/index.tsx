@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native';
-import { CustomModal } from '../ui/Modal';
-import { CustomButton } from '../ui/CustomButton';
-import { useState } from 'react';
-import { useAuth } from '../../contexts/auth';
-import { SignOut } from 'phosphor-react-native';
+import { Text, View } from "react-native";
+import { CustomModal } from "../ui/Modal";
+import { CustomButton } from "../ui/CustomButton";
+import { useState } from "react";
+import { useAuth } from "../../contexts/auth";
+import { SignOut } from "phosphor-react-native";
 
 export function LogoutModal() {
   const { signOut } = useAuth();
@@ -12,16 +12,25 @@ export function LogoutModal() {
   return (
     <>
       {/* Modal Trigger */}
-      <CustomButton variant="ghost" onPress={() => setIsModalVisible(true)} activeOpacity={0.7}>
+      <CustomButton
+        variant="ghost"
+        onPress={() => setIsModalVisible(true)}
+        activeOpacity={0.7}
+      >
         <SignOut size={24} color="#FFFFFF" weight="bold" />
       </CustomButton>
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
-        <Text className="font-poppinsRegular text-base">Você deseja sair da sua conta?</Text>
-        <View className="flex flex-row justify-between mt-16">
+        <Text className="font-poppinsRegular text-base">
+          Você deseja sair da sua conta?
+        </Text>
+        <View className="mt-16 flex flex-row justify-between">
           <View className="w-[48%]">
-            <CustomButton variant="ghost" onPress={() => setIsModalVisible(false)}>
+            <CustomButton
+              variant="ghost"
+              onPress={() => setIsModalVisible(false)}
+            >
               Cancelar
             </CustomButton>
           </View>

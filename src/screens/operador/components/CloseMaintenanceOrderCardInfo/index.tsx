@@ -1,16 +1,20 @@
-import { Text, View } from 'react-native';
-import { CloseMaintenanceOrderCardInfoProps } from './interface';
+import { Text, View } from "react-native";
+import { CloseMaintenanceOrderCardInfoProps } from "./interface";
 
 export function CloseMaintenanceOrderCardInfo({
   maintenanceOrder,
 }: CloseMaintenanceOrderCardInfoProps) {
   return (
-    <View className="bg-neutral-100 px-6 py-5 mb-5">
-      <View className="flex mb-2">
-        <Text className="font-poppinsBold text-lg">Encerramento de Solicitação:</Text>
-        <Text className="font-poppinsMedium text-base">OM12345 - O S034567</Text>
+    <View className="mb-5 bg-neutral-100 px-6 py-5">
+      <View className="mb-2 flex">
+        <Text className="font-poppinsBold text-lg">
+          Encerramento de Solicitação:
+        </Text>
+        <Text className="font-poppinsMedium text-base">
+          OM12345 - O S034567
+        </Text>
       </View>
-      <View className="flex mb-2">
+      <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Par. Real:</Text>
         <Text className="font-poppinsMedium text-base">06/01/2023 - 08h57</Text>
       </View>

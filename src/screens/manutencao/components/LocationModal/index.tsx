@@ -1,7 +1,7 @@
-import { Text, View } from 'react-native';
+import { Text, View } from "react-native";
 
-import { CustomModal } from '../../../../components/ui/Modal';
-import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from "../../../../components/ui/Modal";
+import { CustomButton } from "../../../../components/ui/CustomButton";
 
 interface LocationModalProps {
   isModalVisible: boolean;
@@ -21,7 +21,7 @@ export function LocationModal({
       <Text className="font-poppinsBold text-base">
         Você deseja visualizar a localização no mapa?
       </Text>
-      <View className="mt-4 mb-5">
+      <View className="mb-5 mt-4">
         <View>
           <Text className="font-poppinsBold text-base">Latitude:</Text>
           <Text className="font-poppinsMedium text-base">{latitude}</Text>

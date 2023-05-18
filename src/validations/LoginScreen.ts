@@ -13,7 +13,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(3, {
-      message: 'Senha deve conter no mínimo 3 dígitos',
+      message: 'Senha deve conter no mínimo 3 caracteres',
     })
     .max(20)
     .nonempty('Campo obrigatório'),

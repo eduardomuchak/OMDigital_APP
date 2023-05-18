@@ -3,25 +3,29 @@ import { Text, View } from 'react-native';
 
 export function StatusLegend() {
   return (
-    <View className="flex flex-col px-6 items-center justify-center pb-2">
-      <View className="flex flex-row flex-wrap items-center justify-center mb-1">
-        <View className="flex flex-row items-center mr-4">
-          <View className="w-2 h-2 bg-status-blue rounded-full" />
-          <Text className="text-sm font-poppinsRegular text-neutral-900 ml-2">Em atendimento</Text>
+    <View className="flex flex-col items-center justify-center px-6 pb-2">
+      <View className="mb-1 flex flex-row flex-wrap items-center justify-center space-x-4">
+        <View className="flex flex-row items-center space-x-2">
+          <View className="h-2 w-2 rounded-full bg-status-blue" />
+          <Text className="font-poppinsRegular text-sm text-neutral-900">
+            Em atendimento
+          </Text>
         </View>
-        <View className="flex flex-row items-center">
-          <View className="w-2 h-2 bg-status-yellow rounded-full" />
-          <Text className="text-sm font-poppinsRegular text-neutral-900 ml-2">
+        <View className="flex flex-row items-center space-x-2">
+          <View className="h-2 w-2 rounded-full bg-status-yellow" />
+          <Text className="font-poppinsRegular text-sm text-neutral-900">
             Aguardando Análise
           </Text>
         </View>
-        <View className="flex flex-row items-center mr-4">
-          <View className="w-2 h-2 bg-status-green rounded-full" />
-          <Text className="text-sm font-poppinsRegular text-neutral-900 ml-2">Concluído</Text>
+        <View className="flex flex-row items-center space-x-2">
+          <View className="h-2 w-2 rounded-full bg-status-green" />
+          <Text className="font-poppinsRegular text-sm text-neutral-900">
+            Concluído
+          </Text>
         </View>
-        <View className="flex flex-row items-center">
-          <View className="w-2 h-2 bg-status-red rounded-full" />
-          <Text className="text-sm font-poppinsRegular text-neutral-900 ml-2">
+        <View className="flex flex-row items-center space-x-2">
+          <View className="h-2 w-2 rounded-full bg-status-red" />
+          <Text className="font-poppinsRegular text-sm text-neutral-900">
             Manutenção Negada
           </Text>
         </View>

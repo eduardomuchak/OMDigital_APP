@@ -1,7 +1,9 @@
+import clsx from 'clsx';
+
 import { Modal, View } from 'react-native';
 import { CloseModal } from './CloseModal';
+
 import { IModal } from './interface';
-import clsx from 'clsx';
 
 export function CustomModal({
   children,
@@ -20,9 +22,12 @@ export function CustomModal({
     >
       <View className="flex-1 bg-overlay">
         <View
-          className={clsx('rounded-xl bg-white mx-6 my-auto h-fit relative', {
-            ['px-5 py-6']: defaultPadding,
-          })}
+          className={clsx(
+            'relative mx-auto my-auto h-fit max-w-xl rounded-xl bg-white',
+            {
+              ['px-5 py-6']: defaultPadding,
+            },
+          )}
         >
           {showCloseButton ? (
             <View className={'z-50'}>

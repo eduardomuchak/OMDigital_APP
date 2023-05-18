@@ -1,7 +1,7 @@
-import { Text, View } from 'react-native';
-import { useState } from 'react';
-import { CustomButton } from '../../../../components/ui/CustomButton';
-import { CustomModal } from '../../../../components/ui/Modal';
+import { Text, View } from "react-native";
+import { useState } from "react";
+import { CustomButton } from "../../../../components/ui/CustomButton";
+import { CustomModal } from "../../../../components/ui/Modal";
 
 export function WarningModal({ children }: { children: JSX.Element }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -9,19 +9,26 @@ export function WarningModal({ children }: { children: JSX.Element }) {
   return (
     <>
       {/* Modal Trigger */}
-      <CustomButton variant="ghost" onPress={() => setIsModalVisible(true)} activeOpacity={0.7}>
+      <CustomButton
+        variant="ghost"
+        onPress={() => setIsModalVisible(true)}
+        activeOpacity={0.7}
+      >
         {children}
       </CustomButton>
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
         <Text className="font-poppinsRegular text-base">
-          Esta Ordem de Manutenção (OM) foi aberta por outro usuário. Apontar as suas atividades na
-          mesma OM?
+          Esta Ordem de Manutenção (OM) foi aberta por outro usuário. Apontar as
+          suas atividades na mesma OM?
         </Text>
-        <View className="flex flex-row justify-between mt-16">
+        <View className="mt-16 flex flex-row justify-between">
           <View className="w-[48%]">
-            <CustomButton variant="ghost" onPress={() => setIsModalVisible(false)}>
+            <CustomButton
+              variant="ghost"
+              onPress={() => setIsModalVisible(false)}
+            >
               Cancelar
             </CustomButton>
           </View>

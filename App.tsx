@@ -7,18 +7,18 @@ import {
   Poppins_800ExtraBold,
   Poppins_900Black,
   useFonts,
-} from '@expo-google-fonts/poppins';
-import { NavigationContainer } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
-import * as SystemUI from 'expo-system-ui';
-import React, { useEffect } from 'react';
-import { Loading } from './src/components/Loading';
-import { AuthProvider } from './src/contexts/auth';
-import Routes from './src/routes';
+} from "@expo-google-fonts/poppins";
+import { NavigationContainer } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
+import React, { useEffect } from "react";
+import { Loading } from "./src/components/Loading";
+import { AuthProvider } from "./src/contexts/auth";
+import Routes from "./src/routes";
 
 export default function App() {
   async function SetBackgroundColor() {
-    await SystemUI.setBackgroundColorAsync('#FFF');
+    await SystemUI.setBackgroundColorAsync("#FFF");
   }
   const [fontsLoaded] = useFonts({
     Poppins_300Light,
