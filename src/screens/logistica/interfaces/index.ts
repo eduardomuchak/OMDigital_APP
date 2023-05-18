@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
 
 export namespace Logistica {
   export interface StatusFilterStateOptions {
@@ -23,7 +23,10 @@ export namespace Logistica {
   export interface FilterModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (pickedStatus: StatusFilterStateOptions, pickedOperation: OperationState[]) => void;
+    onConfirm: (
+      pickedStatus: StatusFilterStateOptions,
+      pickedOperation: OperationState[]
+    ) => void;
     allStatus: StatusFilterStateOptions;
     isOperador?: boolean;
     startPeriod?: Date;

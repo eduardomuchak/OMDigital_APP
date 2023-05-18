@@ -26,7 +26,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
 
-            <Text className="font-poppinsMedium text-sm mt-2 text-center">
+            <Text className="mt-2 text-center font-poppinsMedium text-sm">
               Ordem de Manutenção Finalizada!
             </Text>
           </View>
@@ -36,7 +36,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
           <View className="items-center justify-center">
             <WarningCircle size={56} color="#B50202" weight="bold" />
 
-            <Text className="font-poppinsMedium text-sm mt-2 text-center">
+            <Text className="mt-2 text-center font-poppinsMedium text-sm">
               Ordem de Manutenção Cancelada!
             </Text>
           </View>
@@ -54,10 +54,16 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<SwipeableOMCardListProps['maintenanceOrders']>): JSX.Element => {
+  }: ListRenderItemInfo<
+    SwipeableOMCardListProps['maintenanceOrders']
+  >): JSX.Element => {
     return (
       <OMCard
-        isFinishOrCancel={item.status === 'Cancelada' || item.status === 'Concluída' ? true : false}
+        isFinishOrCancel={
+          item.status === 'Cancelada' || item.status === 'Concluída'
+            ? true
+            : false
+        }
         key={item.id}
         {...item}
         onPress={() =>
@@ -71,10 +77,12 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<SwipeableOMCardListProps['maintenanceOrders']>): JSX.Element => {
+  }: ListRenderItemInfo<
+    SwipeableOMCardListProps['maintenanceOrders']
+  >): JSX.Element => {
     return (
       <View
-        className={`flex-1 justify-center items-center`}
+        className={`flex-1 items-center justify-center `}
         style={{
           width: halfScreenWidth,
         }}
@@ -86,7 +94,15 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   return (
     <SwipeListView
-      style={{ paddingHorizontal: 24, paddingTop: 12, paddingBottom: 96 }}
+      style={{
+        paddingHorizontal: screenWidth > 500 ? 0 : 24,
+        paddingTop: 12,
+        paddingBottom: 96,
+        width: '100%',
+        maxWidth: 500,
+        display: 'flex',
+        alignSelf: 'center',
+      }}
       data={maintenanceOrders}
       renderItem={renderItem}
       renderHiddenItem={renderHiddenItem}

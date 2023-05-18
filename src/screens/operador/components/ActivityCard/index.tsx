@@ -8,33 +8,33 @@ import { OM } from "../../../../interfaces/om-context.interface";
 
 export function ActivityCard({ activity }: OM.ActivityProps) {
   return (
-    <View className="bg-neutral-100 rounded-xl flex flex-row">
-      <View className="flex-1 p-4 relative">
+    <View className="flex flex-row rounded-xl bg-neutral-100">
+      <View className="relative flex-1 p-4">
         {activity.images ? (
-          <View className="flex items-center justify-start px-4 absolute top-4 right-0">
+          <View className="absolute right-0 top-4 flex items-center justify-start px-4">
             <Image size={24} weight="bold" color="#000000" />
           </View>
         ) : null}
-        <View className="flex flex-row justify-between mr-8">
-          <View className="flex flex-row items-start mb-3">
+        <View className="mr-8 flex flex-row justify-between">
+          <View className="mb-3 flex flex-row items-start">
             <View
-              className={clsx("w-2 h-2 rounded-full mr-2 mt-2", {
+              className={clsx("mr-2 mt-2 h-2 w-2 rounded-full", {
                 "bg-status-green": activity.status === "Concluída",
                 "bg-status-yellow": activity.status === "Em andamento",
                 "bg-status-red": activity.status === "Atrasada",
                 "bg-status-blue": activity.status === "Não iniciada",
               })}
             />
-            <Text className="text-base font-poppinsBold text-neutral-900">
+            <Text className="font-poppinsBold text-base text-neutral-900">
               {activity.descricao}
             </Text>
           </View>
         </View>
         <View className="flex flex-col items-start">
-          <Text className="text-base font-poppinsBold text-neutral-900">
+          <Text className="font-poppinsBold text-base text-neutral-900">
             Previsão:
           </Text>
-          <Text className="text-sm font-poppinsMedium text-neutral-900">
+          <Text className="font-poppinsMedium text-sm text-neutral-900">
             {`${formatISOStringToPTBRDateString(
               activity.dataInicioPrevista
             )} às ${formatISOStringToPTBRDateString(activity.dataFimPrevista)}`}

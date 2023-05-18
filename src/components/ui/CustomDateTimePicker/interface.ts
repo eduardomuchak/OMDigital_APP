@@ -1,4 +1,4 @@
-type Mode = 'date' | 'time' | 'datetime';
+type Mode = "date" | "time" | "datetime";
 
 export interface CustomDateTimePickerProps {
   label: string;

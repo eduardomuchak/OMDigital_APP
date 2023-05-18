@@ -31,7 +31,7 @@ export const SwipeableActivityCardList = ({
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
 
-            <Text className="font-poppinsMedium text-sm mt-2">
+            <Text className="mt-2 font-poppinsMedium text-sm">
               Atividade Finalizada!
             </Text>
           </View>
@@ -58,7 +58,7 @@ export const SwipeableActivityCardList = ({
 
   const listFooterComponent = () => (
     <>
-      <View className="mt-5 mb-3">
+      <View className="mb-3 mt-5">
         <CustomButton
           variant="primary"
           onPress={() => navigate("RegisterNewActivity")}
@@ -92,7 +92,7 @@ export const SwipeableActivityCardList = ({
     item,
   }: ListRenderItemInfo<OM.ActivityProps["activity"]>): JSX.Element => (
     <View
-      className={`flex-1 justify-center items-center`}
+      className={`flex-1 items-center justify-center`}
       style={{
         width: halfScreenWidth,
       }}

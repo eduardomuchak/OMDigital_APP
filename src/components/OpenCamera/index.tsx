@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
-import { Camera } from 'phosphor-react-native';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+import { Camera } from "phosphor-react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export interface Props {
   label: string;
@@ -24,13 +24,13 @@ export function OpenCamera({ label, required }: Props) {
       </View>
       <TouchableOpacity
         activeOpacity={0.7}
-        className="bg-neutral-100 h-32 rounded-lg m-0 font-poppinsSemibold flex items-center justify-center"
+        className="m-0 flex h-32 items-center justify-center rounded-lg bg-neutral-100 font-poppinsSemibold"
         style={{
           borderWidth: 2,
-          borderColor: '#E5E7EB',
-          borderStyle: 'dashed',
+          borderColor: "#E5E7EB",
+          borderStyle: "dashed",
         }}
-        onPress={() => navigate('camera')}
+        onPress={() => navigate("camera")}
       >
         <Camera size={30} color="#1D2F99" weight="bold" />
       </TouchableOpacity>

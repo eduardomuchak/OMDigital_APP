@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { View } from 'react-native';
+import { useState } from "react";
+import { View } from "react-native";
 
-import { CardContainer } from '../../../components/CardContainer';
-import { Header } from '../../../components/Header';
-import { SolicitationCard } from '../../../components/SolicitationCard';
-import { SolicitationMock } from '../../../components/SolicitationCard/SolicitationMock';
-import { StatusFilter } from '../../../components/StatusFilter';
-import { StatusLegend } from '../../../components/StatusLegend';
-import { useAuth } from '../../../contexts/auth';
-import { StatusFilterModal } from '../components/StatusFilterModal';
+import { CardContainer } from "../../../components/CardContainer";
+import { Header } from "../../../components/Header";
+import { SolicitationCard } from "../../../components/SolicitationCard";
+import { SolicitationMock } from "../../../components/SolicitationCard/SolicitationMock";
+import { StatusFilter } from "../../../components/StatusFilter";
+import { StatusLegend } from "../../../components/StatusLegend";
+import { useAuth } from "../../../contexts/auth";
+import { StatusFilterModal } from "../components/StatusFilterModal";
 
 export interface FilterState {
   todas: boolean;
@@ -43,16 +43,16 @@ export function Home() {
       return SolicitationMock;
     } else {
       return (
-        (allStatus.aguardandoAnalise && item.status === 'Aguardando Análise') ||
-        (allStatus.manutencaoNegada && item.status === 'Manutenção Negada') ||
-        (allStatus.emAtendimento && item.status === 'Em Atendimento') ||
-        (allStatus.concluido && item.status === 'Concluído')
+        (allStatus.aguardandoAnalise && item.status === "Aguardando Análise") ||
+        (allStatus.manutencaoNegada && item.status === "Manutenção Negada") ||
+        (allStatus.emAtendimento && item.status === "Em Atendimento") ||
+        (allStatus.concluido && item.status === "Concluído")
       );
     }
   });
 
   return (
-    <View className="flex flex-col flex-1 bg-white">
+    <View className="flex flex-1 flex-col bg-white">
       <Header isHomeScreen title={`Olá, ${user?.user}`} />
 
       {isModalVisible && (

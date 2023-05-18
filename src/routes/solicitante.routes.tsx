@@ -1,7 +1,7 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
-import { Home } from '../screens/solicitante/screens/Home';
-import { RegisterNewRequest } from '../screens/solicitante/screens/RegisterNewRequest';
+import { createStackNavigator } from "@react-navigation/stack";
+import React from "react";
+import { Home } from "../screens/solicitante/screens/Home";
+import { RegisterNewRequest } from "../screens/solicitante/screens/RegisterNewRequest";
 
 const Stack = createStackNavigator();
 

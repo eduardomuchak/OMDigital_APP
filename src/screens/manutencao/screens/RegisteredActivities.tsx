@@ -1,18 +1,18 @@
 // React and React Native
-import { useRoute } from '@react-navigation/native';
-import { useContext, useState } from 'react';
-import { Text, View } from 'react-native';
+import { useRoute } from "@react-navigation/native";
+import { useContext, useState } from "react";
+import { Text, View } from "react-native";
 
 //components
-import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
-import { Header } from '../../../components/Header';
-import { ActivitiesStatusLegend } from '../components/ActivitiesStatusLegend';
-import { ActivityCard } from '../components/ActivityCard';
-import { CardContainer } from '../components/ActivityCard/CardContainer';
-import { LocationModal } from '../components/LocationModal';
-import { OperationInfoCard } from '../components/OperationInfoCard';
+import { FooterRegisteredActivities } from "../../../components/FooterRegisteredActivities";
+import { Header } from "../../../components/Header";
+import { ActivitiesStatusLegend } from "../components/ActivitiesStatusLegend";
+import { ActivityCard } from "../components/ActivityCard";
+import { CardContainer } from "../components/ActivityCard/CardContainer";
+import { LocationModal } from "../components/LocationModal";
+import { OperationInfoCard } from "../components/OperationInfoCard";
 
-import { OMContext } from '../../../contexts/om-context';
+import { OMContext } from "../../../contexts/om-context";
 
 export function RegisteredActivities() {
   const { om } = useContext(OMContext);
@@ -48,8 +48,8 @@ export function RegisteredActivities() {
   };
 
   return (
-    <View className="flex flex-col flex-1 bg-white">
-      <Header title={'Atividades Lançadas'} />
+    <View className="flex flex-1 flex-col bg-white">
+      <Header title={"Atividades Lançadas"} />
       <OperationInfoCard
         operationInfo={operationInfoProps}
         onLocationShow={handleOpenLocationModal}
@@ -62,7 +62,7 @@ export function RegisteredActivities() {
           longitude={filteredOM[0]?.longitude!}
         />
       )}
-      <Text className="font-poppinsBold text-[18px] px-6 mb-3 mt-4">
+      <Text className="mb-3 mt-4 px-6 font-poppinsBold text-[18px]">
         Atividades:
       </Text>
       <ActivitiesStatusLegend />

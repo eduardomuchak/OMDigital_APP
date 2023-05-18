@@ -45,7 +45,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         status: "Não iniciada",
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
-      }
+      },
     ],
   },
   {

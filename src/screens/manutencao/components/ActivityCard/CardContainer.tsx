@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { View, FlatList } from 'react-native';
+import { View, FlatList } from "react-native";
 
 interface CardContainerProps {
   children: React.ReactNode[];

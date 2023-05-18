@@ -19,14 +19,19 @@ interface OMCardProps {
 
 export function OMCard(props: OMCardProps) {
   return (
-    <Pressable onPress={props.onPress}>
+    <Pressable onPress={props.onPress} className="items-center">
       <View
-        className={clsx('bg-status-green p-5 rounded-xl justify-center', {
-          ['bg-status-red']: props.status === 'Atrasada',
-          ['bg-status-yellow']: props.status === 'Aguardando',
-          ['bg-status-cancelado border-2 border-status-red']: props.status === 'Cancelada',
-          ['bg-status-concluido border-2 border-status-green']: props.status === 'Concluída',
-        })}
+        className={clsx(
+          'w-full max-w-lg justify-center rounded-xl bg-status-green p-5',
+          {
+            ['bg-status-red']: props.status === 'Atrasada',
+            ['bg-status-yellow']: props.status === 'Aguardando',
+            ['border-2 border-status-red bg-status-cancelado']:
+              props.status === 'Cancelada',
+            ['border-2 border-status-green bg-status-concluido']:
+              props.status === 'Concluída',
+          },
+        )}
       >
         <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
         <CardInfo

@@ -84,7 +84,7 @@ export function Home() {
   });
 
   return (
-    <View className="flex flex-col flex-1 bg-white">
+    <View className="flex flex-1 flex-col bg-white">
       <Header isHomeScreen title={`Olá, ${user?.user}`} />
       {isModalVisible && (
         <FilterModalLogistica
@@ -104,7 +104,6 @@ export function Home() {
         filterTitle="Operação - TODAS"
       />
       <OperationsStatus />
-
       <SwipeableOMCardList maintenanceOrders={filteredOperations} />
 
       <AddNewMaintenanceOrderButton />

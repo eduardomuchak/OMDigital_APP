@@ -1,14 +1,19 @@
-import { ScrollView, TouchableOpacity, View } from 'react-native';
-import { useState } from 'react';
-import { Text } from 'react-native';
-import { CustomModal } from '../../../../components/ui/Modal';
-import { Funnel } from 'phosphor-react-native';
-import { CustomButton } from '../../../../components/ui/CustomButton';
-import { Checkbox } from '../../../../components/ui/Checkbox';
-import { CustomDateTimePicker } from '../../../../components/ui/CustomDateTimePicker';
-import { CheckboxProps, FilterModalProps } from './interface';
+import { ScrollView, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { Text } from "react-native";
+import { CustomModal } from "../../../../components/ui/Modal";
+import { Funnel } from "phosphor-react-native";
+import { CustomButton } from "../../../../components/ui/CustomButton";
+import { Checkbox } from "../../../../components/ui/Checkbox";
+import { CustomDateTimePicker } from "../../../../components/ui/CustomDateTimePicker";
+import { CheckboxProps, FilterModalProps } from "./interface";
 
-export function FilterModal({ status, operations, period, filtered }: FilterModalProps) {
+export function FilterModal({
+  status,
+  operations,
+  period,
+  filtered,
+}: FilterModalProps) {
   const { allStatus, setAllStatus } = status;
   const { allOperations, setAllOperations } = operations;
   const { startPeriod, setStartPeriod, endPeriod, setEndPeriod } = period;
@@ -34,7 +39,7 @@ export function FilterModal({ status, operations, period, filtered }: FilterModa
     }
 
     // Update state
-    if (id.startsWith('status')) {
+    if (id.startsWith("status")) {
       setAllStatus([...list]);
     } else {
       setAllOperations([...list]);
@@ -63,15 +68,18 @@ export function FilterModal({ status, operations, period, filtered }: FilterModa
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
-        <ScrollView className="max-h-[650px]" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="max-h-[650px]"
+          showsVerticalScrollIndicator={false}
+        >
           {/* Modal Header */}
-          <Text className="font-poppinsBold text-base mb-3">
+          <Text className="mb-3 font-poppinsBold text-base">
             Selecione as ordens a serem exibidas por status, operação e período:
           </Text>
 
           {/* Modal Body */}
           <View className="mb-3">
-            <Text className="font-poppinsBold text-base mb-3">Status:</Text>
+            <Text className="mb-3 font-poppinsBold text-base">Status:</Text>
             <View className="">
               {allStatus.map((item) => (
                 <Checkbox
@@ -86,7 +94,7 @@ export function FilterModal({ status, operations, period, filtered }: FilterModa
           </View>
 
           <View className="mb-3">
-            <Text className="font-poppinsBold text-base mb-3">Operação:</Text>
+            <Text className="mb-3 font-poppinsBold text-base">Operação:</Text>
             <View className="">
               {allOperations.map((item) => (
                 <Checkbox
@@ -101,7 +109,9 @@ export function FilterModal({ status, operations, period, filtered }: FilterModa
           </View>
 
           <View className="mb-3">
-            <Text className="font-poppinsBold text-base mb-3">Selecione o período:</Text>
+            <Text className="mb-3 font-poppinsBold text-base">
+              Selecione o período:
+            </Text>
             <View className="mb-2">
               <CustomDateTimePicker
                 label="De"
@@ -119,9 +129,12 @@ export function FilterModal({ status, operations, period, filtered }: FilterModa
           </View>
 
           {/* Modal Footer */}
-          <View className="flex flex-row justify-between mt-3">
+          <View className="mt-3 flex flex-row justify-between">
             <View className="w-[48%]">
-              <CustomButton variant="cancel" onPress={() => setIsModalVisible(false)}>
+              <CustomButton
+                variant="cancel"
+                onPress={() => setIsModalVisible(false)}
+              >
                 Cancelar
               </CustomButton>
             </View>

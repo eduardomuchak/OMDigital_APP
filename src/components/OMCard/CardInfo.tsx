@@ -1,7 +1,7 @@
-import { Text, View } from 'react-native';
+import { Text, View } from "react-native";
 
-import clsx from 'clsx';
-import { formatISOStringToPTBRDateString } from '../../utils/formatISOStringToPTBRDateString';
+import clsx from "clsx";
+import { formatISOStringToPTBRDateString } from "../../utils/formatISOStringToPTBRDateString";
 
 interface CardInfoProps {
   isFinishOrCancel?: boolean;
@@ -16,30 +16,30 @@ export function CardInfo(props: CardInfoProps) {
   return (
     <>
       <Text
-        className={clsx('text-base text-white font-poppinsMedium', {
-          ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+        className={clsx("font-poppinsMedium text-base text-white", {
+          ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
         })}
       >
         {props.ordemManutencao}
       </Text>
       <Text
-        className={clsx('text-base text-white font-poppinsMedium', {
-          ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+        className={clsx("font-poppinsMedium text-base text-white", {
+          ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
         })}
       >
         {props.operacao}
       </Text>
       <View className="flex-row justify-between">
         <Text
-          className={clsx('text-base text-white font-poppinsMedium', {
-            ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+          className={clsx("font-poppinsMedium text-base text-white", {
+            ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
           })}
         >
-          Par. Real:{' '}
+          Par. Real:{" "}
         </Text>
         <Text
-          className={clsx('text-base text-white font-poppinsMedium', {
-            ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+          className={clsx("font-poppinsMedium text-base text-white", {
+            ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
           })}
         >
           {formatISOStringToPTBRDateString(props.paradaReal)}
@@ -47,15 +47,15 @@ export function CardInfo(props: CardInfoProps) {
       </View>
       <View className="flex-row justify-between">
         <Text
-          className={clsx('text-base text-white font-poppinsMedium flex-row', {
-            ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+          className={clsx("flex-row font-poppinsMedium text-base text-white", {
+            ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
           })}
         >
-          Prev. Fim:{' '}
+          Prev. Fim:{" "}
         </Text>
         <Text
-          className={clsx('text-base text-white font-poppinsMedium', {
-            ['text-neutral-900 font-poppinsMedium']: props.isFinishOrCancel,
+          className={clsx("font-poppinsMedium text-base text-white", {
+            ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
           })}
         >
           {formatISOStringToPTBRDateString(props.prevFim)}

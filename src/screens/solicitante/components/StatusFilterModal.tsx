@@ -1,9 +1,9 @@
-import { Text, View } from 'react-native';
+import { Text, View } from "react-native";
 
-import { Checkbox } from '../../../components/ui/Checkbox';
-import { CustomButton } from '../../../components/ui/CustomButton';
-import { CustomModal } from '../../../components/ui/Modal';
-import { FilterState } from '../screens/Home';
+import { Checkbox } from "../../../components/ui/Checkbox";
+import { CustomButton } from "../../../components/ui/CustomButton";
+import { CustomModal } from "../../../components/ui/Modal";
+import { FilterState } from "../screens/Home";
 
 interface StatusFilterModalProps {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export function StatusFilterModal({
   changeStatus,
 }: StatusFilterModalProps) {
   function handleChangeStatus(status: string) {
-    if (status === 'todas') {
+    if (status === "todas") {
       changeStatus({
         todas: !allStatus.todas,
         aguardandoAnalise: false,
@@ -45,17 +45,17 @@ export function StatusFilterModal({
       </Text>
       <View className="mt-2">
         <Checkbox
-          title={'Todas'}
-          onPress={() => handleChangeStatus('todas')}
+          title={"Todas"}
+          onPress={() => handleChangeStatus("todas")}
           checked={allStatus.todas}
         />
         <Checkbox
-          title={'Aguardando Análise'}
-          onPress={() => handleChangeStatus('aguardandoAnalise')}
+          title={"Aguardando Análise"}
+          onPress={() => handleChangeStatus("aguardandoAnalise")}
           checked={allStatus.aguardandoAnalise}
         />
         <Checkbox
-          title={'Manutenção Negada'}
+          title={"Manutenção Negada"}
           onPress={() =>
             changeStatus({
               ...allStatus,
@@ -66,18 +66,18 @@ export function StatusFilterModal({
           checked={allStatus.manutencaoNegada}
         />
         <Checkbox
-          title={'Em Atendimento'}
-          onPress={() => handleChangeStatus('emAtendimento')}
+          title={"Em Atendimento"}
+          onPress={() => handleChangeStatus("emAtendimento")}
           checked={allStatus.emAtendimento}
         />
         <Checkbox
-          title={'Concluído'}
-          onPress={() => handleChangeStatus('concluido')}
+          title={"Concluído"}
+          onPress={() => handleChangeStatus("concluido")}
           checked={allStatus.concluido}
         />
       </View>
 
-      <View className="flex flex-row justify-between mt-4">
+      <View className="mt-4 flex flex-row justify-between">
         <View className="w-[48%]">
           <CustomButton
             onPress={() => {
