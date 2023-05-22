@@ -2,8 +2,8 @@ import { useContext, useState } from 'react';
 import { View } from 'react-native';
 
 import { Header } from '../../../components/Header';
-import { OperationsStatus } from '../../../components/OperationsStatus';
 import { StatusFilter } from '../../../components/StatusFilter';
+import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
 import { OMContext } from '../../../contexts/om-context';
 import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
@@ -23,6 +23,34 @@ const operationsMock = [
   {
     id: 3,
     name: 'Operação 3',
+  },
+];
+
+const statusLegendInfo = [
+  {
+    id: 1,
+    name: 'Aberta',
+    color: 'bg-status-green',
+  },
+  {
+    id: 2,
+    name: 'Aguardando',
+    color: 'bg-status-yellow',
+  },
+  {
+    id: 3,
+    name: 'Atrasada',
+    color: 'bg-status-red',
+  },
+  {
+    id: 4,
+    name: 'Concluída',
+    color: 'Concluída',
+  },
+  {
+    id: 5,
+    name: 'Cancelada',
+    color: 'Cancelada',
   },
 ];
 
@@ -103,7 +131,8 @@ export function Home() {
         openFilterModal={handleOpenModal}
         filterTitle="Operação - TODAS"
       />
-      <OperationsStatus />
+      <StatusLegend status={statusLegendInfo} />
+
       <SwipeableOMCardList maintenanceOrders={filteredOperations} />
 
       <AddNewMaintenanceOrderButton />

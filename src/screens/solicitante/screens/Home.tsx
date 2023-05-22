@@ -1,14 +1,14 @@
-import { useState } from "react";
-import { View } from "react-native";
+import { useState } from 'react';
+import { View } from 'react-native';
 
-import { CardContainer } from "../../../components/CardContainer";
-import { Header } from "../../../components/Header";
-import { SolicitationCard } from "../../../components/SolicitationCard";
-import { SolicitationMock } from "../../../components/SolicitationCard/SolicitationMock";
-import { StatusFilter } from "../../../components/StatusFilter";
-import { StatusLegend } from "../../../components/StatusLegend";
-import { useAuth } from "../../../contexts/auth";
-import { StatusFilterModal } from "../components/StatusFilterModal";
+import { CardContainer } from '../../../components/CardContainer';
+import { Header } from '../../../components/Header';
+import { SolicitationCard } from '../../../components/SolicitationCard';
+import { StatusFilter } from '../../../components/StatusFilter';
+import { StatusLegend } from '../../../components/StatusLegend';
+import { useAuth } from '../../../contexts/auth';
+import { SolicitationMock } from '../../../mocks/solicitacoes';
+import { StatusFilterModal } from '../components/StatusFilterModal';
 
 export interface FilterState {
   todas: boolean;
@@ -20,6 +20,29 @@ export interface FilterState {
 }
 
 export function Home() {
+  const statusLegendInfo = [
+    {
+      id: 1,
+      name: 'Em atendimento',
+      color: 'bg-status-blue',
+    },
+    {
+      id: 2,
+      name: 'Aguardando Análise',
+      color: 'bg-status-yellow',
+    },
+    {
+      id: 3,
+      name: 'Concluído',
+      color: 'bg-status-green',
+    },
+    {
+      id: 4,
+      name: 'Manutenção Negada',
+      color: 'bg-status-red',
+    },
+  ];
+
   const { user } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allStatus, setAllStatus] = useState({
@@ -43,10 +66,10 @@ export function Home() {
       return SolicitationMock;
     } else {
       return (
-        (allStatus.aguardandoAnalise && item.status === "Aguardando Análise") ||
-        (allStatus.manutencaoNegada && item.status === "Manutenção Negada") ||
-        (allStatus.emAtendimento && item.status === "Em Atendimento") ||
-        (allStatus.concluido && item.status === "Concluído")
+        (allStatus.aguardandoAnalise && item.status === 'Aguardando Análise') ||
+        (allStatus.manutencaoNegada && item.status === 'Manutenção Negada') ||
+        (allStatus.emAtendimento && item.status === 'Em Atendimento') ||
+        (allStatus.concluido && item.status === 'Concluído')
       );
     }
   });
@@ -68,7 +91,7 @@ export function Home() {
         openFilterModal={handleOpenModal}
         filterTitle="Status - TODAS"
       />
-      <StatusLegend />
+      <StatusLegend status={statusLegendInfo} />
       <CardContainer renderFooterComponent>
         {filteredSolicitations.map((item) => (
           <SolicitationCard key={item.id} {...item} />

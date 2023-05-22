@@ -7,8 +7,8 @@ export namespace OM {
     paradaReal: string;
     prevFim: string;
     status: string;
-    latitude?: string;
-    longitude?: string;
+    latitude: string;
+    longitude: string;
     localDeManutencao?: string;
     controlador: string;
     telefone?: string;
@@ -21,7 +21,7 @@ export namespace OM {
     status: string;
     dataInicioPrevista: string;
     dataFimPrevista: string;
-    images?: string[] | null;
+    images: string[];
   }
 
   export interface ActivityProps {

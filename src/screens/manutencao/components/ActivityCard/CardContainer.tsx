@@ -1,19 +1,24 @@
-import React from "react";
+import React from 'react';
 
-import { View, FlatList } from "react-native";
+import { FlatList, View } from 'react-native';
 
 interface CardContainerProps {
   children: React.ReactNode[];
+  footerComponent?: JSX.Element;
 }
 
-export function CardContainer({ children }: CardContainerProps) {
+export function CardContainer({
+  children,
+  footerComponent,
+}: CardContainerProps) {
   return (
-    <View className="flex-1 px-6 py-3">
+    <View className="flex-1">
       <FlatList
         overScrollMode="never"
         showsVerticalScrollIndicator={false}
         data={children}
-        renderItem={({ item }) => <React.Fragment>{item}</React.Fragment>}
+        renderItem={({ item }) => <View className="px-6">{item}</View>}
+        ListFooterComponent={footerComponent ? footerComponent : null}
       />
     </View>
   );

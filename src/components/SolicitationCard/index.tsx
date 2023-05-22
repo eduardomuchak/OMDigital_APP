@@ -1,11 +1,9 @@
-import { View } from "react-native";
+import clsx from 'clsx';
+import { View } from 'react-native';
 
-import { CardInfo } from "./CardInfo";
-import { CardTitle } from "./CardTitle";
-
-import { Image } from "phosphor-react-native";
-
-import clsx from "clsx";
+import { AttachmentPreviewModal } from '../AttachmentPreviewModal';
+import { CardInfo } from './CardInfo';
+import { CardTitle } from './CardTitle';
 
 interface SolicitationCardProps {
   id: number;
@@ -15,22 +13,25 @@ interface SolicitationCardProps {
   motivo?: string;
   dataAprovacao?: string;
   status?: string;
+  images: string[];
 }
 
 export function SolicitationCard(props: SolicitationCardProps) {
   return (
     <View
       className={clsx(
-        "relative justify-center rounded-xl bg-status-green p-5",
+        'relative justify-center rounded-xl bg-status-green p-5',
         {
-          ["bg-status-red"]: props.status === "Manutenção Negada",
-          ["bg-status-yellow"]: props.status === "Aguardando Análise",
-          ["bg-status-blue"]: props.status === "Em Atendimento",
-        }
+          ['bg-status-red']: props.status === 'Manutenção Negada',
+          ['bg-status-yellow']: props.status === 'Aguardando Análise',
+          ['bg-status-blue']: props.status === 'Em Atendimento',
+        },
       )}
     >
-      <View className="absolute right-5 top-5">
-        <Image color="#FFFFFF" weight="bold" />
+      <View className="absolute right-4 top-4">
+        {props.images.length > 0 ? (
+          <AttachmentPreviewModal images={props.images} />
+        ) : null}
       </View>
       <View className="mb-3 flex-row items-center justify-center">
         <CardTitle>{props.codigoBem}</CardTitle>

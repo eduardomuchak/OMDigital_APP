@@ -29,11 +29,7 @@ export function CustomModal({
             },
           )}
         >
-          {showCloseButton ? (
-            <View className={'z-50'}>
-              <CloseModal onClose={onClose} />
-            </View>
-          ) : null}
+          {showCloseButton ? <CloseModal onClose={onClose} /> : null}
           {children}
         </View>
       </View>
