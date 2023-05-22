@@ -1,28 +1,31 @@
-import clsx from "clsx";
-import { Image } from "phosphor-react-native";
-import { Text, View } from "react-native";
-import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
-import { DeleteActivityModal } from "../DeleteActivityModal";
+import clsx from 'clsx';
+import { Text, View } from 'react-native';
+import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
+import { DeleteActivityModal } from '../DeleteActivityModal';
 
-import { OM } from "../../../../interfaces/om-context.interface";
+import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
+import { OM } from '../../../../interfaces/om-context.interface';
 
 export function ActivityCard({ activity }: OM.ActivityProps) {
   return (
     <View className="flex flex-row rounded-xl bg-neutral-100">
       <View className="relative flex-1 p-4">
-        {activity.images ? (
+        {activity.images.length > 0 ? (
           <View className="absolute right-0 top-4 flex items-center justify-start px-4">
-            <Image size={24} weight="bold" color="#000000" />
+            <AttachmentPreviewModal
+              images={activity.images}
+              iconColor="#000000"
+            />
           </View>
         ) : null}
         <View className="mr-8 flex flex-row justify-between">
           <View className="mb-3 flex flex-row items-start">
             <View
-              className={clsx("mr-2 mt-2 h-2 w-2 rounded-full", {
-                "bg-status-green": activity.status === "Concluída",
-                "bg-status-yellow": activity.status === "Em andamento",
-                "bg-status-red": activity.status === "Atrasada",
-                "bg-status-blue": activity.status === "Não iniciada",
+              className={clsx('mr-2 mt-2 h-2 w-2 rounded-full', {
+                'bg-status-green': activity.status === 'Concluída',
+                'bg-status-yellow': activity.status === 'Em andamento',
+                'bg-status-red': activity.status === 'Atrasada',
+                'bg-status-blue': activity.status === 'Não iniciada',
               })}
             />
             <Text className="font-poppinsBold text-base text-neutral-900">
@@ -36,7 +39,7 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
             {`${formatISOStringToPTBRDateString(
-              activity.dataInicioPrevista
+              activity.dataInicioPrevista,
             )} às ${formatISOStringToPTBRDateString(activity.dataFimPrevista)}`}
           </Text>
         </View>

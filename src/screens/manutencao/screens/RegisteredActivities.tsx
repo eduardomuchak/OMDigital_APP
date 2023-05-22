@@ -1,30 +1,43 @@
 // React and React Native
-import { useRoute } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { Text, View } from "react-native";
+import { useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { Text, View } from 'react-native';
 
 //components
-import { FooterRegisteredActivities } from "../../../components/FooterRegisteredActivities";
-import { Header } from "../../../components/Header";
-import { ActivitiesStatusLegend } from "../components/ActivitiesStatusLegend";
-import { ActivityCard } from "../components/ActivityCard";
-import { CardContainer } from "../components/ActivityCard/CardContainer";
-import { LocationModal } from "../components/LocationModal";
-import { OperationInfoCard } from "../components/OperationInfoCard";
+import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
+import { Header } from '../../../components/Header';
+import { ActivityCard } from '../components/ActivityCard';
+import { CardContainer } from '../components/ActivityCard/CardContainer';
+import { OperationInfoCard } from '../components/OperationInfoCard';
 
-import { OMContext } from "../../../contexts/om-context";
+import { StatusLegend } from '../../../components/StatusLegend';
+import { OMContext } from '../../../contexts/om-context';
+
+const statusLegendInfo = [
+  {
+    id: 1,
+    name: 'Concluída',
+    color: 'bg-status-green',
+  },
+  {
+    id: 2,
+    name: 'Em andamento',
+    color: 'bg-status-yellow',
+  },
+  {
+    id: 3,
+    name: 'Atrasada',
+    color: 'bg-status-red',
+  },
+  {
+    id: 4,
+    name: 'Não Iniciada',
+    color: 'bg-status-blue',
+  },
+];
 
 export function RegisteredActivities() {
   const { om } = useContext(OMContext);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  function handleOpenLocationModal() {
-    setIsModalVisible(true);
-  }
-
-  function handleCloseLocationModal() {
-    setIsModalVisible(false);
-  }
 
   // get ID from route params
   const route = useRoute();
@@ -39,6 +52,8 @@ export function RegisteredActivities() {
     operacao: filteredOM[0]?.operacao,
     paradaReal: filteredOM[0]?.paradaReal,
     prevFim: filteredOM[0]?.prevFim,
+    latitude: filteredOM[0]?.latitude,
+    longitude: filteredOM[0]?.longitude,
   };
 
   const footerInfo = {
@@ -49,29 +64,21 @@ export function RegisteredActivities() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title={"Atividades Lançadas"} />
-      <OperationInfoCard
-        operationInfo={operationInfoProps}
-        onLocationShow={handleOpenLocationModal}
-      />
-      {isModalVisible && (
-        <LocationModal
-          onClose={handleCloseLocationModal}
-          isModalVisible={isModalVisible}
-          latitude={filteredOM[0]?.latitude!}
-          longitude={filteredOM[0]?.longitude!}
-        />
-      )}
+      <Header title={'Atividades Lançadas'} />
+      <OperationInfoCard operationInfo={operationInfoProps} />
       <Text className="mb-3 mt-4 px-6 font-poppinsBold text-[18px]">
         Atividades:
       </Text>
-      <ActivitiesStatusLegend />
-      <CardContainer>
+      <StatusLegend status={statusLegendInfo} />
+      <CardContainer
+        footerComponent={
+          <FooterRegisteredActivities controladorInfo={footerInfo} />
+        }
+      >
         {activities.map((activity) => (
           <ActivityCard activity={activity} key={activity.id} />
         ))}
       </CardContainer>
-      <FooterRegisteredActivities controladorInfo={footerInfo} />
     </View>
   );
 }

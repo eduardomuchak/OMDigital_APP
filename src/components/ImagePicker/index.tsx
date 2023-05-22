@@ -2,13 +2,13 @@ import {
   PermissionStatus,
   launchCameraAsync,
   useCameraPermissions,
-} from "expo-image-picker";
-import { Camera as CameraIcon } from "phosphor-react-native";
-import { useState } from "react";
-import { Alert, Image, TouchableOpacity, View } from "react-native";
-import Animated, { FadeInDown, FadeOutDown } from "react-native-reanimated";
-import { EditAttachmentModal } from "../EditAttachmentModal";
-import { RemoveAttachmentModal } from "../RemoveAttachmentModal";
+} from 'expo-image-picker';
+import { Camera as CameraIcon } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Alert, Image, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { EditAttachmentModal } from '../EditAttachmentModal';
+import { RemoveAttachmentModal } from '../RemoveAttachmentModal';
 
 interface ImagePickerProps {
   onTakeImage: Function;
@@ -27,8 +27,8 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
 
     if (cameraPermissionInformation?.status === PermissionStatus.DENIED) {
       Alert.alert(
-        "Insufficient Permissions!",
-        "You need to grant camera permissions to use this app."
+        'Insufficient Permissions!',
+        'You need to grant camera permissions to use this app.',
       );
       return false;
     }
@@ -44,8 +44,8 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
     }
 
     const image = await launchCameraAsync({
-      allowsEditing: true,
-      aspect: [9, 16],
+      allowsEditing: false,
+      aspect: [1, 1],
       quality: 0.5,
       base64: true,
     });
@@ -68,8 +68,8 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
           className="m-0 flex h-32 items-center justify-center rounded-lg bg-neutral-100 font-poppinsSemibold"
           style={{
             borderWidth: 2,
-            borderColor: "#E5E7EB",
-            borderStyle: "dashed",
+            borderColor: '#E5E7EB',
+            borderStyle: 'dashed',
           }}
           onPress={takeImageHandler}
         >
@@ -79,7 +79,7 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
         <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
           <View className="relative mb-2 h-96 rounded-xl">
             <Image
-              className={"h-full w-full rounded-lg"}
+              className={'h-full w-full rounded-lg'}
               source={{ uri: pickedImage }}
             />
           </View>
