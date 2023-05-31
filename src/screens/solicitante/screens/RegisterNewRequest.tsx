@@ -1,19 +1,19 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { ScrollView, Text, View } from "react-native";
-import { Header } from "../../../components/Header";
-import { ImagePicker } from "../../../components/ImagePicker";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { Input } from "../../../components/ui/Input";
-import { TextArea } from "../../../components/ui/TextArea";
-import { formatISOStringToPTBRDateString } from "../../../utils/formatISOStringToPTBRDateString";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { ScrollView, Text, View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { ImagePicker } from '../../../components/ImagePicker';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
+import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringToPTBRDateString';
 import {
   RegisterNewRequestFormData,
   registerNewRequestSchema,
-} from "../../../validations/RegisterNewRequestScreen";
+} from '../../../validations/RegisterNewRequestScreen';
 
 export interface AttachmentProps {
   assetId?: null;
@@ -31,7 +31,7 @@ export function RegisterNewRequest() {
   const { goBack } = useNavigation();
 
   const [attachment, setAttachment] = useState<AttachmentProps>(
-    {} as AttachmentProps
+    {} as AttachmentProps,
   );
   const {
     control,
@@ -40,9 +40,9 @@ export function RegisterNewRequest() {
     reset,
   } = useForm<RegisterNewRequestFormData>({
     defaultValues: {
-      propertyCode: "",
-      counter: "",
-      comments: "",
+      propertyCode: '',
+      counter: '',
+      comments: '',
     },
     resolver: zodResolver(registerNewRequestSchema),
   });
@@ -50,7 +50,7 @@ export function RegisterNewRequest() {
   const now = new Date().toISOString();
 
   const takeImageHandler = (image: AttachmentProps) => {
-    console.log("IMAGE URI =>", image.uri);
+    // console.log("IMAGE URI =>", image.uri);
     setAttachment(image);
   };
 
@@ -60,7 +60,7 @@ export function RegisterNewRequest() {
       attachment: attachment ? attachment.base64 : null,
     };
 
-    console.log("DADOS =>", payload);
+    // console.log("DADOS =>", payload);
     setAttachment({} as AttachmentProps);
     reset();
     goBack();
