@@ -22,7 +22,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [
-          'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540eduardomuchak%252Fom-digital/ImagePicker/2a370a25-d4fe-40ad-a794-756eb28f1398.jpeg',
+          'https://fastly.picsum.photos/id/599/1080/1080.jpg?hmac=gXWcNqkjB6fNFJR4_J2t_0Sij-2FEwFuDL5NPky44Sg',
         ],
       },
       {
@@ -32,7 +32,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [
-          'file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540eduardomuchak%252Fom-digital/ImagePicker/61dea38f-01ee-48d9-82f4-0ca047900121.jpeg',
+          'https://fastly.picsum.photos/id/54/1080/1080.jpg?hmac=IORVOTScJvnlEq1qBpSnPtIFIV-vfyHz0y5CZSHpI78',
         ],
       },
       {
