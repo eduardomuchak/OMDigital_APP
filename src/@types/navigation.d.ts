@@ -1,5 +1,5 @@
-import { RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 declare global {
   namespace ReactNavigation {
@@ -9,7 +9,10 @@ declare global {
       RegisterNewActivity: undefined;
       RegisterNewActivity: undefined;
       RegisteredActivities: { id: number };
-      PasswordRecovery: undefined;
+      PasswordRecoverySelection: undefined;
+      PasswordRecoveryEmail: undefined;
+      PasswordRecoverySMS: undefined;
+      PasswordRecoveryCPF: undefined;
       RegisterNewRequest: undefined;
       HomeSolicitante: undefined;
       HomeOperador: undefined;
