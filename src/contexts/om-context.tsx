@@ -5,6 +5,7 @@ import { OMMock } from "../mocks/om";
 interface OMContextData {
   om: OM.MaintenanceOrderInfo[];
   mockFetchOM: () => Promise<OM.MaintenanceOrderInfo[]>;
+  setOm: React.Dispatch<React.SetStateAction<OM.MaintenanceOrderInfo[]>>;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -34,6 +35,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
   const omContextData: OMContextData = {
     om,
     mockFetchOM,
+    setOm
   };
 
   return (

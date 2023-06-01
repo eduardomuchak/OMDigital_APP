@@ -52,6 +52,12 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
+    sintomas: [
+      {
+        id: 1,
+        descricao: 'Fumaça preta',
+      }
+    ],
   },
   {
     id: 2,
@@ -91,6 +97,12 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [],
       },
+    ],
+    sintomas: [
+      {
+        id: 1,
+        descricao: 'Fumaça branca',
+      }
     ],
   },
   {
@@ -132,6 +144,12 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
+    sintomas: [
+      {
+        id: 1,
+        descricao: 'Fumaça verde',
+      }
+    ],
   },
   {
     id: 4,
@@ -172,6 +190,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
+    sintomas: []
   },
   {
     id: 5,
@@ -212,5 +231,6 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
+    sintomas: []
   },
 ];

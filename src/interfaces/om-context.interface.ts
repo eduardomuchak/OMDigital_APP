@@ -13,6 +13,12 @@ export namespace OM {
     controlador: string;
     telefone?: string;
     atividades: Activity[];
+    sintomas: Symptom[];
+  }
+
+  export interface Symptom {
+    id: number;
+    descricao: string;
   }
 
   export interface Activity {
