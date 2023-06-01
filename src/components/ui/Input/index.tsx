@@ -1,7 +1,16 @@
-import { Text, TextInput, View } from "react-native";
-import { InputProps } from "./interface";
+import { Text, TextInput, View } from 'react-native';
+import { TextInputMask } from 'react-native-masked-text';
 
-export function Input({ label, required, ...rest }: InputProps) {
+import { InputProps } from './interface';
+
+export function Input({
+  label,
+  required,
+  maskedInput = false,
+  maskType = 'custom',
+  maskOptions,
+  ...rest
+}: InputProps) {
   return (
     <>
       <View className="flex flex-row gap-1">
@@ -14,11 +23,20 @@ export function Input({ label, required, ...rest }: InputProps) {
           {label.toLocaleUpperCase()}
         </Text>
       </View>
-      <TextInput
-        className="m-0 h-14 rounded-lg bg-neutral-100 px-5 py-2 font-poppinsSemibold"
-        placeholder="Digite"
-        {...rest}
-      />
+      {maskedInput ? (
+        <TextInputMask
+          type={maskType}
+          options={maskOptions}
+          className="m-0 h-14 rounded-lg bg-neutral-100 px-5 py-2 font-poppinsSemibold"
+          {...rest}
+        />
+      ) : (
+        <TextInput
+          className="m-0 h-14 rounded-lg bg-neutral-100 px-5 py-2 font-poppinsSemibold"
+          placeholder="Digite"
+          {...rest}
+        />
+      )}
     </>
   );
 }

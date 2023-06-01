@@ -1,13 +1,29 @@
 import { z } from 'zod';
 
-export type PasswordRecoveryFormData = z.infer<typeof passwordRecoverySchema>;
+export type PasswordRecoveryCPFFormData = z.infer<
+  typeof passwordRecoverySchemaCPF
+>;
 
-export const passwordRecoverySchema = z.object({
-  userCPF: z
-    .string()
-    .min(11, {
-      message: 'CPF deve conter 11 dígitos',
-    })
-    .max(11)
-    .nonempty('Campo obrigatório'),
+export type PasswordRecoveryEmailFormData = z.infer<
+  typeof passwordRecoverySchemaEmail
+>;
+
+export type PasswordRecoverySMSFormData = z.infer<
+  typeof passwordRecoverySchemaSMS
+>;
+
+export const passwordRecoverySchemaCPF = z.object({
+  userCPF: z.string().nonempty('Campo obrigatório').min(11, {
+    message: 'O CPF deve conter 11 dígitos',
+  }),
+});
+
+export const passwordRecoverySchemaEmail = z.object({
+  userEmail: z.string().nonempty('Campo obrigatório').email('Email inválido'),
+});
+
+export const passwordRecoverySchemaSMS = z.object({
+  userSMSNumber: z.string().nonempty('Campo obrigatório').min(11, {
+    message: 'O número deve conter 11 dígitos',
+  }),
 });
