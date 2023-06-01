@@ -5,6 +5,7 @@ import { RegisterNewActivity } from "../screens/operador/screens/RegisterNewActi
 import { RegisterNewMaintenanceOrder } from "../screens/operador/screens/RegisterNewMaintenanceOrder";
 import { RegisteredActivities } from "../screens/operador/screens/RegisteredActivities";
 import { OMContextProvider } from "../contexts/om-context";
+import { RegisterNewSymptom } from "../screens/operador/screens/RegisterNewSymptom";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,10 @@ export const OperadorRoutes: React.FC = () => (
       <Stack.Screen
         name="RegisteredActivitiesOperador"
         component={RegisteredActivities}
+      />
+      <Stack.Screen
+        name="RegisterNewSymptom"
+        component={RegisterNewSymptom}
       />
     </Stack.Navigator>
   </OMContextProvider>
