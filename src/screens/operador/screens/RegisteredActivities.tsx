@@ -29,7 +29,11 @@ export function RegisteredActivities() {
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header title={"Atividades Lançadas"} />
-      <OperationInfoCard operationInfo={operationInfoProps} />
+      <OperationInfoCard
+        operador={true}
+        operationInfo={operationInfoProps}
+        operationId={id}
+      />
       <SwipeableActivityCardList activities={activities} omId={id} />
     </View>
   );
