@@ -1,7 +1,9 @@
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from "react-native";
 
-import { GPSLocationModal } from '../../../../components/GPSLocationModal';
-import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
+import { useNavigation } from "@react-navigation/native";
+import { PencilSimple } from "phosphor-react-native";
+import { GPSLocationModal } from "../../../../components/GPSLocationModal";
+import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -13,13 +15,21 @@ interface OperationInfoCardProps {
     latitude: string;
     longitude: string;
   };
+  operador?: boolean;
+  operationId?: number;
 }
 
-export function OperationInfoCard({ operationInfo }: OperationInfoCardProps) {
+export function OperationInfoCard({
+  operationInfo,
+  operador,
+  operationId,
+}: OperationInfoCardProps) {
   const location = {
     latitude: operationInfo.latitude,
     longitude: operationInfo.longitude,
   };
+
+  const navigation = useNavigation();
 
   return (
     <View className="bg-neutral-100 px-6 py-5">
@@ -30,7 +40,20 @@ export function OperationInfoCard({ operationInfo }: OperationInfoCardProps) {
             {operationInfo.codigoBem}
           </Text>
         </View>
-        <GPSLocationModal location={location} />
+        {!operador ? (
+          <GPSLocationModal location={location} />
+        ) : (
+          <View className="flex-row space-x-2">
+            <GPSLocationModal location={location} />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("EditMaintenanceOrder", { id: operationId })
+              }
+            >
+              <PencilSimple size={30} weight="bold" />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>
