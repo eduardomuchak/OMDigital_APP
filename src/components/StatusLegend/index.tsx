@@ -24,7 +24,7 @@ export function StatusLegend({ status }: StatusLegendProps) {
   };
 
   return (
-    <View className="flex flex-row flex-wrap items-center justify-center space-x-5 px-0 pb-2">
+    <View className="flex flex-row flex-wrap items-center justify-center space-x-5 px-5 pb-2">
       {status.map((item) => (
         <View className="flex flex-row items-center space-x-2" key={item.id}>
           {handleStatus(item)}

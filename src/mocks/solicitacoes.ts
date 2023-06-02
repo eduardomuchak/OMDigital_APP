@@ -37,3 +37,40 @@ export const SolicitationMock = [
     images: [],
   },
 ];
+
+export const openedRequestsMock = [
+  {
+    id: 1,
+    propertyCode: 'GKY-7G22',
+    images: [
+      'https://fastly.picsum.photos/id/599/1080/1080.jpg?hmac=gXWcNqkjB6fNFJR4_J2t_0Sij-2FEwFuDL5NPky44Sg',
+    ],
+    openedDate: '2023-05-03T17:42:20.202Z',
+    requester: 'João da Silva',
+    counter: '100205',
+    sympton: 'Problema no ar condicionado, não está gelando',
+  },
+  {
+    id: 2,
+    propertyCode: 'JPL-5D43',
+    images: [
+      'https://fastly.picsum.photos/id/599/1080/1080.jpg?hmac=gXWcNqkjB6fNFJR4_J2t_0Sij-2FEwFuDL5NPky44Sg',
+    ],
+    openedDate: '2023-05-09T11:20:20.202Z',
+    requester: 'Roberto Santos',
+    counter: '64999',
+    sympton:
+      'Trocar óleo do motor. Está muito sujo e escuro, além de estar com cheiro de queimado',
+  },
+  {
+    id: 3,
+    propertyCode: 'AUT-9899',
+    images: [
+      'https://fastly.picsum.photos/id/599/1080/1080.jpg?hmac=gXWcNqkjB6fNFJR4_J2t_0Sij-2FEwFuDL5NPky44Sg',
+    ],
+    openedDate: '2023-03-16T13:13:20.202Z',
+    requester: 'Juliana Silva',
+    counter: '88652',
+    sympton: 'Barulho estranho no motor, parece que está batendo',
+  },
+];

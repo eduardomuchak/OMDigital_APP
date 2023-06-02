@@ -20,6 +20,7 @@ declare global {
       RegisteredActivitiesOperador: { id: number };
       CloseMaintenanceOrder: undefined;
       Camera: undefined;
+      OpenedRequests: undefined;
     }
   }
 

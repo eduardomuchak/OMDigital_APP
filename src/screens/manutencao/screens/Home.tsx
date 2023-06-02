@@ -9,6 +9,7 @@ import { OMCard } from '../../../components/OMCard';
 import { StatusFilter } from '../../../components/StatusFilter';
 
 import { StatusLegend } from '../../../components/StatusLegend';
+import { CustomButton } from '../../../components/ui/CustomButton';
 import { useAuth } from '../../../contexts/auth';
 import { OMContext } from '../../../contexts/om-context';
 import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
@@ -126,6 +127,7 @@ export function Home() {
         filterTitle="Operação - TODAS"
       />
       <StatusLegend status={statusLegendInfo} />
+
       <CardContainer>
         {filteredOperations.map((item) => (
           <OMCard
@@ -140,6 +142,9 @@ export function Home() {
           />
         ))}
       </CardContainer>
+      <CustomButton variant="ghost" onPress={() => navigate('OpenedRequests')}>
+        Solicitações
+      </CustomButton>
       <FooterModal />
     </View>
   );

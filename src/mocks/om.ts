@@ -28,7 +28,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 2,
         descricao: 'Troca da lona de freio',
-        status: 'Atrasada',
+        status: 'Concluída',
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [
@@ -38,7 +38,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 3,
         descricao: 'Verificar o óleo da caixa de marcha',
-        status: 'Em andamento',
+        status: 'Concluída',
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [],
@@ -46,7 +46,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 4,
         descricao: 'Verificar o óleo da caixa de marcha',
-        status: 'Não iniciada',
+        status: 'Concluída',
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
         images: [],
@@ -56,7 +56,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 1,
         descricao: 'Fumaça preta',
-      }
+      },
     ],
   },
   {
@@ -102,7 +102,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 1,
         descricao: 'Fumaça branca',
-      }
+      },
     ],
   },
   {
@@ -148,7 +148,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 1,
         descricao: 'Fumaça verde',
-      }
+      },
     ],
   },
   {
@@ -190,7 +190,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
-    sintomas: []
+    sintomas: [],
   },
   {
     id: 5,
@@ -231,6 +231,6 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [],
       },
     ],
-    sintomas: []
+    sintomas: [],
   },
 ];
