@@ -1,4 +1,4 @@
-import { LoginFormData } from '../validations/LoginScreen';
+import { LoginFormData } from '../validations/common/LoginScreen';
 
 const operador = {
   user: 'Operador',

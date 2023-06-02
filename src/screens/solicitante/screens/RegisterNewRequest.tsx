@@ -13,7 +13,7 @@ import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringT
 import {
   RegisterNewRequestFormData,
   registerNewRequestSchema,
-} from '../../../validations/RegisterNewRequestScreen';
+} from '../../../validations/solicitante/RegisterNewRequestScreen';
 
 export interface AttachmentProps {
   assetId?: null;
@@ -42,7 +42,7 @@ export function RegisterNewRequest() {
     defaultValues: {
       propertyCode: '',
       counter: '',
-      comments: '',
+      symptom: '',
     },
     resolver: zodResolver(registerNewRequestSchema),
   });
@@ -126,14 +126,14 @@ export function RegisterNewRequest() {
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
-                  label="Relatar o Problema"
+                  label="Relatar o Problema (Sintoma)"
                   placeholder="Digite o problema"
                 />
               )}
-              name="comments"
+              name="symptom"
             />
-            {errors.comments?.message ? (
-              <ErrorText>{errors.comments?.message}</ErrorText>
+            {errors.symptom?.message ? (
+              <ErrorText>{errors.symptom?.message}</ErrorText>
             ) : null}
           </View>
 

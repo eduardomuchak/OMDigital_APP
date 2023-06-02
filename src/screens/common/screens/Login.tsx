@@ -13,7 +13,10 @@ import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { useAuth } from '../../../contexts/auth';
-import { LoginFormData, loginSchema } from '../../../validations/LoginScreen';
+import {
+  LoginFormData,
+  loginSchema,
+} from '../../../validations/common/LoginScreen';
 import { BackgroundCardContainer } from '../components/BackgroundCardContainer';
 import { LogoAndCircles } from '../components/LogoAndCircles';
 

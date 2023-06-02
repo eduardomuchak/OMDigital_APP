@@ -7,5 +7,5 @@ export type RegisterNewRequestFormData = z.infer<
 export const registerNewRequestSchema = z.object({
   propertyCode: z.string().nonempty('Campo obrigatório'),
   counter: z.string().nonempty('Campo obrigatório'),
-  comments: z.string().nonempty('Campo obrigatório'),
+  symptom: z.string().nonempty('Campo obrigatório'),
 });

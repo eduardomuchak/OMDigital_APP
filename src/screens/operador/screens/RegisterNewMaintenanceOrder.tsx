@@ -1,24 +1,46 @@
-import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View } from 'react-native';
 
-import { Header } from "../../../components/Header";
-import { QRCodeScannerModal } from "../../../components/QRCodeScannerModal";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
-import { Input } from "../../../components/ui/Input";
-import { TextArea } from "../../../components/ui/TextArea";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, useForm } from 'react-hook-form';
+import { Header } from '../../../components/Header';
+import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
+import {
+  RegisterNewMaintenanceOrderFormData,
+  registerNewMaintenanceOrderSchema,
+} from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
 
 export function RegisterNewMaintenanceOrder() {
-  const [propertyCode, setPropertyCode] = useState("");
-  const [counter, setCounter] = useState("");
-  const [reason, setReason] = useState("");
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(
-    new Date(new Date().setHours(new Date().getHours() + 1))
-  );
-  // const { location } = useGetLocation();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<RegisterNewMaintenanceOrderFormData>({
+    defaultValues: {
+      propertyCode: '',
+      counter: '',
+      startDate: new Date(),
+      endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
+      symptom: '',
+    },
+    resolver: zodResolver(registerNewMaintenanceOrderSchema),
+  });
 
-  // console.log(location);
+  const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
+    const payload = {
+      ...data,
+      startDate: data.startDate.toISOString(),
+      endDate: data.endDate.toISOString(),
+    };
+
+    console.log('PAYLOAD =>', payload);
+    reset();
+  };
 
   return (
     <>
@@ -29,52 +51,118 @@ export function RegisterNewMaintenanceOrder() {
           className="flex flex-1"
         >
           <View className="flex flex-1 px-6 py-4">
-            <View className="mb-4 flex flex-row">
-              <View className="flex flex-1">
-                <Input
-                  label="Código do bem"
-                  onChangeText={(text) => setPropertyCode(text)}
-                  value={propertyCode}
+            <View className="mb-4">
+              <View className="flex flex-row">
+                <View className="flex flex-1">
+                  <Controller
+                    control={control}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <Input
+                        required
+                        onBlur={onBlur}
+                        onChangeText={onChange}
+                        value={value}
+                        label="Codigo do bem"
+                        placeholder="Digite o código do bem"
+                        maxLength={30}
+                      />
+                    )}
+                    name="propertyCode"
+                  />
+                </View>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange } }) => (
+                    <QRCodeScannerModal onScan={onChange} />
+                  )}
+                  name="propertyCode"
                 />
               </View>
-              <QRCodeScannerModal onScan={setPropertyCode} />
+              {errors.propertyCode?.message ? (
+                <ErrorText>{errors.propertyCode?.message}</ErrorText>
+              ) : null}
+            </View>
+            <View className="mb-4">
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input
+                    required
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    value={value}
+                    label="Contador"
+                    placeholder="Digite"
+                    maxLength={15}
+                  />
+                )}
+                name="counter"
+              />
+              {errors.counter?.message ? (
+                <ErrorText>{errors.counter?.message}</ErrorText>
+              ) : null}
             </View>
 
             <View className="mb-4">
-              <Input
-                label="Contador"
-                onChangeText={(text) => setCounter(text)}
-                value={counter}
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <CustomDateTimePicker
+                    value={new Date(value)}
+                    onDateSelect={onChange}
+                    label="Data e hora da parada informada"
+                    mode="datetime"
+                  />
+                )}
+                name="startDate"
               />
+              {errors.startDate?.message ? (
+                <ErrorText>{errors.startDate?.message}</ErrorText>
+              ) : null}
             </View>
+
             <View className="mb-4">
-              <CustomDateTimePicker
-                value={startDate}
-                onDateSelect={setStartDate}
-                label="Data e hora da parada informada"
-                mode="datetime"
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <CustomDateTimePicker
+                    value={new Date(value)}
+                    onDateSelect={onChange}
+                    label="Data e hora da previsão de término"
+                    mode="datetime"
+                  />
+                )}
+                name="endDate"
               />
+              {errors.endDate?.message ? (
+                <ErrorText>{errors.endDate?.message}</ErrorText>
+              ) : null}
             </View>
+
             <View className="mb-4">
-              <CustomDateTimePicker
-                value={endDate}
-                onDateSelect={setEndDate}
-                label="Data e hora da previsão de término"
-                mode="datetime"
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextArea
+                    onBlur={onBlur}
+                    label="Sintoma"
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="Digite"
+                    required
+                  />
+                )}
+                name="symptom"
               />
+              {errors.symptom?.message ? (
+                <ErrorText>{errors.symptom?.message}</ErrorText>
+              ) : null}
             </View>
-            <View className="mb-4">
-              <TextArea
-                label="Motivo"
-                onChangeText={(text) => setReason(text)}
-                value={reason}
-              />
-            </View>
-            <View className="">
-              <CustomButton variant="primary">Cadastrar</CustomButton>
-            </View>
+
+            <CustomButton variant="primary" onPress={handleSubmit(onSubmit)}>
+              Cadastrar
+            </CustomButton>
           </View>
-          <View className="mb-20 h-96"></View>
         </ScrollView>
       </View>
     </>

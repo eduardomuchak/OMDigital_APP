@@ -7,7 +7,7 @@ import { ErrorText } from '../../../components/ui/ErrorText';
 import {
   PasswordRecoveryEmailFormData,
   passwordRecoverySchemaEmail,
-} from '../../../validations/PasswordRecoveryScreen';
+} from '../../../validations/common/PasswordRecoveryScreen';
 import { BackgroundCardContainer } from '../components/BackgroundCardContainer';
 import { LogoAndCircles } from '../components/LogoAndCircles';
 import { ResponseModal } from '../components/ResponseModal';

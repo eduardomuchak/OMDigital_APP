@@ -1,8 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Alert } from "react-native";
-import { LoginFormData } from "../validations/LoginScreen";
-import { SignInWithCredentials } from "./mock";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
+import { LoginFormData } from '../validations/common/LoginScreen';
+import { SignInWithCredentials } from './mock';
 
 interface User {
   user: string;
@@ -34,8 +34,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     if (data) {
-      await AsyncStorage.setItem("@Auth:user", JSON.stringify(data));
-      await AsyncStorage.setItem("@Auth:token", data.session);
+      await AsyncStorage.setItem('@Auth:user', JSON.stringify(data));
+      await AsyncStorage.setItem('@Auth:token', data.session);
       setUser(data);
     }
 
@@ -49,8 +49,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   async function signOut() {
     setIsLoading(true);
-    await AsyncStorage.removeItem("@Auth:user");
-    await AsyncStorage.removeItem("@Auth:token");
+    await AsyncStorage.removeItem('@Auth:user');
+    await AsyncStorage.removeItem('@Auth:token');
     setUser(null);
     setTimeout(() => {
       setIsLoading(false);
@@ -59,15 +59,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   async function loadStorageData() {
     try {
-      const storagedUser = await AsyncStorage.getItem("@Auth:user");
-      const storagedToken = await AsyncStorage.getItem("@Auth:token");
+      const storagedUser = await AsyncStorage.getItem('@Auth:user');
+      const storagedToken = await AsyncStorage.getItem('@Auth:token');
 
       if (storagedUser && storagedToken) {
         setUser(JSON.parse(storagedUser));
         setToken(storagedToken);
       }
     } catch (error) {
-      console.log("Error loading storage data:", error);
+      console.log('Error loading storage data:', error);
     } finally {
       setIsLoading(false);
     }
@@ -97,7 +97,7 @@ function useAuth() {
   const context = useContext(AuthContext);
 
   if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider.");
+    throw new Error('useAuth must be used within an AuthProvider.');
   }
 
   return context;
