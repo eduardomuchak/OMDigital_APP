@@ -1,9 +1,10 @@
-import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
+import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 
-import { OMContextProvider } from "../contexts/om-context";
-import { Home } from "../screens/manutencao/screens/Home";
-import { RegisteredActivities } from "../screens/manutencao/screens/RegisteredActivities";
+import { OMContextProvider } from '../contexts/om-context';
+import { Home } from '../screens/manutencao/screens/Home';
+import { OpenedRequests } from '../screens/manutencao/screens/OpenedRequests';
+import { RegisteredActivities } from '../screens/manutencao/screens/RegisteredActivities';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ export const ManutencaoRoutes: React.FC = () => (
       }}
     >
       <Stack.Screen name="HomeManutencao" component={Home} />
+      <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
       <Stack.Screen
         name="RegisteredActivities"
         component={RegisteredActivities}
