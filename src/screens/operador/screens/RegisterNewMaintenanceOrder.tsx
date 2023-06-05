@@ -8,6 +8,7 @@ import { CustomButton } from '../../../components/ui/CustomButton';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
+import { Select } from '../../../components/ui/Select';
 import { TextArea } from '../../../components/ui/TextArea';
 import {
   RegisterNewMaintenanceOrderFormData,
@@ -27,6 +28,7 @@ export function RegisterNewMaintenanceOrder() {
       startDate: new Date(),
       endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
       symptom: '',
+      type: '',
     },
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
@@ -156,6 +158,25 @@ export function RegisterNewMaintenanceOrder() {
               />
               {errors.symptom?.message ? (
                 <ErrorText>{errors.symptom?.message}</ErrorText>
+              ) : null}
+            </View>
+
+            <View className="mb-7">
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    required
+                    label="TIPO DA OS (Ordem de Serviço)"
+                    selected={value}
+                    setSelected={onChange}
+                    options={[]}
+                  />
+                )}
+                name="type"
+              />
+              {errors.type?.message ? (
+                <ErrorText>{errors.type?.message}</ErrorText>
               ) : null}
             </View>
 
