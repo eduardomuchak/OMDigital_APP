@@ -56,12 +56,15 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 1,
         descricao:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sit amet interdum velit, vel convallis enim. Phasellus sit amet augue felis. Donec sollicitudin feugiat tellus, non mattis massa eleifend a. Donec blandit enim ac neque sollicitudin, nec facilisis lorem tempor.",
+          "Lorem ipsum dolor1 sit amet, consectetur adipiscing elit. Morbi sit amet interdum velit, vel convallis enim.",
       },
       {
         id: 2,
-        descricao:
-          "Lore ipsum dolor sit amet, consectetur adipiscing elit. Morbi sit amet interdum velit, vel convallis enim. Phasellus sit amet augue felis. Donec sollicitudin feugiat tellus, non mattis massa eleifend a. Donec blandit enim ac neque sollicitudin, nec facilisis lorem",
+        descricao: "Lore ipsum dolor sit amet, consectetur adipiscing elit.",
+      },
+      {
+        id: 3,
+        descricao: "Lore ipsum dolor sit amet, consectetur",
       },
     ],
   },

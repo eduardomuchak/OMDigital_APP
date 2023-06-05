@@ -31,7 +31,7 @@ export function EditMaintenanceOrder() {
       <OperationInfoCard operationInfo={operationInfoProps} />
       <View className="flex-1 p-4">
         <Text className="mb-4 font-poppinsBold text-lg">Sintomas:</Text>
-        <SymptomsCard symptoms={symptoms} />
+        <SymptomsCard symptoms={symptoms} operationId={operationId.id} />
       </View>
       <View className="p-4">
         <CustomButton variant="primary">Editar</CustomButton>

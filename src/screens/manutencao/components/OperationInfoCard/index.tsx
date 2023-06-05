@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { PencilSimple } from "phosphor-react-native";
 import { GPSLocationModal } from "../../../../components/GPSLocationModal";
 import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
+import { StaticSymptomList } from "../../../operador/components/SymptomsCard/StaticSymptomList";
+import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -17,12 +19,17 @@ interface OperationInfoCardProps {
   };
   operador?: boolean;
   operationId?: number;
+  symptoms?: {
+    id: number;
+    descricao: string;
+  }[];
 }
 
 export function OperationInfoCard({
   operationInfo,
   operador,
   operationId,
+  symptoms,
 }: OperationInfoCardProps) {
   const location = {
     latitude: operationInfo.latitude,
@@ -75,6 +82,9 @@ export function OperationInfoCard({
           </Text>
         </View>
       </View>
+      {operador && symptoms!.length > 0 ? (
+        <SymptomListModal symptoms={symptoms!}/>
+      ) : null}
     </View>
   );
 }
