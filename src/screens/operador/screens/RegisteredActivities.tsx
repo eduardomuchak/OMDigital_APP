@@ -26,6 +26,8 @@ export function RegisteredActivities() {
     longitude: filteredOM[0]?.longitude,
   };
 
+  const symptoms = filteredOM[0]?.sintomas;
+
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header title={"Atividades Lançadas"} />
@@ -33,6 +35,7 @@ export function RegisteredActivities() {
         operador={true}
         operationInfo={operationInfoProps}
         operationId={id}
+        symptoms={symptoms}
       />
       <SwipeableActivityCardList activities={activities} omId={id} />
     </View>
