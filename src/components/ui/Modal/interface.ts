@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { ModalProps } from "react-native";
+import { Dispatch, SetStateAction } from 'react';
+import { ModalProps } from 'react-native';
 
 export namespace IModal {
   export interface CustomModalProps extends ModalProps {
@@ -8,6 +8,7 @@ export namespace IModal {
     onClose: Dispatch<SetStateAction<boolean>>;
     showCloseButton?: boolean;
     defaultPadding?: boolean;
+    backgroundTransparent?: boolean;
   }
 
   export interface CloseButtonProps {

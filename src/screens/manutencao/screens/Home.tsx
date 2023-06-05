@@ -4,12 +4,10 @@ import { View } from 'react-native';
 
 import { CardContainer } from '../../../components/CardContainer';
 import { FooterModal } from '../../../components/FooterModal';
-import { Header } from '../../../components/Header';
 import { OMCard } from '../../../components/OMCard';
 import { StatusFilter } from '../../../components/StatusFilter';
 
 import { StatusLegend } from '../../../components/StatusLegend';
-import { CustomButton } from '../../../components/ui/CustomButton';
 import { useAuth } from '../../../contexts/auth';
 import { OMContext } from '../../../contexts/om-context';
 import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
@@ -113,7 +111,7 @@ export function Home() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header isHomeScreen title={`Olá, ${user?.user}`} />
+      {/* <Header isHomeScreen title={`Olá, ${user?.user}`} /> */}
       {isModalVisible && (
         <FilterModalLogistica
           onClose={handleCloseModal}
@@ -142,9 +140,6 @@ export function Home() {
           />
         ))}
       </CardContainer>
-      <CustomButton variant="ghost" onPress={() => navigate('OpenedRequests')}>
-        Solicitações
-      </CustomButton>
       <FooterModal />
     </View>
   );

@@ -1,9 +1,10 @@
-import { Text, View } from "react-native";
-import { CustomModal } from "../ui/Modal";
-import { CustomButton } from "../ui/CustomButton";
-import { useState } from "react";
-import { useAuth } from "../../contexts/auth";
-import { SignOut } from "phosphor-react-native";
+import { SignOut } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useAuth } from '../../contexts/auth';
+import { CustomButton } from '../ui/CustomButton';
+import { CustomModal } from '../ui/Modal';
 
 export function LogoutModal() {
   const { signOut } = useAuth();
@@ -12,13 +13,12 @@ export function LogoutModal() {
   return (
     <>
       {/* Modal Trigger */}
-      <CustomButton
-        variant="ghost"
+      <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >
         <SignOut size={24} color="#FFFFFF" weight="bold" />
-      </CustomButton>
+      </TouchableOpacity>
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>

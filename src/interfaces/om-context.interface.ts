@@ -24,10 +24,16 @@ export namespace OM {
   export interface Activity {
     id: number;
     descricao: string;
-    status: string;
+    status:
+      | 'Concluída'
+      | 'Em andamento'
+      | 'Atrasada'
+      | 'Não iniciada'
+      | 'Pausada';
     dataInicioPrevista: string;
     dataFimPrevista: string;
     images: string[];
+    dataFimReal?: string;
   }
 
   export interface ActivityProps {

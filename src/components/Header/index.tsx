@@ -1,13 +1,13 @@
-import { Text, View } from "react-native";
-import { LogoutModal } from "../LogoutModal";
-import { HeaderProps } from "./interface";
-import { GoToPreviousScreen } from "../GoToPreviousScreen";
+import { Text, View } from 'react-native';
+import { GoToPreviousScreen } from '../GoToPreviousScreen';
+import { LogoutModal } from '../LogoutModal';
+import { HeaderProps } from './interface';
 
 export function Header({ title, isHomeScreen }: HeaderProps) {
   return (
     <View className="flex h-28 justify-end bg-primary-500">
       {isHomeScreen ? (
-        <View className="flex flex-row items-center justify-between pl-6 pr-2">
+        <View className="flex flex-row items-center justify-between px-5 pb-5">
           <Text className="font-poppinsBold text-lg text-white">{title}</Text>
           <LogoutModal />
         </View>

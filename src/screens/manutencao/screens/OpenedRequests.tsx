@@ -1,7 +1,6 @@
 import { FlatList, Text, View } from 'react-native';
 
 import React from 'react';
-import { Header } from '../../../components/Header';
 import { useAuth } from '../../../contexts/auth';
 import { openedRequestsMock } from '../../../mocks/solicitacoes';
 import { OpenedRequestCard } from '../components/OpenedRequestCard';
@@ -21,7 +20,7 @@ export function OpenedRequests() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title={`Olá, ${user?.user}`} isHomeScreen />
+      {/* <Header title={`Olá, ${user?.user}`} isHomeScreen /> */}
       <FlatList
         ListHeaderComponent={ListHeader}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}

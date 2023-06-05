@@ -11,6 +11,7 @@ export function CustomModal({
   onClose,
   showCloseButton = false,
   defaultPadding = true,
+  backgroundTransparent = false,
 }: IModal.CustomModalProps) {
   return (
     <Modal
@@ -26,6 +27,9 @@ export function CustomModal({
             'relative mx-auto my-auto h-fit max-w-xl rounded-xl bg-white',
             {
               ['px-5 py-6']: defaultPadding,
+            },
+            {
+              ['bg-transparent']: backgroundTransparent,
             },
           )}
         >
