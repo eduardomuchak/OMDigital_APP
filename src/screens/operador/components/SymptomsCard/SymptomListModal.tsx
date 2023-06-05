@@ -1,8 +1,8 @@
-import { DotsThreeVertical } from "phosphor-react-native";
-import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { StaticSymptomList } from "./StaticSymptomList";
+import { DotsThreeVertical } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { StaticSymptomList } from './StaticSymptomList';
 
 interface EditSymptomModalProps {
   symptoms: {
@@ -20,7 +20,7 @@ export function SymptomListModal({ symptoms }: EditSymptomModalProps) {
   return (
     <>
       <TouchableOpacity
-        className="flex-row items-center justify-center py-5"
+        className="flex-row items-center justify-center pt-5"
         onPress={() => setIsModalVisible(true)}
       >
         <Text className="font-poppinsBold text-lg">
@@ -36,7 +36,7 @@ export function SymptomListModal({ symptoms }: EditSymptomModalProps) {
         showCloseButton
         defaultPadding={false}
       >
-        <View className="p-6 w-screen">
+        <View className="w-screen p-6">
           <Text className="mb-4 text-center font-poppinsBold text-lg">
             Sintomas Cadastrados
           </Text>
