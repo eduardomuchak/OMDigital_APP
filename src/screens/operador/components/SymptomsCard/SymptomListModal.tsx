@@ -22,6 +22,7 @@ export function SymptomListModal({ symptoms }: EditSymptomModalProps) {
       <TouchableOpacity
         className="flex-row items-center justify-center pt-5"
         onPress={() => setIsModalVisible(true)}
+        activeOpacity={0.7}
       >
         <Text className="font-poppinsBold text-lg">
           Toque para ver os sintomas
@@ -36,7 +37,7 @@ export function SymptomListModal({ symptoms }: EditSymptomModalProps) {
         showCloseButton
         defaultPadding={false}
       >
-        <View className="w-screen p-6">
+        <View className="mx-auto w-screen max-w-xl p-6">
           <Text className="mb-4 text-center font-poppinsBold text-lg">
             Sintomas Cadastrados
           </Text>

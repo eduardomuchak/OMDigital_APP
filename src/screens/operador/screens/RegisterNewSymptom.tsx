@@ -1,18 +1,37 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { View } from "react-native";
-import { Header } from "../../../components/Header";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { TextArea } from "../../../components/ui/TextArea";
-import { OMContext } from "../../../contexts/om-context";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { TextArea } from '../../../components/ui/TextArea';
+import { OMContext } from '../../../contexts/om-context';
+import {
+  RegisterNewSymptomFormData,
+  registerNewSymptomSchema,
+} from '../../../validations/operador/RegisterNewSymptomScreen';
+import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
 
 export function RegisterNewSymptom() {
   const router = useRoute();
   const { id } = router.params as { id?: number };
+  const { goBack } = useNavigation();
 
   const { om, setOm } = useContext(OMContext);
-  const [symptom, setSymptom] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+    reset,
+  } = useForm<RegisterNewSymptomFormData>({
+    defaultValues: {
+      symptom: '',
+    },
+    resolver: zodResolver(registerNewSymptomSchema),
+  });
 
   const filteredOM = om.filter((om) => om.id === id);
 
@@ -26,11 +45,8 @@ export function RegisterNewSymptom() {
     longitude: filteredOM[0]?.longitude,
   };
 
-  function handleTextChange(text: string) {
-    setSymptom(text);
-  }
-
-  function handleAddNewSymptom() {
+  function onSubmit(data: RegisterNewSymptomFormData) {
+    const symptom = getValues('symptom');
     const updatedOM = om.map((om) => {
       if (om.id === id) {
         return {
@@ -44,24 +60,38 @@ export function RegisterNewSymptom() {
           ],
         };
       }
-
       return om;
     });
-
     setOm(updatedOM);
+    reset();
+    goBack();
   }
 
   return (
     <View className="flex-1 bg-white">
       <Header title="Adicionar Novo Sintoma" />
       <OperationInfoCard operationInfo={operationInfoProps} />
-      <View className="space-y-10 px-4 py-9">
-        <TextArea
-          value={symptom}
-          label="Sintoma"
-          onChangeText={handleTextChange}
-        />
-        <CustomButton onPress={handleAddNewSymptom} variant="primary">
+      <View className="px-6 py-4">
+        <View className="mb-4">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextArea
+                required
+                onBlur={onBlur}
+                label="Sintoma"
+                onChangeText={onChange}
+                value={value}
+                placeholder="Digite"
+              />
+            )}
+            name="symptom"
+          />
+          {errors.symptom?.message ? (
+            <ErrorText>{errors.symptom?.message}</ErrorText>
+          ) : null}
+        </View>
+        <CustomButton onPress={handleSubmit(onSubmit)} variant="primary">
           Cadastrar
         </CustomButton>
       </View>

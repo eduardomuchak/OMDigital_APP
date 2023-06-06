@@ -89,6 +89,7 @@ export function Login() {
               <TouchableOpacity
                 className="absolute right-3 top-8"
                 onPress={(event) => togglePasswordVisibility(event)}
+                activeOpacity={0.7}
               >
                 {isPasswordVisible ? (
                   <EyeSlash size={24} color="#000000" weight="bold" />

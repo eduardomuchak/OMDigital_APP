@@ -1,12 +1,11 @@
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import { useState } from "react";
-import { Text } from "react-native";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { Funnel } from "phosphor-react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { Checkbox } from "../../../../components/ui/Checkbox";
-import { CustomDateTimePicker } from "../../../../components/ui/CustomDateTimePicker";
-import { CheckboxProps, FilterModalProps } from "./interface";
+import { Funnel } from 'phosphor-react-native';
+import { useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Checkbox } from '../../../../components/ui/Checkbox';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../../components/ui/CustomDateTimePicker';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { CheckboxProps, FilterModalProps } from './interface';
 
 export function FilterModal({
   status,
@@ -39,7 +38,7 @@ export function FilterModal({
     }
 
     // Update state
-    if (id.startsWith("status")) {
+    if (id.startsWith('status')) {
       setAllStatus([...list]);
     } else {
       setAllOperations([...list]);
@@ -60,7 +59,7 @@ export function FilterModal({
       {/* Modal Trigger */}
       <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         className="flex flex-row items-center justify-around"
       >
         <Funnel size={26} color="#1D2F99" weight="fill" />

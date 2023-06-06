@@ -1,10 +1,9 @@
-import { Image, TouchableOpacity, View } from "react-native";
-import { CustomModal } from "../ui/Modal";
-import { useState } from "react";
-import { Text } from "react-native";
+import { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { CustomModal } from '../ui/Modal';
 
-import bigTruckIcon from "../../assets/icons/png/big-truck-black.png";
-import { footerInfoMock } from "./mock";
+import bigTruckIcon from '../../assets/icons/png/big-truck-black.png';
+import { footerInfoMock } from './mock';
 
 export function FooterModal() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -14,7 +13,7 @@ export function FooterModal() {
       {/* Modal Trigger */}
       <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
-        activeOpacity={0.8}
+        activeOpacity={0.7}
         className="flex h-32 flex-row items-center justify-around bg-primary-500"
       >
         {footerInfoMock.map((item, index) => (

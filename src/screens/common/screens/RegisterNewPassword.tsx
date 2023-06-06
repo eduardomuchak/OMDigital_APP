@@ -76,6 +76,7 @@ export function RegisterNewPassword() {
                 <TouchableOpacity
                   className="absolute right-3 top-8"
                   onPress={(event) => togglePasswordVisibility(event)}
+                  activeOpacity={0.7}
                 >
                   {isPasswordVisible ? (
                     <EyeSlash size={24} color="#000000" weight="bold" />
@@ -108,6 +109,7 @@ export function RegisterNewPassword() {
                   onPress={(event) =>
                     togglePasswordConfirmationVisibility(event)
                   }
+                  activeOpacity={0.7}
                 >
                   {isPasswordConfirmationVisible ? (
                     <EyeSlash size={24} color="#000000" weight="bold" />

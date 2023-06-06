@@ -1,11 +1,10 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation } from "@react-navigation/native";
-import { PencilSimple } from "phosphor-react-native";
-import { GPSLocationModal } from "../../../../components/GPSLocationModal";
-import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
-import { StaticSymptomList } from "../../../operador/components/SymptomsCard/StaticSymptomList";
-import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
+import { useNavigation } from '@react-navigation/native';
+import { PencilSimple } from 'phosphor-react-native';
+import { GPSLocationModal } from '../../../../components/GPSLocationModal';
+import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
+import { SymptomListModal } from '../../../operador/components/SymptomsCard/SymptomListModal';
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -50,15 +49,17 @@ export function OperationInfoCard({
         {!operador ? (
           <GPSLocationModal location={location} />
         ) : (
-          <View className="flex-row space-x-2">
-            <GPSLocationModal location={location} />
+          <View className="flex-row">
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("EditMaintenanceOrder", { id: operationId })
+                navigation.navigate('EditMaintenanceOrder', { id: operationId })
               }
+              className="mr-2"
+              activeOpacity={0.7}
             >
-              <PencilSimple size={30} weight="bold" />
+              <PencilSimple size={24} weight="bold" />
             </TouchableOpacity>
+            <GPSLocationModal location={location} />
           </View>
         )}
       </View>
@@ -83,7 +84,7 @@ export function OperationInfoCard({
         </View>
       </View>
       {operador && symptoms!.length > 0 ? (
-        <SymptomListModal symptoms={symptoms!}/>
+        <SymptomListModal symptoms={symptoms!} />
       ) : null}
     </View>
   );

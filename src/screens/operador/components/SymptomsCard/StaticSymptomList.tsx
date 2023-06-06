@@ -9,7 +9,7 @@ interface CardProps {
 
 function Card({ symptom }: CardProps) {
   return (
-    <View className="flex-1 flex-row items-center">
+    <View className="flex-1 flex-row items-center pb-1">
       <View className="flex-1 flex-row space-x-2 rounded-xl">
         <View className="top-2 h-2 w-2 rounded-full bg-black" />
         <Text className="font-poppinsMedium text-lg">{symptom.descricao}</Text>

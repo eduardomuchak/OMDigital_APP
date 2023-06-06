@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
-import { FlatList, Text, View } from "react-native";
-import { OMContext } from "../../../../contexts/om-context";
-import { EditSymptomModal } from "./EditSymptomModal";
+import { useContext, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { OMContext } from '../../../../contexts/om-context';
+import { EditSymptomModal } from './EditSymptomModal';
 
 interface SymptomsCardProps {
   symptoms: {
@@ -19,14 +20,26 @@ interface CardProps {
   onEditSymptom: (editedSymptom: { id: number; descricao: string }) => void;
 }
 
+function HeaderComponent() {
+  return <Text className="mb-3 font-poppinsBold text-lg">Sintomas:</Text>;
+}
+
 function Card({ symptom, onEditSymptom }: CardProps) {
   return (
-    <View className="flex-1 flex-row items-center py-2">
+    <View className="flex-1 flex-row items-center">
       <View className="flex-1 rounded-xl bg-neutral-100 p-4">
         <Text className="font-poppinsMedium text-lg">{symptom.descricao}</Text>
       </View>
       <EditSymptomModal symptom={symptom} onEditSymptom={onEditSymptom} />
     </View>
+  );
+}
+
+function FooterComponent() {
+  return (
+    <CustomButton variant="primary" style={{ marginTop: 20 }}>
+      Editar
+    </CustomButton>
   );
 }
 
@@ -65,6 +78,9 @@ export function SymptomsCard({ symptoms, operationId }: SymptomsCardProps) {
       renderItem={({ item }) => (
         <Card symptom={item} onEditSymptom={handleEditSymptom} />
       )}
+      ListHeaderComponent={HeaderComponent}
+      ListFooterComponent={FooterComponent}
+      ItemSeparatorComponent={() => <View className="h-3" />}
       alwaysBounceVertical={false}
       showsVerticalScrollIndicator={false}
     />

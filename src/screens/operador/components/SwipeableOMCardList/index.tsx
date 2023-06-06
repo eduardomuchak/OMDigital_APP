@@ -113,7 +113,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
       swipeToOpenPercent={30}
       swipeToClosePercent={30}
       ListFooterComponent={() => <View className="h-28" />}
-      ItemSeparatorComponent={() => <View className="h-5" />}
+      ItemSeparatorComponent={() => <View className="h-3" />}
       showsVerticalScrollIndicator={false}
     />
   );

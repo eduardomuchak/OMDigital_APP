@@ -1,15 +1,16 @@
-import { PencilSimple } from "phosphor-react-native";
-import { useState } from "react";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { PencilSimple } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { ErrorText } from '../../../../components/ui/ErrorText';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { TextArea } from '../../../../components/ui/TextArea';
 import {
-  NativeSyntheticEvent,
-  Text,
-  TextInputChangeEventData,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { TextArea } from "../../../../components/ui/TextArea";
+  EditMaintenanceOrderFormData,
+  EditMaintenanceOrderSchema,
+} from '../../../../validations/operador/EditMaintenanceOrderScreen';
 
 interface EditSymptomModalProps {
   symptom: {
@@ -24,18 +25,22 @@ export function EditSymptomModal({
   onEditSymptom,
 }: EditSymptomModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [symptomDescription, setSymptomDescription] = useState(
-    symptom.descricao
-  );
 
-  const handleChangeSymptom = (
-    event: NativeSyntheticEvent<TextInputChangeEventData>
-  ) => {
-    const { text } = event.nativeEvent;
-    setSymptomDescription(text);
-  };
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    getValues,
+  } = useForm<EditMaintenanceOrderFormData>({
+    defaultValues: {
+      symptomDescription: symptom.descricao,
+    },
+    resolver: zodResolver(EditMaintenanceOrderSchema),
+  });
 
-  function handleEditSymptom() {
+  function onSubmit() {
+    const symptomDescription = getValues('symptomDescription');
+
     onEditSymptom({ id: symptom.id, descricao: symptomDescription });
     setIsModalVisible(false);
   }
@@ -45,8 +50,9 @@ export function EditSymptomModal({
       <TouchableOpacity
         className="h-full justify-center rounded-br-lg rounded-tr-lg bg-primary-500 p-2"
         onPress={() => setIsModalVisible(true)}
+        activeOpacity={0.7}
       >
-        <PencilSimple size={30} weight="regular" color="white" />
+        <PencilSimple size={24} weight="bold" color="white" />
       </TouchableOpacity>
 
       {/* Modal */}
@@ -54,12 +60,25 @@ export function EditSymptomModal({
         <Text className="mb-4 text-center font-poppinsBold text-lg">
           Editar Sintoma
         </Text>
-
-        <TextArea
-          label="Sintoma"
-          value={symptomDescription}
-          onChange={handleChangeSymptom}
-        />
+        <View className="mb-4">
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextArea
+                required
+                onBlur={onBlur}
+                label="Sintoma"
+                onChangeText={onChange}
+                value={value}
+                placeholder="Digite"
+              />
+            )}
+            name="symptomDescription"
+          />
+          {errors.symptomDescription?.message ? (
+            <ErrorText>{errors.symptomDescription?.message}</ErrorText>
+          ) : null}
+        </View>
 
         <View className="flex flex-row justify-between">
           <View className="w-[48%]">
@@ -71,7 +90,7 @@ export function EditSymptomModal({
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => handleEditSymptom()}>
+            <CustomButton variant="primary" onPress={handleSubmit(onSubmit)}>
               Confirmar
             </CustomButton>
           </View>
