@@ -28,7 +28,7 @@ export function GPSLocationModal({ location }: LocationModalProps) {
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >
-        <MapPin size={30} weight="bold" color="#000000" />
+        <MapPin size={24} weight="bold" color="#000000" />
       </TouchableOpacity>
 
       {/* Modal */}

@@ -45,7 +45,7 @@ export function CardContainer({
         showsVerticalScrollIndicator={false}
         data={children}
         renderItem={({ item }) => <React.Fragment>{item}</React.Fragment>}
-        ItemSeparatorComponent={() => <View className="h-4" />}
+        ItemSeparatorComponent={() => <View className="h-3" />}
         ListFooterComponent={renderFooterComponent ? FooterComponent : null}
       />
     </View>

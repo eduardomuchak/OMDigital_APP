@@ -52,7 +52,10 @@ export function LogoAndCircles({
   return (
     <View className="relative flex-1 items-center justify-center">
       {showGoBack ? (
-        <TouchableOpacity className="absolute left-2 top-10 z-50">
+        <TouchableOpacity
+          className="absolute left-2 top-10 z-50"
+          activeOpacity={0.7}
+        >
           <GoToPreviousScreen />
         </TouchableOpacity>
       ) : null}

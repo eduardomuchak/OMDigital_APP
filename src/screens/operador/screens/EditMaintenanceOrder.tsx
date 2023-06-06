@@ -1,11 +1,10 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { Text, View } from "react-native";
-import { Header } from "../../../components/Header";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { OMContext } from "../../../contexts/om-context";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
-import { SymptomsCard } from "../components/SymptomsCard";
+import { useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { OMContext } from '../../../contexts/om-context';
+import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
+import { SymptomsCard } from '../components/SymptomsCard';
 
 export function EditMaintenanceOrder() {
   const { om } = useContext(OMContext);
@@ -27,14 +26,10 @@ export function EditMaintenanceOrder() {
 
   return (
     <View className="flex-1 bg-white">
-      <Header title={"Editar Ordem de Manutenção"} />
+      <Header title={'Editar Ordem de Manutenção'} />
       <OperationInfoCard operationInfo={operationInfoProps} />
-      <View className="flex-1 p-4">
-        <Text className="mb-4 font-poppinsBold text-lg">Sintomas:</Text>
+      <View className="flex-1 px-6 py-4">
         <SymptomsCard symptoms={symptoms} operationId={operationId.id} />
-      </View>
-      <View className="p-4">
-        <CustomButton variant="primary">Editar</CustomButton>
       </View>
     </View>
   );
