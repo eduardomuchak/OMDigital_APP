@@ -1,6 +1,7 @@
 export namespace OM {
   export interface MaintenanceOrderInfo {
     id: number;
+    criadaEm: string;
     codigoBem: string;
     ordemManutencao: string;
     operacao: string;
