@@ -8,6 +8,8 @@ import { StatusFilterOptions } from "./StatusFilterOptions";
 
 import { Logistica } from "../../interfaces";
 
+import { QRCodeScannerInput } from "../../../../components/QRCodeScannerInput";
+import { Select } from "../../../../components/ui/Select";
 import { DateFilterOptions } from "./DateFilterOptions";
 
 const operationsMock = [
@@ -34,6 +36,8 @@ export function FilterModalLogistica({
   endPeriod,
   setStartPeriod,
   setEndPeriod,
+  handleChangeCodigoBem,
+  codigoBem,
 }: Logistica.FilterModalProps) {
   const [allStatus, setAllStatus] = useState({
     todas: true,
@@ -50,6 +54,8 @@ export function FilterModalLogistica({
       };
     })
   );
+  const [osType, setOsType] = useState("todas");
+
   return (
     <CustomModal isOpen={isOpen} onClose={onClose}>
       <ScrollView
@@ -59,14 +65,36 @@ export function FilterModalLogistica({
         <Text className="font-poppinsBold">
           Selecione as ordens a serem exibidas por status e/ou por operação:
         </Text>
+
+        {/* FILTRO DE STATUS */}
         <StatusFilterOptions
           changeStatus={setAllStatus}
           allStatus={allStatus}
         />
-        <OperationsFilterOptions
-          operations={operations}
-          changeOperation={setOperations}
-        />
+
+        {/* FILTRO DO CÓDIGO DO BEM */}
+        <QRCodeScannerInput handleChangeCodigoBem={handleChangeCodigoBem} />
+
+        {/* FILTRO DE OPERAÇÕES */}
+        {codigoBem.length === 0 ? (
+          <OperationsFilterOptions
+            operations={operations}
+            changeOperation={setOperations}
+          />
+        ) : null}
+
+        {/* FILTRO DE TIPO DE OS */}
+        <View className="py-4">
+          <Text className="-mb-2 font-poppinsBold">Tipo da OS:</Text>
+          <Select
+            label=""
+            selected={osType}
+            setSelected={setOsType}
+            options={[]}
+          />
+        </View>
+
+        {/* FILTRO DE PERÍODO */}
         {isOperador && (
           <DateFilterOptions
             startPeriod={startPeriod!}
@@ -75,6 +103,8 @@ export function FilterModalLogistica({
             setEndPeriod={setEndPeriod!}
           />
         )}
+
+        {/* BOTÕES DE CONFIRMAR E CANCELAR */}
         <View className="mt-4 flex flex-row justify-between">
           <View className="w-[48%]">
             <CustomButton

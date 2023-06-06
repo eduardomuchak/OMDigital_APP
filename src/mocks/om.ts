@@ -4,9 +4,10 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
   {
     id: 1,
     codigoBem: 'GKY-7G22',
+    criadaEm: '2023-05-04T17:14:50.984Z',
     ordemManutencao: 'OM12345 - O S034561',
     operacao: 'Operação 1',
-    paradaReal: '2023-05-03T17:42:20.202Z',
+    paradaReal: '2023-06-05T17:42:20.202Z',
     prevFim: '2023-05-03T17:42:20.202Z',
     status: 'Aberta',
     latitude: '-23.5505199',
@@ -40,7 +41,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
       {
         id: 3,
         descricao: 'Verificar o óleo da caixa de marcha',
-        status: 'Concluída',
+        status: 'Concluída', 
         dataFimReal: '2023-05-03T14:42:20.202Z',
         dataInicioPrevista: '2023-05-03T17:42:20.202Z',
         dataFimPrevista: '2023-05-03T17:42:20.202Z',
@@ -75,6 +76,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
   {
     id: 2,
     codigoBem: 'IKC-7G22',
+    criadaEm: '2023-05-03T17:42:20.202Z',
     ordemManutencao: 'OM12345 - O S034562',
     operacao: 'Operação 1',
     paradaReal: '2023-05-03T17:42:20.202Z',
@@ -122,6 +124,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
   {
     id: 3,
     codigoBem: 'ABC-7G22',
+    criadaEm: '2023-05-03T17:42:20.202Z',
     ordemManutencao: 'OM12345 - O S034563',
     operacao: 'Operação 3',
     paradaReal: '2023-05-03T17:42:20.202Z',
@@ -169,6 +172,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
   {
     id: 4,
     codigoBem: 'BAT-7G22',
+    criadaEm: '2023-05-03T17:42:20.202Z',
     ordemManutencao: 'OM12345 - O S034564',
     operacao: 'Operação 2',
     paradaReal: '2023-05-03T17:42:20.202Z',
@@ -211,6 +215,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
   {
     id: 5,
     codigoBem: 'SUP-7G22',
+    criadaEm: '2023-05-03T17:42:20.202Z',
     ordemManutencao: 'OM12345 - O S034565',
     operacao: 'Operação 2',
     paradaReal: '2023-05-03T17:42:20.202Z',

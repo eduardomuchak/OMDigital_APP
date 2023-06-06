@@ -33,6 +33,8 @@ export namespace Logistica {
     endPeriod?: Date;
     setStartPeriod?: Dispatch<SetStateAction<Date>>;
     setEndPeriod?: Dispatch<SetStateAction<Date>>;
+    handleChangeCodigoBem: (codigoBem: string) => void;
+    codigoBem: string;
   }
 
   export interface OperationsFilterOptionsProps {
