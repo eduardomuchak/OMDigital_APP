@@ -6,7 +6,8 @@
     "development": {
       "distribution": "internal",
       "android": {
-        "gradleCommand": ":app:assembleDebug"
+        "gradleCommand": ":app:assembleDebug",
+        "buildType": "app-bundle"
       },
       "ios": {
         "buildConfiguration": "Debug"
@@ -18,6 +19,10 @@
     "production": {}
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./service-account.json"
+      }
+    }
   }
 }
