@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
 import { Header } from "../../../components/Header";
@@ -110,20 +110,31 @@ export function Home() {
       (operation) => operation.showAll || operation[item.operacao]
     );
 
-    // const convertedCreationDate = new Date(item.criadaEm);
+    const convertedCreationDate = new Date(item.criadaEm);
 
-    // const matchPeriod =
-    //   convertedCreationDate.toDateString() >= startPeriod.toDateString() &&
-    //   convertedCreationDate.toDateString() <= endPeriod.toDateString();
+    const matchPeriod =
+      convertedCreationDate >= startPeriod &&
+      convertedCreationDate <= endPeriod;
 
     const matchCodigoBem = item.codigoBem === codigoBem;
 
     if (codigoBem === "") {
-      return matchStatus && matchOperacao;
+      return matchStatus && matchOperacao && matchPeriod;
     }
 
-    return matchStatus && matchOperacao && matchCodigoBem;
+    return matchStatus && matchOperacao && matchCodigoBem && matchPeriod;
   });
+
+  useEffect(() => {
+    if (om.length > 0) {
+      const dates = om.map((item) => new Date(item.criadaEm).getTime());
+      const smallestDate = new Date(Math.min.apply(null, dates));
+      const largestDate = new Date(Math.max.apply(null, dates));
+
+      setStartPeriod(smallestDate);
+      setEndPeriod(largestDate);
+    }
+  }, [om]);
 
   return (
     <View className="flex flex-1 flex-col bg-white">
