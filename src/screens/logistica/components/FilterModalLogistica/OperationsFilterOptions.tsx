@@ -1,15 +1,15 @@
-import { Text, View } from "react-native";
+import { Text, View } from 'react-native';
 
-import { Checkbox } from "../../../../components/ui/Checkbox";
+import { Checkbox } from '../../../../components/ui/Checkbox';
 
-import { Logistica } from "../../interfaces";
+import { Logistica } from '../../interfaces';
 
 export function OperationsFilterOptions({
   operations,
   changeOperation,
 }: Logistica.OperationsFilterOptionsProps) {
   function handleChangeOperations(key: string) {
-    if (key === "Todas") {
+    if (key === 'Todas') {
       changeOperation((prevState: Logistica.OperationState[]) => {
         const updatedOperations = prevState.map((operation) => {
           return { ...operation, showAll: !operation.showAll };
@@ -30,12 +30,12 @@ export function OperationsFilterOptions({
   }
 
   return (
-    <View className="mt-2">
-      <Text className="mb-2 font-poppinsBold">Operação:</Text>
+    <View className="mb-5">
+      <Text className="mb-4 font-poppinsBold text-base">Operação:</Text>
       <Checkbox
-        title={"Todas"}
+        title={'Todas'}
         checked={operations.every((operation) => operation.showAll)}
-        onPress={handleChangeOperations.bind(null, "Todas")}
+        onPress={handleChangeOperations.bind(null, 'Todas')}
       />
       {operations.map((operation: Logistica.OperationState) => {
         let option;

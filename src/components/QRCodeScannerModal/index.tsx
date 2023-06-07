@@ -13,26 +13,6 @@ export function QRCodeScannerModal({ onScan }: QRCodeScannerModalProps) {
   const [hasPermission, setHasPermission] = useState<null | boolean>(null);
   const [scanned, setScanned] = useState(false);
 
-  const [permissionResponse, requestPermission] =
-    BarCodeScanner.usePermissions();
-
-  async function verifyPermissions() {
-    if (permissionResponse?.status === 'granted') {
-      const permissionResponse = await requestPermission();
-      setHasPermission(permissionResponse.granted);
-    }
-
-    if (permissionResponse?.status === 'denied') {
-      Alert.alert(
-        'Insufficient Permissions!',
-        'You need to grant camera permissions to use this app.',
-      );
-      return false;
-    }
-
-    return true;
-  }
-
   const handleBarCodeScanned = ({
     type,
     data,
@@ -56,14 +36,35 @@ export function QRCodeScannerModal({ onScan }: QRCodeScannerModalProps) {
     );
   };
 
-  if (hasPermission === null || hasPermission === false) {
-    verifyPermissions();
+  const getBarCodeScannerPermissions = async () => {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === 'granted');
+  };
+
+  if (hasPermission === false) {
+    Alert.alert(
+      'Permissão de acesso à câmera negada',
+      'Para escanear o QR Code, é necessário permitir o acesso à câmera',
+      [
+        {
+          text: 'OK',
+          onPress: async () => {
+            setHasPermission(null);
+          },
+        },
+      ],
+    );
+  }
+
+  if (hasPermission === null) {
     return (
       <View className="flex items-center justify-end">
         <TouchableOpacity
           className={'flex h-14 w-14 items-center justify-center rounded-lg'}
           activeOpacity={0.7}
-          onPress={() => setIsModalVisible(true)}
+          onPress={async () => {
+            getBarCodeScannerPermissions();
+          }}
         >
           <Camera size={30} color="#1D2F99" weight="bold" />
         </TouchableOpacity>
@@ -78,7 +79,10 @@ export function QRCodeScannerModal({ onScan }: QRCodeScannerModalProps) {
         <TouchableOpacity
           className={'flex h-14 w-14 items-center justify-center rounded-lg'}
           activeOpacity={0.7}
-          onPress={() => setIsModalVisible(true)}
+          onPress={() => {
+            getBarCodeScannerPermissions();
+            setIsModalVisible(true);
+          }}
         >
           <Camera size={30} color="#1D2F99" weight="bold" />
         </TouchableOpacity>

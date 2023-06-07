@@ -1,15 +1,15 @@
-import { View, Text } from "react-native";
+import { Text, View } from 'react-native';
 
-import { Checkbox } from "../../../../components/ui/Checkbox";
+import { Checkbox } from '../../../../components/ui/Checkbox';
 
-import { Logistica } from "../../interfaces";
+import { Logistica } from '../../interfaces';
 
 export function StatusFilterOptions({
   changeStatus,
   allStatus,
 }: Logistica.FilterOptionsProps) {
   function handleChangeStatus(status: string) {
-    if (status === "todas") {
+    if (status === 'todas') {
       changeStatus({
         todas: !allStatus.todas,
         abertas: false,
@@ -26,31 +26,31 @@ export function StatusFilterOptions({
     }
   }
   return (
-    <View className="mt-2">
-      <Text className="mb-2 font-poppinsBold">Status:</Text>
+    <View className="mb-5">
+      <Text className="mb-4 font-poppinsBold text-base">Status:</Text>
       <Checkbox
-        title={"Todas"}
-        onPress={() => handleChangeStatus("todas")}
+        title={'Todas'}
+        onPress={() => handleChangeStatus('todas')}
         checked={allStatus.todas}
       />
       <Checkbox
-        title={"Abertas"}
-        onPress={() => handleChangeStatus("abertas")}
+        title={'Abertas'}
+        onPress={() => handleChangeStatus('abertas')}
         checked={allStatus.abertas}
       />
       <Checkbox
-        title={"Aguardando"}
-        onPress={() => handleChangeStatus("aguardando")}
+        title={'Aguardando'}
+        onPress={() => handleChangeStatus('aguardando')}
         checked={allStatus.aguardando}
       />
       <Checkbox
-        title={"Canceladas"}
-        onPress={() => handleChangeStatus("canceladas")}
+        title={'Canceladas'}
+        onPress={() => handleChangeStatus('canceladas')}
         checked={allStatus.canceladas}
       />
       <Checkbox
-        title={"Concluídas"}
-        onPress={() => handleChangeStatus("concluidas")}
+        title={'Concluídas'}
+        onPress={() => handleChangeStatus('concluidas')}
         checked={allStatus.concluidas}
       />
     </View>

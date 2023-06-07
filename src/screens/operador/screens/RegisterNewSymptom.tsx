@@ -24,7 +24,6 @@ export function RegisterNewSymptom() {
     control,
     handleSubmit,
     formState: { errors },
-    getValues,
     reset,
   } = useForm<RegisterNewSymptomFormData>({
     defaultValues: {
@@ -46,7 +45,6 @@ export function RegisterNewSymptom() {
   };
 
   function onSubmit(data: RegisterNewSymptomFormData) {
-    const symptom = getValues('symptom');
     const updatedOM = om.map((om) => {
       if (om.id === id) {
         return {
@@ -55,7 +53,7 @@ export function RegisterNewSymptom() {
             ...om.sintomas,
             {
               id: om.sintomas[om.sintomas.length - 1].id + 1,
-              descricao: symptom,
+              descricao: data.symptom,
             },
           ],
         };

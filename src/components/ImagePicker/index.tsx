@@ -27,8 +27,8 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
 
     if (cameraPermissionInformation?.status === PermissionStatus.DENIED) {
       Alert.alert(
-        'Insufficient Permissions!',
-        'You need to grant camera permissions to use this app.',
+        'Permissões insuficientes!',
+        'Você precisa conceder permissão para utilizar a câmera.',
       );
       return false;
     }

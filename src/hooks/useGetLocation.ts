@@ -1,47 +1,24 @@
-import {
-  PermissionStatus,
-  getCurrentPositionAsync,
-  useForegroundPermissions,
-} from "expo-location";
-import { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import * as Location from 'expo-location';
+
+import { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 export function useGetLocation() {
   const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
-  const [locationPermissionInformation, requestPermission] =
-    useForegroundPermissions();
 
-  async function verifyPermissions() {
-    if (
-      locationPermissionInformation &&
-      locationPermissionInformation.status === PermissionStatus.UNDETERMINED
-    ) {
-      const permissionResponse = await requestPermission();
-
-      return permissionResponse.granted;
-    }
-
-    if (
-      locationPermissionInformation &&
-      locationPermissionInformation.status === PermissionStatus.DENIED
-    ) {
+  async function getUserLocation() {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
       Alert.alert(
-        "Insufficient Permissions!",
-        "You need to grant location permissions to use this app."
+        'Permissões insuficientes!',
+        'Você precisa conceder permissão para usar a localização do dispositivo.',
       );
-      return false;
-    }
-
-    return true;
-  }
-
-  async function pickLocationHandler() {
-    const hasPermission = await verifyPermissions();
-    if (!hasPermission) {
       return;
     }
 
-    const location = await getCurrentPositionAsync();
+    let location = await Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    });
     setLocation({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
@@ -49,8 +26,8 @@ export function useGetLocation() {
   }
 
   useEffect(() => {
-    pickLocationHandler();
-  }, [locationPermissionInformation]);
+    getUserLocation();
+  }, []);
 
   return { location };
 }
