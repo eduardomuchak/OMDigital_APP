@@ -8,6 +8,7 @@ import { StatusFilter } from '../../../components/StatusFilter';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
 import { SolicitationMock } from '../../../mocks/solicitacoes';
+import { AddNewRequestButton } from '../components/AddNewRequestButton';
 import { StatusFilterModal } from '../components/StatusFilterModal';
 
 export interface FilterState {
@@ -92,11 +93,12 @@ export function Home() {
         filterTitle="Status - TODAS"
       />
       <StatusLegend status={statusLegendInfo} />
-      <CardContainer renderFooterComponent>
+      <CardContainer>
         {filteredSolicitations.map((item) => (
           <SolicitationCard key={item.id} {...item} />
         ))}
       </CardContainer>
+      <AddNewRequestButton />
     </View>
   );
 }

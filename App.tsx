@@ -9,14 +9,20 @@ import {
   useFonts,
 } from '@expo-google-fonts/poppins';
 import { NavigationContainer } from '@react-navigation/native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useCameraPermissions } from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import { Loading } from './src/components/Loading';
 import { AuthProvider } from './src/contexts/auth';
+import { useGetLocation } from './src/hooks/useGetLocation';
 import Routes from './src/routes';
 
 export default function App() {
+  const { location } = useGetLocation();
+  const [cameraPermissionInformation, requestPermission] =
+    useCameraPermissions();
   async function SetBackgroundColor() {
     await SystemUI.setBackgroundColorAsync('#FFF');
   }
@@ -32,6 +38,7 @@ export default function App() {
 
   useEffect(() => {
     SetBackgroundColor();
+    BarCodeScanner.requestPermissionsAsync();
   }, []);
 
   if (!fontsLoaded) {
