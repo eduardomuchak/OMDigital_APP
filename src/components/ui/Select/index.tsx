@@ -24,9 +24,11 @@ export function Select({
             *
           </Text>
         ) : null}
-        <Text className="font-poppinsBold text-sm leading-4 text-neutral-900">
-          {label.toLocaleUpperCase()}
-        </Text>
+        {label.length > 0 ? (
+          <Text className="font-poppinsBold text-sm leading-4 text-neutral-900">
+            {label.toLocaleUpperCase()}
+          </Text>
+        ) : null}
       </View>
       <View className="relative h-14 rounded-lg bg-neutral-100 px-5 py-2">
         <Picker

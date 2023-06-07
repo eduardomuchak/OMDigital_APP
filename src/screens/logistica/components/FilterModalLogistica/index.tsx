@@ -1,29 +1,29 @@
-import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OperationsFilterOptions } from "./OperationsFilterOptions";
-import { StatusFilterOptions } from "./StatusFilterOptions";
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { OperationsFilterOptions } from './OperationsFilterOptions';
+import { StatusFilterOptions } from './StatusFilterOptions';
 
-import { Logistica } from "../../interfaces";
+import { Logistica } from '../../interfaces';
 
-import { QRCodeScannerInput } from "../../../../components/QRCodeScannerInput";
-import { Select } from "../../../../components/ui/Select";
-import { DateFilterOptions } from "./DateFilterOptions";
+import { QRCodeScannerInput } from '../../../../components/QRCodeScannerInput';
+import { Select } from '../../../../components/ui/Select';
+import { DateFilterOptions } from './DateFilterOptions';
 
 const operationsMock = [
   {
     id: 1,
-    name: "Operação 1",
+    name: 'Operação 1',
   },
   {
     id: 2,
-    name: "Operação 2",
+    name: 'Operação 2',
   },
   {
     id: 3,
-    name: "Operação 3",
+    name: 'Operação 3',
   },
 ];
 
@@ -52,9 +52,9 @@ export function FilterModalLogistica({
         showAll: true,
         [operation.name]: false,
       };
-    })
+    }),
   );
-  const [osType, setOsType] = useState("todas");
+  const [osType, setOsType] = useState('todas');
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose}>
@@ -62,7 +62,7 @@ export function FilterModalLogistica({
         className="max-h-[650px]"
         showsVerticalScrollIndicator={false}
       >
-        <Text className="font-poppinsBold">
+        <Text className="mb-5 font-poppinsBold text-base">
           Selecione as ordens a serem exibidas por status e/ou por operação:
         </Text>
 
@@ -84,8 +84,8 @@ export function FilterModalLogistica({
         ) : null}
 
         {/* FILTRO DE TIPO DE OS */}
-        <View className="py-4">
-          <Text className="-mb-2 font-poppinsBold">Tipo da OS:</Text>
+        <View className="mb-5">
+          <Text className="mb-4 font-poppinsBold text-base">Tipo da OS:</Text>
           <Select
             label=""
             selected={osType}
@@ -105,7 +105,7 @@ export function FilterModalLogistica({
         )}
 
         {/* BOTÕES DE CONFIRMAR E CANCELAR */}
-        <View className="mt-4 flex flex-row justify-between">
+        <View className="flex flex-row justify-between">
           <View className="w-[48%]">
             <CustomButton
               onPress={() => {

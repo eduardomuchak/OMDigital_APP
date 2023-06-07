@@ -1,6 +1,7 @@
 import { ScrollView, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
 import { Controller, useForm } from 'react-hook-form';
 import { Header } from '../../../components/Header';
 import { OrderInfoCard } from '../../../components/OrderInfoCard';
@@ -29,6 +30,7 @@ export function RegisterNewActivity() {
     },
     resolver: zodResolver(registerNewActivitySchema),
   });
+  const { goBack } = useNavigation();
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
     const payload = {
@@ -39,6 +41,7 @@ export function RegisterNewActivity() {
 
     // console.log('PAYLOAD =>', payload);
     reset();
+    goBack();
   };
 
   return (

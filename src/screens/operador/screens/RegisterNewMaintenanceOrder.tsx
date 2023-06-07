@@ -1,6 +1,7 @@
 import { ScrollView, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
 import { Controller, useForm } from 'react-hook-form';
 import { Header } from '../../../components/Header';
 import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
@@ -10,12 +11,16 @@ import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { Select } from '../../../components/ui/Select';
 import { TextArea } from '../../../components/ui/TextArea';
+import { useGetLocation } from '../../../hooks/useGetLocation';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
 } from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
 
 export function RegisterNewMaintenanceOrder() {
+  const { location } = useGetLocation();
+  const { goBack } = useNavigation();
+
   const {
     control,
     handleSubmit,
@@ -38,10 +43,12 @@ export function RegisterNewMaintenanceOrder() {
       ...data,
       startDate: data.startDate.toISOString(),
       endDate: data.endDate.toISOString(),
+      location,
     };
 
-    console.log('PAYLOAD =>', payload);
+    // console.log('PAYLOAD =>', payload);
     reset();
+    goBack();
   };
 
   return (
@@ -170,7 +177,7 @@ export function RegisterNewMaintenanceOrder() {
                     label="TIPO DA OS (Ordem de Serviço)"
                     selected={value}
                     setSelected={onChange}
-                    options={[]}
+                    options={['Preventiva', 'Corretiva']}
                   />
                 )}
                 name="type"

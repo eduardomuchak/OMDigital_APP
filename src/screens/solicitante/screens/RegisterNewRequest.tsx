@@ -9,6 +9,7 @@ import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
+import { useGetLocation } from '../../../hooks/useGetLocation';
 import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringToPTBRDateString';
 import {
   RegisterNewRequestFormData,
@@ -29,6 +30,7 @@ export interface AttachmentProps {
 
 export function RegisterNewRequest() {
   const { goBack } = useNavigation();
+  const { location } = useGetLocation();
 
   const [attachment, setAttachment] = useState<AttachmentProps>(
     {} as AttachmentProps,
@@ -58,6 +60,7 @@ export function RegisterNewRequest() {
     const payload = {
       ...data,
       attachment: attachment ? attachment.base64 : null,
+      location,
     };
 
     // console.log("DADOS =>", payload);
