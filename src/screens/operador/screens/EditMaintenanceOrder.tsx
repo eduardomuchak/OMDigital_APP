@@ -1,14 +1,14 @@
 import { useRoute } from '@react-navigation/native';
 import { useContext } from 'react';
-import { View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
+import { CustomButton } from '../../../components/ui/CustomButton';
 import { OMContext } from '../../../contexts/om-context';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
-import { SymptomsCard } from '../components/SymptomsCard';
+import { SymptomCard } from '../components/SymptomCard';
 
 export function EditMaintenanceOrder() {
-  const { om } = useContext(OMContext);
-
+  const { om, setOm } = useContext(OMContext);
   const route = useRoute();
   const operationId = route.params as { id: number };
 
@@ -24,12 +24,50 @@ export function EditMaintenanceOrder() {
   };
   const symptoms = filteredOM[0]?.sintomas;
 
+  const handleEditSymptom = (editedSymptom: {
+    id: number;
+    descricao: string;
+  }) => {
+    const editedOm = om.map((om) => {
+      if (om.id === operationId.id) {
+        const updatedSymptoms = om.sintomas.map((symptom) => {
+          if (symptom.id === editedSymptom.id) {
+            return {
+              ...symptom,
+              descricao: editedSymptom.descricao,
+            };
+          }
+          return symptom;
+        });
+
+        return { ...om, sintomas: updatedSymptoms };
+      }
+      return om;
+    });
+    setOm(editedOm);
+  };
+
   return (
     <View className="flex-1 bg-white">
       <Header title={'Editar Ordem de Manutenção'} />
       <OperationInfoCard operationInfo={operationInfoProps} />
       <View className="flex-1 px-6 py-4">
-        <SymptomsCard symptoms={symptoms} operationId={operationId.id} />
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Text className="mb-3 font-poppinsBold text-lg">Sintomas:</Text>
+          {symptoms.map((symptom, index) => (
+            <>
+              <SymptomCard
+                key={symptom.id}
+                symptom={symptom}
+                onEditSymptom={handleEditSymptom}
+              />
+              {index !== symptoms.length - 1 ? <View className="h-3" /> : null}
+            </>
+          ))}
+          <CustomButton variant="primary" style={{ marginTop: 20 }}>
+            Editar
+          </CustomButton>
+        </ScrollView>
       </View>
     </View>
   );

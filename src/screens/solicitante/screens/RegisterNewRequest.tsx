@@ -111,7 +111,8 @@ export function RegisterNewRequest() {
                   value={value}
                   label="Contador"
                   placeholder="Digite o contador"
-                  maxLength={30}
+                  maxLength={10}
+                  keyboardType="numeric"
                 />
               )}
               name="counter"
