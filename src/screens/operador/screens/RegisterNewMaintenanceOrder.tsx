@@ -102,7 +102,8 @@ export function RegisterNewMaintenanceOrder() {
                     value={value}
                     label="Contador"
                     placeholder="Digite"
-                    maxLength={15}
+                    maxLength={10}
+                    keyboardType="numeric"
                   />
                 )}
                 name="counter"

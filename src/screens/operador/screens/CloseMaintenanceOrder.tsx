@@ -56,7 +56,8 @@ export function CloseMaintenanceOrder() {
                   onChangeText={onChange}
                   value={value}
                   label="Contador"
-                  maxLength={15}
+                  maxLength={10}
+                  keyboardType="numeric"
                 />
               )}
               name="counter"
