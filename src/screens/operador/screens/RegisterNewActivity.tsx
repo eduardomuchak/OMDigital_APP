@@ -1,19 +1,21 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View } from "react-native";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigation } from '@react-navigation/native';
-import { Controller, useForm } from 'react-hook-form';
-import { Header } from '../../../components/Header';
-import { OrderInfoCard } from '../../../components/OrderInfoCard';
-import { CustomButton } from '../../../components/ui/CustomButton';
-import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
-import { ErrorText } from '../../../components/ui/ErrorText';
-import { Input } from '../../../components/ui/Input';
-import { TextArea } from '../../../components/ui/TextArea';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useContext } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Header } from "../../../components/Header";
+import { OrderInfoCard } from "../../../components/OrderInfoCard";
+import { CustomButton } from "../../../components/ui/CustomButton";
+import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
+import { ErrorText } from "../../../components/ui/ErrorText";
+import { Input } from "../../../components/ui/Input";
+import { TextArea } from "../../../components/ui/TextArea";
+import { OMContext } from "../../../contexts/om-context";
 import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
-} from '../../../validations/operador/RegisterNewActivityScreen';
+} from "../../../validations/operador/RegisterNewActivityScreen";
 
 export function RegisterNewActivity() {
   const {
@@ -23,14 +25,19 @@ export function RegisterNewActivity() {
     reset,
   } = useForm<RegisterNewActivityFormData>({
     defaultValues: {
-      activity: '',
-      note: '',
+      activity: "",
+      note: "",
       startDate: new Date(),
       endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
     },
     resolver: zodResolver(registerNewActivitySchema),
   });
   const { goBack } = useNavigation();
+
+  const route = useRoute();
+  const omId = route.params as { id: number };
+
+  const { createNewActivity } = useContext(OMContext);
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
     const payload = {
@@ -39,10 +46,24 @@ export function RegisterNewActivity() {
       endDate: data.endDate.toISOString(),
     };
 
-    // console.log('PAYLOAD =>', payload);
+    createNewActivity(
+      {
+        id: Math.random() * 1000,
+        descricao: payload.activity,
+        status: "Em andamento",
+        dataFimReal: payload.endDate,
+        dataInicioPrevista: payload.startDate,
+        dataFimPrevista: payload.endDate,
+        images: [],
+      },
+      omId.id
+    );
+
     reset();
     goBack();
   };
+
+  //{"activity": "Nova atv", "endDate": "2023-06-12T18:01:57.826Z", "note": "sim", "startDate": "2023-06-10T17:01:57.826Z"}
 
   return (
     <View className="flex flex-1 flex-col bg-white">

@@ -15,6 +15,8 @@ export namespace OM {
     telefone?: string;
     atividades: Activity[];
     sintomas: Symptom[];
+    contador: number;
+    tipo: string;
   }
 
   export interface Symptom {

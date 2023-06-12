@@ -1,11 +1,27 @@
+import { useRoute } from "@react-navigation/native";
+import { Trash } from "phosphor-react-native";
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import { useState } from "react";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
-import { Trash } from "phosphor-react-native";
+import { OMContext } from "../../../../contexts/om-context";
 
-export function DeleteActivityModal() {
+interface DeleteActivityModalProps {
+  activityId: number;
+}
+
+export function DeleteActivityModal({ activityId }: DeleteActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { deleteActivity } = useContext(OMContext);
+
+  // id da OM
+  const route = useRoute();
+  const { id: omId } = route.params as { id: number };
+
+  function handleDeleteActivity() {
+    deleteActivity(activityId, omId);
+    setIsModalVisible(false);
+  }
 
   return (
     <>
@@ -33,7 +49,7 @@ export function DeleteActivityModal() {
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton variant="primary" onPress={handleDeleteActivity}>
               Confirmar
             </CustomButton>
           </View>
