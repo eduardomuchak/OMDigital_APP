@@ -1,25 +1,28 @@
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View } from "react-native";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigation } from '@react-navigation/native';
-import { Controller, useForm } from 'react-hook-form';
-import { Header } from '../../../components/Header';
-import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
-import { CustomButton } from '../../../components/ui/CustomButton';
-import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
-import { ErrorText } from '../../../components/ui/ErrorText';
-import { Input } from '../../../components/ui/Input';
-import { Select } from '../../../components/ui/Select';
-import { TextArea } from '../../../components/ui/TextArea';
-import { useGetLocation } from '../../../hooks/useGetLocation';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useNavigation } from "@react-navigation/native";
+import { useContext } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Header } from "../../../components/Header";
+import { QRCodeScannerModal } from "../../../components/QRCodeScannerModal";
+import { CustomButton } from "../../../components/ui/CustomButton";
+import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
+import { ErrorText } from "../../../components/ui/ErrorText";
+import { Input } from "../../../components/ui/Input";
+import { Select } from "../../../components/ui/Select";
+import { TextArea } from "../../../components/ui/TextArea";
+import { OMContext } from "../../../contexts/om-context";
+import { useGetLocation } from "../../../hooks/useGetLocation";
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
-} from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
+} from "../../../validations/operador/RegisterNewMaintenanceOrderScreen";
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();
   const { goBack } = useNavigation();
+  const { createNewOM, om } = useContext(OMContext);
 
   const {
     control,
@@ -28,12 +31,12 @@ export function RegisterNewMaintenanceOrder() {
     reset,
   } = useForm<RegisterNewMaintenanceOrderFormData>({
     defaultValues: {
-      propertyCode: '',
-      counter: '',
+      propertyCode: "",
+      counter: "",
       startDate: new Date(),
       endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
-      symptom: '',
-      type: '',
+      symptom: "",
+      type: "",
     },
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
@@ -46,10 +49,30 @@ export function RegisterNewMaintenanceOrder() {
       location,
     };
 
-    // console.log('PAYLOAD =>', payload);
+    createNewOM({
+      id: om.length === 0 ? 1 : om[om.length - 1].id + 1,
+      criadaEm: new Date().toISOString(),
+      codigoBem: payload.propertyCode,
+      ordemManutencao: "",
+      operacao: "",
+      paradaReal: payload.startDate,
+      prevFim: payload.endDate,
+      status: "Aberta",
+      latitude: payload.location.latitude.toString(),
+      longitude: payload.location.longitude.toString(),
+      localDeManutencao: "",
+      controlador: "",
+      telefone: "",
+      atividades: [],
+      sintomas: [{ id: 1, descricao: payload.symptom }],
+      contador: Number(payload.counter),
+      tipo: payload.type,
+    });
     reset();
     goBack();
   };
+
+  // PAYLOAD => {"counter": "5555", "endDate": "2023-06-12T14:13:59.891Z", "location": {"latitude": 37.4226711, "longitude": -122.0849872}, "propertyCode": "ABC-123", "startDate": "2023-06-08T13:13:59.891Z", "symptom": "QUEBROU", "type": "Corretiva"}
 
   return (
     <>
@@ -178,7 +201,7 @@ export function RegisterNewMaintenanceOrder() {
                     label="TIPO DA OS (Ordem de Serviço)"
                     selected={value}
                     setSelected={onChange}
-                    options={['Preventiva', 'Corretiva']}
+                    options={["Preventiva", "Corretiva"]}
                   />
                 )}
                 name="type"

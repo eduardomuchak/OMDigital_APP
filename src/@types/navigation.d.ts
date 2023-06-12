@@ -1,13 +1,12 @@
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { RouteProp } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends Record<string, object | undefined> {
       Home: undefined;
       Login: undefined;
-      RegisterNewActivity: undefined;
-      RegisterNewActivity: undefined;
+      RegisterNewActivity: { id: number };
       RegisteredActivities: { id: number };
       PasswordRecoverySelection: undefined;
       PasswordRecoveryEmail: undefined;
