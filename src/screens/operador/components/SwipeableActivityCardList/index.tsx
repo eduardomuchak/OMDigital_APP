@@ -67,7 +67,7 @@ export const SwipeableActivityCardList = ({
       case "Em andamento":
         return (
           <View className="flex flex-row">
-            <PauseActivityModal />
+            <PauseActivityModal omId={omId} activityId={activity.id} />
             <View className="w-4" />
             <FinishActivityModal isSwipeableTrigger />
           </View>

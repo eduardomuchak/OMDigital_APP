@@ -9,6 +9,7 @@ interface OMContextData {
   createNewOM: (om: OM.MaintenanceOrderInfo) => void;
   createNewActivity: (activity: OM.Activity, omId: number) => void;
   deleteActivity: (activityId: number, omId: number) => void;
+  pauseActivity: (activityId: number, omId: number) => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -51,6 +52,18 @@ export function OMContextProvider({ children }: OMProviderProps) {
     });
   }
 
+  function pauseActivity(activityId: number, omId: number) {
+    setOm((currentOm) => {
+      const omIndex = currentOm.findIndex((om) => om.id === omId);
+      const newOm = currentOm[omIndex];
+      const activityIndex = newOm.atividades.findIndex(
+        (activity) => activity.id === activityId
+      );
+      newOm.atividades[activityIndex].status = "Pausada";
+      return [...currentOm];
+    });
+  };
+
   useEffect(() => {
     async function fetchOM() {
       const data = await mockFetchOM();
@@ -67,6 +80,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
     createNewOM,
     createNewActivity,
     deleteActivity,
+    pauseActivity,
   };
 
   return (
