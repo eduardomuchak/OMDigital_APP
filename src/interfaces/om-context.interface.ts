@@ -17,6 +17,8 @@ export namespace OM {
     sintomas: Symptom[];
     contador: number;
     tipo: string;
+    dataFim?: string;
+    comentario?: string;
   }
 
   export interface Symptom {

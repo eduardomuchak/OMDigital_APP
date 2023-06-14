@@ -50,7 +50,7 @@ export function RegisterNewActivity() {
       {
         id: Math.random() * 1000,
         descricao: payload.activity,
-        status: "Em andamento",
+        status: "Não iniciada",
         dataFimReal: payload.endDate,
         dataInicioPrevista: payload.startDate,
         dataFimPrevista: payload.endDate,
