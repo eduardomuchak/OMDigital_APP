@@ -1,16 +1,30 @@
 import { Square, Trash } from "phosphor-react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomDateTimePicker } from "../../../../components/ui/CustomDateTimePicker";
 import { CustomModal } from "../../../../components/ui/Modal";
-import { FinishActivityModalProps } from "./interface";
+import { OMContext } from "../../../../contexts/om-context";
+
+interface FinishActivityModalProps {
+  isSwipeableTrigger?: boolean;
+  omId: number;
+  activityId: number;
+}
 
 export function FinishActivityModal({
   isSwipeableTrigger = false,
+  omId,
+  activityId,
 }: FinishActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [endDate, setEndDate] = useState<Date>(new Date());
+  const { finishActivity } = useContext(OMContext);
+
+  function handleFinishActivity() {
+    setIsModalVisible(false);
+    finishActivity(activityId, omId, endDate.toISOString());
+  }
 
   return (
     <>
@@ -57,7 +71,7 @@ export function FinishActivityModal({
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton variant="primary" onPress={handleFinishActivity}>
               Confirmar
             </CustomButton>
           </View>

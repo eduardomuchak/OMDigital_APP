@@ -1,11 +1,26 @@
 import { Pause } from "phosphor-react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
+import { OMContext } from "../../../../contexts/om-context";
 
-export function PauseActivityModal() {
+interface PauseActivityModalProps {
+  omId: number;
+  activityId: number;
+}
+
+export function PauseActivityModal({
+  omId,
+  activityId,
+}: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { pauseOrInitiateActivity } = useContext(OMContext);
+
+  function handlePauseActivity() {
+    pauseOrInitiateActivity(activityId, omId, "Pausada");
+    setIsModalVisible(false);
+  }
 
   return (
     <>
@@ -36,7 +51,7 @@ export function PauseActivityModal() {
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton variant="primary" onPress={handlePauseActivity}>
               Confirmar
             </CustomButton>
           </View>
