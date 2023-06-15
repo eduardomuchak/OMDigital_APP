@@ -9,7 +9,23 @@ interface OMContextData {
   createNewOM: (om: OM.MaintenanceOrderInfo) => void;
   createNewActivity: (activity: OM.Activity, omId: number) => void;
   deleteActivity: (activityId: number, omId: number) => void;
-  pauseActivity: (activityId: number, omId: number) => void;
+  pauseOrInitiateActivity: (
+    activityId: number,
+    omId: number,
+    option: OM.Activity["status"]
+  ) => void;
+  cancelOM: (omId: number) => void;
+  finishActivity: (
+    activityId: number,
+    omId: number,
+    finishDate: string
+  ) => void;
+  finishOM: (
+    omId: number,
+    finishDate: string,
+    counter: number,
+    comment: string | undefined
+  ) => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -52,17 +68,64 @@ export function OMContextProvider({ children }: OMProviderProps) {
     });
   }
 
-  function pauseActivity(activityId: number, omId: number) {
+  function pauseOrInitiateActivity(
+    activityId: number,
+    omId: number,
+    option: OM.Activity["status"]
+  ) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
       const activityIndex = newOm.atividades.findIndex(
         (activity) => activity.id === activityId
       );
-      newOm.atividades[activityIndex].status = "Pausada";
+      newOm.atividades[activityIndex].status = option;
       return [...currentOm];
     });
-  };
+  }
+
+  function finishActivity(
+    activityId: number,
+    omId: number,
+    finishDate: string
+  ) {
+    setOm((currentOm) => {
+      const omIndex = currentOm.findIndex((om) => om.id === omId);
+      const newOm = currentOm[omIndex];
+      const activityIndex = newOm.atividades.findIndex(
+        (activity) => activity.id === activityId
+      );
+      newOm.atividades[activityIndex].status = "Concluída";
+      newOm.atividades[activityIndex].dataFimReal = finishDate;
+      return [...currentOm];
+    });
+  }
+
+  function cancelOM(omId: number) {
+    setOm((currentOm) => {
+      const omIndex = currentOm.findIndex((om) => om.id === omId);
+      const newOm = currentOm[omIndex];
+      newOm.status = "Cancelada";
+      return [...currentOm];
+    });
+  }
+
+  function finishOM(
+    omId: number,
+    finishDate: string,
+    counter: number,
+    comment: string | undefined
+  ) {
+    setOm((currentOm) => {
+      const omIndex = currentOm.findIndex((om) => om.id === omId);
+      const newOm = currentOm[omIndex];
+      newOm.status = "Concluída";
+      newOm.dataFim = finishDate;
+      newOm.comentario = comment;
+      newOm.contador = counter;
+      return [...currentOm];
+    });
+  }
 
   useEffect(() => {
     async function fetchOM() {
@@ -80,7 +143,10 @@ export function OMContextProvider({ children }: OMProviderProps) {
     createNewOM,
     createNewActivity,
     deleteActivity,
-    pauseActivity,
+    pauseOrInitiateActivity,
+    cancelOM,
+    finishActivity,
+    finishOM,
   };
 
   return (

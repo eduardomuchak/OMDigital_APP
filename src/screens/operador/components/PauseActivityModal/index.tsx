@@ -10,12 +10,15 @@ interface PauseActivityModalProps {
   activityId: number;
 }
 
-export function PauseActivityModal({ omId, activityId }: PauseActivityModalProps) {
+export function PauseActivityModal({
+  omId,
+  activityId,
+}: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { pauseActivity } = useContext(OMContext);
+  const { pauseOrInitiateActivity } = useContext(OMContext);
 
   function handlePauseActivity() {
-    pauseActivity(activityId, omId);
+    pauseOrInitiateActivity(activityId, omId, "Pausada");
     setIsModalVisible(false);
   }
 

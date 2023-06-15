@@ -1,14 +1,41 @@
+import { useNavigation } from "@react-navigation/native";
 import { Square } from "phosphor-react-native";
-import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useContext, useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
-import { FinishMaintenanceOrdemModalProps } from "./interface";
+import { OMContext } from "../../../../contexts/om-context";
+
+interface FinishMaintenanceOrdemModalProps {
+  isSwipeableTrigger?: boolean;
+  omId: number;
+}
 
 export function FinishMaintenanceOrderModal({
   isSwipeableTrigger = false,
+  omId,
 }: FinishMaintenanceOrdemModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const navigation = useNavigation();
+  const { om } = useContext(OMContext);
+
+  function handleFinishMaintenanceOrder() {
+    const handledOm = om.find((om) => om.id === omId)?.atividades;
+    const isAllActivitiesFinished = handledOm?.every(
+      (atividade) => atividade.status === "Concluída"
+    );
+
+    if (isAllActivitiesFinished) {
+      navigation.navigate("CloseMaintenanceOrder", { id: omId });
+      setIsModalVisible(false);
+    } else {
+      setIsModalVisible(false);
+      Alert.alert(
+        "Atenção",
+        "Todas as atividades devem estar concluídas para finalizar uma OM. Verifique as atividades pendentes."
+      );
+    }
+  }
 
   return (
     <>
@@ -46,7 +73,10 @@ export function FinishMaintenanceOrderModal({
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton
+              variant="primary"
+              onPress={handleFinishMaintenanceOrder}
+            >
               Confirmar
             </CustomButton>
           </View>

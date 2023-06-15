@@ -17,7 +17,7 @@ declare global {
       HomeOperador: undefined;
       RegisterNewMaintenanceOrder: undefined;
       RegisteredActivitiesOperador: { id: number };
-      CloseMaintenanceOrder: undefined;
+      CloseMaintenanceOrder: { id: number };
       Camera: undefined;
       OpenedRequests: undefined;
     }

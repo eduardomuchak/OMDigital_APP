@@ -2,7 +2,7 @@
   "expo": {
     "name": "OM Digital",
     "slug": "om-digital",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -26,7 +26,7 @@
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.omdigital",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"

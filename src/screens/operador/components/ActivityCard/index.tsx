@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Pause } from "phosphor-react-native";
 import { Text, View } from "react-native";
 import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
 import { DeleteActivityModal } from "../DeleteActivityModal";
@@ -67,14 +68,20 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
         ) : null}
         <View className="mr-8 flex flex-row justify-between">
           <View className="mb-3 flex flex-row items-start">
-            <View
-              className={clsx("mr-2 mt-2 h-2 w-2 rounded-full", {
-                "bg-status-green": activity.status === "Concluída",
-                "bg-status-yellow": activity.status === "Em andamento",
-                "bg-status-red": activity.status === "Atrasada",
-                "bg-status-blue": activity.status === "Não iniciada",
-              })}
-            />
+            {activity.status === "Pausada" ? (
+              <View className="mr-5 mt-2 h-2 w-2">
+                <Pause size={20} color="#B50202" weight="bold" />
+              </View>
+            ) : (
+              <View
+                className={clsx("mr-2 mt-2 h-2 w-2 rounded-full", {
+                  "bg-status-green": activity.status === "Concluída",
+                  "bg-status-yellow": activity.status === "Em andamento",
+                  "bg-status-red": activity.status === "Atrasada",
+                  "bg-status-blue": activity.status === "Não iniciada",
+                })}
+              />
+            )}
             <Text className="font-poppinsBold text-base text-neutral-900">
               {activity.descricao}
             </Text>

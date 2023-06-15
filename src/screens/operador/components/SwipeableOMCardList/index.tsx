@@ -1,13 +1,13 @@
-import { useNavigation } from '@react-navigation/native';
-import { CheckCircle, WarningCircle } from 'phosphor-react-native';
-import React from 'react';
-import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { useNavigation } from "@react-navigation/native";
+import { CheckCircle, WarningCircle } from "phosphor-react-native";
+import React from "react";
+import { Dimensions, ListRenderItemInfo, Text, View } from "react-native";
+import { SwipeListView } from "react-native-swipe-list-view";
 
-import { OMCard } from '../../../../components/OMCard';
-import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
-import { OMMockProps } from '../FilterModal/interface';
-import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
+import { OMCard } from "../../../../components/OMCard";
+import { CancelMaintenanceOrderModal } from "../CancelMaintenanceOrderModal";
+import { OMMockProps } from "../FilterModal/interface";
+import { FinishMaintenanceOrderModal } from "../FinishMaintenanceOrderModal";
 
 interface SwipeableOMCardListProps {
   maintenanceOrders: OMMockProps;
@@ -16,12 +16,12 @@ interface SwipeableOMCardListProps {
 export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
   const { navigate } = useNavigation();
 
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = Dimensions.get("window").width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
   const HandleStatus = ({ maintenanceOrders }: SwipeableOMCardListProps) => {
     switch (maintenanceOrders.status) {
-      case 'Concluída':
+      case "Concluída":
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -31,7 +31,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
             </Text>
           </View>
         );
-      case 'Cancelada':
+      case "Cancelada":
         return (
           <View className="items-center justify-center">
             <WarningCircle size={56} color="#B50202" weight="bold" />
@@ -44,9 +44,9 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
       default:
         return (
           <View className="flex flex-row">
-            <CancelMaintenanceOrderModal isSwipeableTrigger />
+            <CancelMaintenanceOrderModal isSwipeableTrigger omId={maintenanceOrders.id} />
             <View className="w-4" />
-            <FinishMaintenanceOrderModal isSwipeableTrigger />
+            <FinishMaintenanceOrderModal isSwipeableTrigger omId={maintenanceOrders.id} />
           </View>
         );
     }
@@ -55,19 +55,19 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
   const renderItem = ({
     item,
   }: ListRenderItemInfo<
-    SwipeableOMCardListProps['maintenanceOrders']
+    SwipeableOMCardListProps["maintenanceOrders"]
   >): JSX.Element => {
     return (
       <OMCard
         isFinishOrCancel={
-          item.status === 'Cancelada' || item.status === 'Concluída'
+          item.status === "Cancelada" || item.status === "Concluída"
             ? true
             : false
         }
         key={item.id}
         {...item}
         onPress={() =>
-          navigate('RegisteredActivitiesOperador', {
+          navigate("RegisteredActivitiesOperador", {
             id: item.id,
           })
         }
@@ -78,7 +78,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
   const renderHiddenItem = ({
     item,
   }: ListRenderItemInfo<
-    SwipeableOMCardListProps['maintenanceOrders']
+    SwipeableOMCardListProps["maintenanceOrders"]
   >): JSX.Element => {
     return (
       <View
@@ -98,10 +98,10 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
         paddingHorizontal: screenWidth > 500 ? 0 : 24,
         paddingTop: 12,
         paddingBottom: 96,
-        width: '100%',
+        width: "100%",
         maxWidth: 500,
-        display: 'flex',
-        alignSelf: 'center',
+        display: "flex",
+        alignSelf: "center",
       }}
       data={maintenanceOrders}
       renderItem={renderItem}

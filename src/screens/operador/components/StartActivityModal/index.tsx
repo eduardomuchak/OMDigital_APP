@@ -1,11 +1,27 @@
 import { Play } from "phosphor-react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
+import { OMContext } from "../../../../contexts/om-context";
 
-export function StartActivityModal() {
+interface StartActivityModalProps {
+  omId: number;
+  activityId: number;
+}
+
+export function StartActivityModal({
+  omId,
+  activityId,
+}: StartActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const { pauseOrInitiateActivity } = useContext(OMContext);
+
+  function handleStartActivity() {
+    pauseOrInitiateActivity(activityId, omId, "Em andamento");
+    setIsModalVisible(false);
+  }
 
   return (
     <>
@@ -38,7 +54,7 @@ export function StartActivityModal() {
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={() => {}}>
+            <CustomButton variant="primary" onPress={handleStartActivity}>
               Confirmar
             </CustomButton>
           </View>

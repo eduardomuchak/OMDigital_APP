@@ -69,11 +69,15 @@ export const SwipeableActivityCardList = ({
           <View className="flex flex-row">
             <PauseActivityModal omId={omId} activityId={activity.id} />
             <View className="w-4" />
-            <FinishActivityModal isSwipeableTrigger />
+            <FinishActivityModal
+              isSwipeableTrigger
+              omId={omId}
+              activityId={activity.id}
+            />
           </View>
         );
       default:
-        return <StartActivityModal />;
+        return <StartActivityModal omId={omId} activityId={activity.id} />;
     }
   };
 
@@ -104,7 +108,7 @@ export const SwipeableActivityCardList = ({
         <View className="mb-10">
           <CustomButton
             variant="finish"
-            onPress={() => navigate("CloseMaintenanceOrder")}
+            onPress={() => navigate("CloseMaintenanceOrder", { id: omId })}
           >
             Finalizar OM
           </CustomButton>

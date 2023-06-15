@@ -1,14 +1,22 @@
 import { Prohibit } from "phosphor-react-native";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
+import { OMContext } from "../../../../contexts/om-context";
 import { CancelMaintenanceOrderModalProps } from "./interface";
 
 export function CancelMaintenanceOrderModal({
   isSwipeableTrigger = false,
+  omId,
 }: CancelMaintenanceOrderModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { cancelOM } = useContext(OMContext);
+
+  function handleCancelOM() {
+    cancelOM(omId);
+    setIsModalVisible(false);
+  }
 
   return (
     <>
@@ -46,10 +54,7 @@ export function CancelMaintenanceOrderModal({
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton
-              variant="cancel"
-              onPress={() => setIsModalVisible(false)}
-            >
+            <CustomButton variant="cancel" onPress={handleCancelOM}>
               Confirmar
             </CustomButton>
           </View>
