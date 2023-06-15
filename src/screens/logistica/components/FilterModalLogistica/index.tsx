@@ -1,29 +1,29 @@
-import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useState } from "react";
+import { ScrollView, Text, View } from "react-native";
 
-import { CustomButton } from '../../../../components/ui/CustomButton';
-import { CustomModal } from '../../../../components/ui/Modal';
-import { OperationsFilterOptions } from './OperationsFilterOptions';
-import { StatusFilterOptions } from './StatusFilterOptions';
+import { CustomButton } from "../../../../components/ui/CustomButton";
+import { CustomModal } from "../../../../components/ui/Modal";
+import { OperationsFilterOptions } from "./OperationsFilterOptions";
+import { StatusFilterOptions } from "./StatusFilterOptions";
 
-import { Logistica } from '../../interfaces';
+import { Logistica } from "../../interfaces";
 
-import { QRCodeScannerInput } from '../../../../components/QRCodeScannerInput';
-import { Select } from '../../../../components/ui/Select';
-import { DateFilterOptions } from './DateFilterOptions';
+import { QRCodeScannerInput } from "../../../../components/QRCodeScannerInput";
+import { Select } from "../../../../components/ui/Select";
+import { DateFilterOptions } from "./DateFilterOptions";
 
 const operationsMock = [
   {
     id: 1,
-    name: 'Operação 1',
+    name: "Operação 1",
   },
   {
     id: 2,
-    name: 'Operação 2',
+    name: "Operação 2",
   },
   {
     id: 3,
-    name: 'Operação 3',
+    name: "Operação 3",
   },
 ];
 
@@ -38,6 +38,7 @@ export function FilterModalLogistica({
   setEndPeriod,
   handleChangeCodigoBem,
   codigoBem,
+  controlador,
 }: Logistica.FilterModalProps) {
   const [allStatus, setAllStatus] = useState({
     todas: true,
@@ -52,9 +53,9 @@ export function FilterModalLogistica({
         showAll: true,
         [operation.name]: false,
       };
-    }),
+    })
   );
-  const [osType, setOsType] = useState('todas');
+  const [osType, setOsType] = useState("todas");
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose}>
@@ -73,10 +74,12 @@ export function FilterModalLogistica({
         />
 
         {/* FILTRO DO CÓDIGO DO BEM */}
-        <QRCodeScannerInput handleChangeCodigoBem={handleChangeCodigoBem} />
+        {!controlador && handleChangeCodigoBem && (
+          <QRCodeScannerInput handleChangeCodigoBem={handleChangeCodigoBem} />
+        )}
 
         {/* FILTRO DE OPERAÇÕES */}
-        {codigoBem.length === 0 ? (
+        {!controlador && codigoBem?.length === 0 ? (
           <OperationsFilterOptions
             operations={operations}
             changeOperation={setOperations}
@@ -84,15 +87,17 @@ export function FilterModalLogistica({
         ) : null}
 
         {/* FILTRO DE TIPO DE OS */}
-        <View className="mb-5">
-          <Text className="mb-4 font-poppinsBold text-base">Tipo da OS:</Text>
-          <Select
-            label=""
-            selected={osType}
-            setSelected={setOsType}
-            options={[]}
-          />
-        </View>
+        {!controlador && (
+          <View className="mb-5">
+            <Text className="mb-4 font-poppinsBold text-base">Tipo da OS:</Text>
+            <Select
+              label=""
+              selected={osType}
+              setSelected={setOsType}
+              options={[]}
+            />
+          </View>
+        )}
 
         {/* FILTRO DE PERÍODO */}
         {isOperador && (
