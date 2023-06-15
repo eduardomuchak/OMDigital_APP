@@ -116,6 +116,7 @@ export function Home() {
           onConfirm={handleFilterOptionsConfirmation}
           isOpen={isModalVisible}
           allStatus={status}
+          controlador
         />
       )}
       <StatusFilter
