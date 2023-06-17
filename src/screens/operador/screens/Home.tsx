@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { View } from "react-native";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Header } from "../../../components/Header";
 import { StatusFilter } from "../../../components/StatusFilter";
 import { StatusLegend } from "../../../components/StatusLegend";
@@ -90,12 +91,16 @@ export function Home() {
     setCodigoBem(value.trim());
   }
 
-  function handleFilterOptionsConfirmation(
+  async function handleFilterOptionsConfirmation(
     pickedStatus: Logistica.StatusFilterStateOptions,
     pickedOperations: Logistica.OperationState[]
   ) {
     setStatus(pickedStatus);
     setOperations(pickedOperations);
+    await AsyncStorage.setItem(
+      "@home_filter",
+      JSON.stringify({ pickedStatus, pickedOperations })
+    );
     setIsModalVisible(false);
   }
 
@@ -135,6 +140,20 @@ export function Home() {
       setEndPeriod(largestDate);
     }
   }, [om]);
+
+  useEffect(() => {
+    async function retrieveSavedFilterOptions() {
+      await AsyncStorage.getItem("@home_filter").then((value) => {
+        if (value !== null) {
+          const { pickedStatus, pickedOperations } = JSON.parse(value);
+          setStatus(pickedStatus);
+          setOperations(pickedOperations);
+        }
+      });
+    }
+
+    retrieveSavedFilterOptions();
+  }, []);
 
   return (
     <View className="flex flex-1 flex-col bg-white">

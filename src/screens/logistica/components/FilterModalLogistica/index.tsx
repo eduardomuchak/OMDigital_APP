@@ -1,4 +1,5 @@
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
 
 import { CustomButton } from "../../../../components/ui/CustomButton";
@@ -56,6 +57,26 @@ export function FilterModalLogistica({
     })
   );
   const [osType, setOsType] = useState("todas");
+
+  async function handleConfirmFilter() {
+    onConfirm(allStatus, operations);
+    await AsyncStorage.setItem(
+      "@filter",
+      JSON.stringify({ allStatus, operations })
+    );
+  }
+
+  useEffect(() => {
+    async function getFilter() {
+      const filter = await AsyncStorage.getItem("@filter");
+      if (filter !== null) {
+        const { allStatus, operations } = JSON.parse(filter);
+        setAllStatus(allStatus);
+        setOperations(operations);
+      }
+    }
+    getFilter();
+  }, []);
 
   return (
     <CustomModal isOpen={isOpen} onClose={onClose}>
@@ -129,10 +150,7 @@ export function FilterModalLogistica({
             </CustomButton>
           </View>
           <View className="w-[48%]">
-            <CustomButton
-              onPress={() => onConfirm(allStatus, operations)}
-              variant="primary"
-            >
+            <CustomButton onPress={handleConfirmFilter} variant="primary">
               Confirmar
             </CustomButton>
           </View>
