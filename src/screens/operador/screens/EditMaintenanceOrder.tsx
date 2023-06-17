@@ -1,11 +1,11 @@
-import { useRoute } from '@react-navigation/native';
-import { useContext } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { Header } from '../../../components/Header';
-import { CustomButton } from '../../../components/ui/CustomButton';
-import { OMContext } from '../../../contexts/om-context';
-import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
-import { SymptomCard } from '../components/SymptomCard';
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useContext } from "react";
+import { ScrollView, Text, View } from "react-native";
+import { Header } from "../../../components/Header";
+import { CustomButton } from "../../../components/ui/CustomButton";
+import { OMContext } from "../../../contexts/om-context";
+import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
+import { SymptomCard } from "../components/SymptomCard";
 
 export function EditMaintenanceOrder() {
   const { om, setOm } = useContext(OMContext);
@@ -23,6 +23,8 @@ export function EditMaintenanceOrder() {
     longitude: filteredOM[0]?.longitude,
   };
   const symptoms = filteredOM[0]?.sintomas;
+
+  const { goBack } = useNavigation();
 
   const handleEditSymptom = (editedSymptom: {
     id: number;
@@ -47,9 +49,13 @@ export function EditMaintenanceOrder() {
     setOm(editedOm);
   };
 
+  function handleEditOM() {
+    goBack();
+  }
+
   return (
     <View className="flex-1 bg-white">
-      <Header title={'Editar Ordem de Manutenção'} />
+      <Header title={"Editar Ordem de Manutenção"} />
       <OperationInfoCard operationInfo={operationInfoProps} />
       <View className="flex-1 px-6 py-4">
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -64,7 +70,11 @@ export function EditMaintenanceOrder() {
               {index !== symptoms.length - 1 ? <View className="h-3" /> : null}
             </>
           ))}
-          <CustomButton variant="primary" style={{ marginTop: 20 }}>
+          <CustomButton
+            variant="primary"
+            style={{ marginTop: 20 }}
+            onPress={handleEditOM}
+          >
             Editar
           </CustomButton>
         </ScrollView>
