@@ -32,7 +32,7 @@ export function FinishMaintenanceOrderModal({
       setIsModalVisible(false);
       Alert.alert(
         "Atenção",
-        "Todas as atividades devem estar concluídas para finalizar uma OM. Verifique as atividades pendentes."
+        "Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes."
       );
     }
   }

@@ -123,7 +123,7 @@ export function RegisterNewMaintenanceOrder() {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     value={value}
-                    label="Contador"
+                    label="Contador (km/hor)"
                     placeholder="Digite"
                     maxLength={10}
                     keyboardType="numeric"

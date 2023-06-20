@@ -26,6 +26,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [
           "https://fastly.picsum.photos/id/599/1080/1080.jpg?hmac=gXWcNqkjB6fNFJR4_J2t_0Sij-2FEwFuDL5NPky44Sg",
         ],
+        obs: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sit amet interdum velit, vel convallis enim."
       },
       {
         id: 2,
@@ -37,6 +38,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         images: [
           "https://fastly.picsum.photos/id/54/1080/1080.jpg?hmac=IORVOTScJvnlEq1qBpSnPtIFIV-vfyHz0y5CZSHpI78",
         ],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 3,
@@ -46,6 +48,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 4,
@@ -55,6 +58,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
     ],
     sintomas: [
@@ -98,6 +102,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 2,
@@ -106,6 +111,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 3,
@@ -114,6 +120,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
     ],
     sintomas: [
@@ -148,6 +155,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 2,
@@ -156,6 +164,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 3,
@@ -164,6 +173,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
     ],
     sintomas: [
@@ -198,6 +208,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 2,
@@ -206,6 +217,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
       {
         id: 3,
@@ -214,6 +226,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
     ],
     sintomas: [],
@@ -259,6 +272,7 @@ export const OMMock: OM.MaintenanceOrderInfo[] = [
         dataInicioPrevista: "2023-05-03T17:42:20.202Z",
         dataFimPrevista: "2023-05-03T17:42:20.202Z",
         images: [],
+        obs: "Lorem ipsum dolor"
       },
     ],
     sintomas: [],

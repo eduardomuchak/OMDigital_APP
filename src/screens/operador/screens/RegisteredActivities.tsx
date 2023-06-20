@@ -24,13 +24,15 @@ export function RegisteredActivities() {
     prevFim: filteredOM[0]?.prevFim,
     latitude: filteredOM[0]?.latitude,
     longitude: filteredOM[0]?.longitude,
+    contador: filteredOM[0]?.contador,
+    tipo: filteredOM[0]?.tipo,
   };
 
   const symptoms = filteredOM[0]?.sintomas;
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title={"Atividades Lançadas"} />
+      <Header title={"Etapas Lançadas"} />
       <OperationInfoCard
         operador={true}
         operationInfo={operationInfoProps}

@@ -53,7 +53,7 @@ export function FinishActivityModal({
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
         <Text className="mb-8 font-poppinsRegular text-base">
-          Você deseja finalizar a atividade?
+          Você deseja finalizar esta etapa?
         </Text>
         <CustomDateTimePicker
           value={endDate}

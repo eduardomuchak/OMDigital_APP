@@ -10,6 +10,7 @@ interface CardInfoProps {
   operacao: string;
   paradaReal: string;
   prevFim: string;
+  tipo: string;
 }
 
 export function CardInfo(props: CardInfoProps) {
@@ -28,6 +29,13 @@ export function CardInfo(props: CardInfoProps) {
         })}
       >
         {props.operacao}
+      </Text>
+      <Text
+        className={clsx("font-poppinsMedium text-base text-white", {
+          ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
+        })}
+      >
+        {`Tipo: ${props.tipo.charAt(0).toUpperCase() + props.tipo.slice(1)}`}
       </Text>
       <View className="flex-row justify-between">
         <Text
