@@ -67,7 +67,7 @@ export function RegisterNewActivity() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title="Adicionar nova atividade" />
+      <Header title="Adicionar Nova Etapa" />
       <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1">
         <OrderInfoCard />
         <View className="flex flex-1 px-6 py-4">
@@ -78,7 +78,7 @@ export function RegisterNewActivity() {
                 <Input
                   onBlur={onBlur}
                   required
-                  label="ATIVIDADE"
+                  label="ETAPA"
                   onChangeText={onChange}
                   value={value}
                 />

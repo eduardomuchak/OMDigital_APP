@@ -7,6 +7,7 @@ import { DeleteActivityModal } from "../DeleteActivityModal";
 import { HourglassHigh, HourglassLow } from "phosphor-react-native";
 import { AttachmentPreviewModal } from "../../../../components/AttachmentPreviewModal";
 import { OM } from "../../../../interfaces/om-context.interface";
+import { ObservationsModal } from "../ObservationsModal";
 
 export function ActivityCard({ activity }: OM.ActivityProps) {
   const handleFinishedActivity = () => {
@@ -85,6 +86,16 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
             <Text className="font-poppinsBold text-base text-neutral-900">
               {activity.descricao}
             </Text>
+            {activity.obs ? (
+              <View
+                className={clsx("relative", {
+                  "left-28": activity.images.length > 0,
+                  "left-36": activity.images.length === 0,
+                })}
+              >
+                <ObservationsModal observations={activity.obs} />
+              </View>
+            ) : null}
           </View>
         </View>
         <View className="flex flex-col items-start">
@@ -102,6 +113,11 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
             )}`}
           </Text>
         </View>
+
+        {/* <View>
+         
+        </View> */}
+
         {activity.status === "Concluída" && activity.dataFimReal ? (
           <>
             <View className="mt-3 flex flex-col items-start">
@@ -116,6 +132,7 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
           </>
         ) : null}
       </View>
+
       <DeleteActivityModal activityId={activity.id} />
     </View>
   );

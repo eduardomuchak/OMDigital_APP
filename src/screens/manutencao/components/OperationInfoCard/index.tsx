@@ -1,10 +1,10 @@
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from "react-native";
 
-import { useNavigation } from '@react-navigation/native';
-import { PencilSimple } from 'phosphor-react-native';
-import { GPSLocationModal } from '../../../../components/GPSLocationModal';
-import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
-import { SymptomListModal } from '../../../operador/components/SymptomsCard/SymptomListModal';
+import { useNavigation } from "@react-navigation/native";
+import { PencilSimple } from "phosphor-react-native";
+import { GPSLocationModal } from "../../../../components/GPSLocationModal";
+import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
+import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -15,6 +15,8 @@ interface OperationInfoCardProps {
     prevFim: string;
     latitude: string;
     longitude: string;
+    contador: number;
+    tipo: string;
   };
   operador?: boolean;
   operationId?: number;
@@ -52,7 +54,7 @@ export function OperationInfoCard({
           <View className="flex-row">
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('EditMaintenanceOrder', { id: operationId })
+                navigation.navigate("EditMaintenanceOrder", { id: operationId })
               }
               className="mr-2"
               activeOpacity={0.7}
@@ -67,6 +69,19 @@ export function OperationInfoCard({
         <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>
         <Text className="font-poppinsMedium text-base">
           {operationInfo.ordemManutencao}
+        </Text>
+      </View>
+      <View className="mb-2 flex">
+        <Text className="font-poppinsBold text-lg">Tipo da OM:</Text>
+        <Text className="font-poppinsMedium text-base">
+          {operationInfo.tipo.charAt(0).toUpperCase() +
+            operationInfo.tipo.slice(1)}
+        </Text>
+      </View>
+      <View className="mb-2 flex">
+        <Text className="font-poppinsBold text-lg">Contador (km/hor):</Text>
+        <Text className="font-poppinsMedium text-base">
+          {operationInfo.contador}
         </Text>
       </View>
       <View className="flex flex-row gap-4">

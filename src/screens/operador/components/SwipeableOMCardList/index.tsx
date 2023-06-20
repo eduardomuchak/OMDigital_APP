@@ -44,9 +44,15 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
       default:
         return (
           <View className="flex flex-row">
-            <CancelMaintenanceOrderModal isSwipeableTrigger omId={maintenanceOrders.id} />
+            <CancelMaintenanceOrderModal
+              isSwipeableTrigger
+              omId={maintenanceOrders.id}
+            />
             <View className="w-4" />
-            <FinishMaintenanceOrderModal isSwipeableTrigger omId={maintenanceOrders.id} />
+            <FinishMaintenanceOrderModal
+              isSwipeableTrigger
+              omId={maintenanceOrders.id}
+            />
           </View>
         );
     }

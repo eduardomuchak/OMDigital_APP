@@ -39,6 +39,7 @@ export namespace OM {
     dataFimPrevista: string;
     images: string[];
     dataFimReal?: string;
+    obs?: string;
   }
 
   export interface ActivityProps {

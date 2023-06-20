@@ -60,7 +60,7 @@ export const SwipeableActivityCardList = ({
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
             <Text className="mt-2 font-poppinsMedium text-sm">
-              Atividade Finalizada!
+              Etapa Finalizada!
             </Text>
           </View>
         );
@@ -83,7 +83,7 @@ export const SwipeableActivityCardList = ({
 
   const listHeaderComponent = () => (
     <>
-      <Text className="font-poppinsBold text-lg">Atividades:</Text>
+      <Text className="font-poppinsBold text-lg">Etapas:</Text>
       <StatusLegend status={statusLegendInfo} />
     </>
   );
@@ -95,7 +95,7 @@ export const SwipeableActivityCardList = ({
           variant="primary"
           onPress={() => navigate("RegisterNewActivity", { id: omId })}
         >
-          Adicionar Atividade
+          Adicionar Etapa
         </CustomButton>
         <CustomButton
           variant="primary"

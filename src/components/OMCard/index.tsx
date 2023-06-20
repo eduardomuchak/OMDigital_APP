@@ -15,6 +15,7 @@ interface OMCardProps {
   prevFim: string;
   isFinishOrCancel?: boolean;
   status?: string;
+  tipo: string;
 }
 
 export function OMCard(props: OMCardProps) {
@@ -40,6 +41,7 @@ export function OMCard(props: OMCardProps) {
           operacao={props.operacao}
           paradaReal={props.paradaReal}
           prevFim={props.prevFim}
+          tipo={props.tipo}
           isFinishOrCancel={props.isFinishOrCancel}
         />
       </View>

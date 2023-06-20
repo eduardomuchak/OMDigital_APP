@@ -39,7 +39,7 @@ export function PauseActivityModal({
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
         <Text className="font-poppinsRegular text-base">
-          Você deseja pausar a atividade?
+          Você deseja pausar esta etapa?
         </Text>
         <View className="mt-16 flex flex-row justify-between">
           <View className="w-[48%]">

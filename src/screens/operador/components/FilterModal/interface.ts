@@ -6,6 +6,7 @@ export interface OMMockProps {
   paradaReal: string;
   prevFim: string;
   status: string;
+  tipo: string;
 }
 
 export interface CheckboxProps {
