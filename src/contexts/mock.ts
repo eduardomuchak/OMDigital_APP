@@ -1,24 +1,28 @@
 import { LoginFormData } from '../validations/common/LoginScreen';
 
 const operador = {
+  id: 1,
   user: 'Operador',
   role: 'operador',
   session: '123456789',
 };
 
 const manutencao = {
+  id: 2,
   user: 'Manutenção',
   role: 'manutencao',
   session: '987654321',
 };
 
 const logistica = {
+  id: 3,
   user: 'Logística',
   role: 'logistica',
   session: '234876534',
 };
 
 const solicitante = {
+  id: 4,
   user: 'Solicitante',
   role: 'solicitante',
   session: '345978234',

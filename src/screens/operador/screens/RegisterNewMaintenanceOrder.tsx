@@ -1,28 +1,30 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, View } from 'react-native';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation } from "@react-navigation/native";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Header } from "../../../components/Header";
-import { QRCodeScannerModal } from "../../../components/QRCodeScannerModal";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { Input } from "../../../components/ui/Input";
-import { Select } from "../../../components/ui/Select";
-import { TextArea } from "../../../components/ui/TextArea";
-import { OMContext } from "../../../contexts/om-context";
-import { useGetLocation } from "../../../hooks/useGetLocation";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
+import { useContext } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Header } from '../../../components/Header';
+import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { Select } from '../../../components/ui/Select';
+import { TextArea } from '../../../components/ui/TextArea';
+import { useAuth } from '../../../contexts/auth';
+import { OMContext } from '../../../contexts/om-context';
+import { useGetLocation } from '../../../hooks/useGetLocation';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
-} from "../../../validations/operador/RegisterNewMaintenanceOrderScreen";
+} from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();
   const { goBack } = useNavigation();
-  const { createNewOM, om } = useContext(OMContext);
+  const { createNewOMAPI } = useContext(OMContext);
+  const { user } = useAuth();
 
   const {
     control,
@@ -31,12 +33,12 @@ export function RegisterNewMaintenanceOrder() {
     reset,
   } = useForm<RegisterNewMaintenanceOrderFormData>({
     defaultValues: {
-      propertyCode: "",
-      counter: "",
+      propertyCode: '',
+      counter: '',
       startDate: new Date(),
       endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
-      symptom: "",
-      type: "",
+      symptom: '',
+      type: '',
     },
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
@@ -49,25 +51,41 @@ export function RegisterNewMaintenanceOrder() {
       location,
     };
 
-    createNewOM({
-      id: om.length === 0 ? 1 : om[om.length - 1].id + 1,
-      criadaEm: new Date().toISOString(),
-      codigoBem: payload.propertyCode,
-      ordemManutencao: "",
-      operacao: "",
-      paradaReal: payload.startDate,
-      prevFim: payload.endDate,
-      status: "Aberta",
-      latitude: payload.location.latitude.toString(),
-      longitude: payload.location.longitude.toString(),
-      localDeManutencao: "",
-      controlador: "",
-      telefone: "",
-      atividades: [],
-      sintomas: [{ id: 1, descricao: payload.symptom }],
-      contador: Number(payload.counter),
-      tipo: payload.type,
-    });
+    const payloadAPI = {
+      id: null,
+      asset_code: payload.propertyCode,
+      counter: payload.counter,
+      service_type: payload.type,
+      status: 'Aberta', //TODO: Verificar
+      start_prev_date: payload.startDate.split('T')[0],
+      start_prev_hr: payload.startDate.split('T')[1],
+      end_prev_date: payload.endDate.split('T')[0],
+      end_prev_hr: payload.endDate.split('T')[1],
+      obs: payload.symptom, //TODO: Verificar
+      resp_id: user ? user.id : 0,
+    };
+
+    createNewOMAPI(payloadAPI);
+
+    // createNewOM({
+    //   id: om.length === 0 ? 1 : om[om.length - 1].id + 1,
+    //   criadaEm: new Date().toISOString(),
+    //   codigoBem: payload.propertyCode,
+    //   ordemManutencao: "",
+    //   operacao: "",
+    //   paradaReal: payload.startDate,
+    //   prevFim: payload.endDate,
+    //   status: "Aberta",
+    //   latitude: payload.location.latitude.toString(),
+    //   longitude: payload.location.longitude.toString(),
+    //   localDeManutencao: "",
+    //   controlador: "",
+    //   telefone: "",
+    //   atividades: [],
+    //   sintomas: [{ id: 1, descricao: payload.symptom }],
+    //   contador: Number(payload.counter),
+    //   tipo: payload.type,
+    // });
     reset();
     goBack();
   };
@@ -201,7 +219,7 @@ export function RegisterNewMaintenanceOrder() {
                     label="TIPO DA OS (Ordem de Serviço)"
                     selected={value}
                     setSelected={onChange}
-                    options={["Preventiva", "Corretiva"]}
+                    options={['Preventiva', 'Corretiva']}
                   />
                 )}
                 name="type"
