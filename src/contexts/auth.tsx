@@ -5,6 +5,7 @@ import { LoginFormData } from '../validations/common/LoginScreen';
 import { SignInWithCredentials } from './mock';
 
 interface User {
+  id: number;
   user: string;
   role: string;
   session: string;

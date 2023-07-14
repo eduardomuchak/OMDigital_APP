@@ -21,6 +21,20 @@ export namespace OM {
     comentario?: string;
   }
 
+  export interface MaintenanceOrderInfoAPI {
+    id: null;
+    asset_code: string;
+    counter: string;
+    service_type: string;
+    status: string;
+    start_prev_date: string;
+    start_prev_hr: string;
+    end_prev_date: string;
+    end_prev_hr: string;
+    obs: string;
+    resp_id: number;
+  }
+
   export interface Symptom {
     id: number;
     descricao: string;
