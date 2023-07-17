@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "OM Digital",
-    "slug": "om-digital",
-    "version": "1.0.7",
+    "slug": "mvxsistemas-omdigital",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,10 +11,16 @@
       "resizeMode": "cover",
       "backgroundColor": "#1F295B"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.omdigital"
+      "bundleIdentifier": "com.mvxsistemas.omdigital",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access camera.",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,10 +29,13 @@
       },
       "permissions": [
         "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
       ],
-      "package": "com.omdigital",
-      "versionCode": 8
+      "package": "com.mvxsistemas.omdigital",
+      "versionCode": 1
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -62,8 +71,9 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "28ce8ee1-d84d-4c05-88af-669223fa998b"
+        "projectId": "6bcc166f-82db-4a9f-8790-84e68ee6e59e"
       }
-    }
+    },
+    "owner": "eduardomuchak"
   }
 }
