@@ -3,8 +3,13 @@ import { OM } from "../interfaces/om-context.interface";
 import { OMMock } from "../mocks/om";
 import { fetchOMFromAPI } from "../services/GET/OMs/fetchAllOms/fetchOM";
 import { MaintenanceOrderList } from "../services/GET/OMs/fetchAllOms/om.interface";
+import { fetchAllStatus } from "../services/GET/Status/fetchAllStatus";
+import { StatusWithBgColor } from "../services/GET/Status/status.interface";
 import { createNewMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts";
 import { newMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface";
+import { createNewSymptom } from "../services/POST/Symptoms";
+import { Symptom } from "../services/POST/Symptoms/symptom.interface";
+import { handleStatusColor } from "../utils/handleStatusColor";
 import { maintenanceOrderMapper } from "../utils/maintenanceOrderMapper";
 
 interface OMContextData {
@@ -35,6 +40,8 @@ interface OMContextData {
   fetchOM: () => void;
   maintenanceOrders: MaintenanceOrderList[];
   mappedMaintenanceOrder: OM.MaintenanceOrderInfo[];
+  statusLegendInfo: StatusWithBgColor[];
+  registerNewSymptom: (symptom: Symptom) => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -49,6 +56,10 @@ export function OMContextProvider({ children }: OMProviderProps) {
   const [maintenanceOrders, setMaintenanceOrders] = useState<
     MaintenanceOrderList[]
   >([]);
+
+  const [statusLegendInfo, setStatusLegendInfo] = useState<StatusWithBgColor[]>(
+    []
+  );
 
   async function mockFetchOM(): Promise<OM.MaintenanceOrderInfo[]> {
     return new Promise((resolve) => {
@@ -158,12 +169,28 @@ export function OMContextProvider({ children }: OMProviderProps) {
     });
   }
 
+  async function handleLegendStatus() {
+    const response = await fetchAllStatus();
+
+    const statusLegendWithColors = response.map((item) => ({
+      ...item,
+      color: handleStatusColor(item.description),
+    }));
+
+    setStatusLegendInfo(statusLegendWithColors);
+  }
+
+  async function registerNewSymptom(symptom: Symptom) {
+    await createNewSymptom(symptom);
+  }
+
   useEffect(() => {
     async function fetchOM() {
       const data = await mockFetchOM();
       setOm(data);
     }
 
+    handleLegendStatus();
     fetchOM();
   }, []);
 
@@ -184,6 +211,8 @@ export function OMContextProvider({ children }: OMProviderProps) {
     fetchOM,
     maintenanceOrders,
     mappedMaintenanceOrder,
+    statusLegendInfo,
+    registerNewSymptom,
   };
 
   return (

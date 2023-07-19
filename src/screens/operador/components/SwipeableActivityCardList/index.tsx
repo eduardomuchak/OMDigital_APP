@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { CheckCircle } from "phosphor-react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { Dimensions, ListRenderItemInfo, Text, View } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { CustomButton } from "../../../../components/ui/CustomButton";
@@ -10,35 +10,9 @@ import { PauseActivityModal } from "../PauseActivityModal";
 import { StartActivityModal } from "../StartActivityModal";
 
 import { StatusLegend } from "../../../../components/StatusLegend";
+import { OMContext } from "../../../../contexts/om-context";
 import { OM } from "../../../../interfaces/om-context.interface";
 
-const statusLegendInfo = [
-  {
-    id: 1,
-    name: "Concluída",
-    color: "bg-status-green",
-  },
-  {
-    id: 2,
-    name: "Em andamento",
-    color: "bg-status-yellow",
-  },
-  {
-    id: 3,
-    name: "Atrasada",
-    color: "bg-status-red",
-  },
-  {
-    id: 4,
-    name: "Não iniciada",
-    color: "bg-status-blue",
-  },
-  {
-    id: 5,
-    name: "Pausada",
-    color: "Pausada",
-  },
-];
 interface SwipeableActivityCardListProps {
   activities: OM.Activity[];
   omId: number;
@@ -49,6 +23,8 @@ export const SwipeableActivityCardList = ({
   omId,
 }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
+
+  const { statusLegendInfo } = useContext(OMContext);
 
   const screenWidth = Dimensions.get("window").width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));

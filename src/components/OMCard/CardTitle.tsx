@@ -11,7 +11,7 @@ interface CardTitleProps {
 export function CardTitle({ children, status }: CardTitleProps) {
   return (
     <View className="mb-2 flex-row items-center justify-center">
-      {status === "Concluída" && (
+      {status === "Finalizada" && (
         <CheckCircle
           color="#046700"
           weight="bold"
@@ -30,7 +30,7 @@ export function CardTitle({ children, status }: CardTitleProps) {
       <Text
         className={clsx("text-center font-poppinsBold text-lg text-white", {
           ["mr-4 text-neutral-900"]:
-            status === "Concluída" || status === "Cancelada",
+            status === "Finalizada" || status === "Cancelada",
         })}
       >
         {children}

@@ -66,7 +66,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
     return (
       <OMCard
         isFinishOrCancel={
-          item.status === "Cancelada" || item.status === "Concluída"
+          item.status === "Cancelada" || item.status === "Finalizada"
             ? true
             : false
         }

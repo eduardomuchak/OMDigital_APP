@@ -27,36 +27,9 @@ const operationsMock = [
   },
 ];
 
-const statusLegendInfo = [
-  {
-    id: 1,
-    name: 'Aberta',
-    color: 'bg-status-green',
-  },
-  {
-    id: 2,
-    name: 'Aguardando',
-    color: 'bg-status-yellow',
-  },
-  {
-    id: 3,
-    name: 'Atrasada',
-    color: 'bg-status-red',
-  },
-  {
-    id: 4,
-    name: 'Concluída',
-    color: 'Concluída',
-  },
-  {
-    id: 5,
-    name: 'Cancelada',
-    color: 'Cancelada',
-  },
-];
-
 export function Home() {
-  const { om, fetchOM, mappedMaintenanceOrder } = useContext(OMContext);
+  const { om, fetchOM, mappedMaintenanceOrder, statusLegendInfo } =
+    useContext(OMContext);
   const [startPeriod, setStartPeriod] = useState(new Date());
   const [endPeriod, setEndPeriod] = useState(new Date());
   const [codigoBem, setCodigoBem] = useState('');
@@ -180,6 +153,7 @@ export function Home() {
     }
 
     fetchOM();
+
     retrieveSavedFilterOptions();
   }, []);
 
