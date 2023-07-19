@@ -2,7 +2,7 @@ export interface OMMockProps {
   id: number;
   codigoBem: string;
   ordemManutencao: string;
-  operacao: string;
+  operacao: number;
   paradaReal: string;
   prevFim: string;
   status: string;

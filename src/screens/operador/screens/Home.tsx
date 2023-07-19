@@ -56,7 +56,7 @@ const statusLegendInfo = [
 ];
 
 export function Home() {
-  const { om } = useContext(OMContext);
+  const { om, fetchOM, mappedMaintenanceOrder } = useContext(OMContext);
   const [startPeriod, setStartPeriod] = useState(new Date());
   const [endPeriod, setEndPeriod] = useState(new Date());
   const [codigoBem, setCodigoBem] = useState("");
@@ -104,31 +104,58 @@ export function Home() {
     setIsModalVisible(false);
   }
 
-  const filteredOperations = om.filter((item) => {
+  const filteredMaintenanceOrders = mappedMaintenanceOrder.filter((item) => {
     const matchStatus =
       status.todas ||
       (item.status === "Aberta" && status.abertas) ||
       (item.status === "Aguardando" && status.aguardando) ||
       (item.status === "Concluída" && status.concluidas) ||
       (item.status === "Cancelada" && status.canceladas);
-    const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao]
-    );
 
-    const convertedCreationDate = new Date(item.criadaEm);
+    // const matchOperacao = operations.every(
+    //   (operation) => operation.showAll || operation[item.operacao]
+    // );
 
-    const matchPeriod =
-      convertedCreationDate >= startPeriod &&
-      convertedCreationDate <= endPeriod;
+    // const convertedCreationDate = new Date(item.criadaEm);
+
+    // const matchPeriod =
+    //   convertedCreationDate >= startPeriod &&
+    //   convertedCreationDate <= endPeriod;
 
     const matchCodigoBem = item.codigoBem === codigoBem;
 
     if (codigoBem === "") {
-      return matchStatus && matchOperacao && matchPeriod;
+      return matchStatus;
     }
 
-    return matchStatus && matchOperacao && matchCodigoBem && matchPeriod;
+    return matchStatus && matchCodigoBem;
   });
+
+  // const filteredOperations = om.filter((item) => {
+  //   const matchStatus =
+  //     status.todas ||
+  //     (item.status === "Aberta" && status.abertas) ||
+  //     (item.status === "Aguardando" && status.aguardando) ||
+  //     (item.status === "Concluída" && status.concluidas) ||
+  //     (item.status === "Cancelada" && status.canceladas);
+  //   const matchOperacao = operations.every(
+  //     (operation) => operation.showAll || operation[item.operacao]
+  //   );
+
+  //   const convertedCreationDate = new Date(item.criadaEm);
+
+  //   const matchPeriod =
+  //     convertedCreationDate >= startPeriod &&
+  //     convertedCreationDate <= endPeriod;
+
+  //   const matchCodigoBem = item.codigoBem === codigoBem;
+
+  //   if (codigoBem === "") {
+  //     return matchStatus && matchOperacao && matchPeriod;
+  //   }
+
+  //   return matchStatus && matchOperacao && matchCodigoBem && matchPeriod;
+  // });
 
   useEffect(() => {
     if (om.length > 0) {
@@ -152,6 +179,7 @@ export function Home() {
       });
     }
 
+    fetchOM();
     retrieveSavedFilterOptions();
   }, []);
 
@@ -179,7 +207,7 @@ export function Home() {
       />
       <StatusLegend status={statusLegendInfo} />
 
-      <SwipeableOMCardList maintenanceOrders={filteredOperations} />
+      <SwipeableOMCardList maintenanceOrders={filteredMaintenanceOrders} />
 
       <AddNewMaintenanceOrderButton />
     </View>

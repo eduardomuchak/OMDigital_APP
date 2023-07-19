@@ -9,11 +9,11 @@ import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard
 import { SwipeableActivityCardList } from "../components/SwipeableActivityCardList";
 
 export function RegisteredActivities() {
-  const { om } = useContext(OMContext);
+  const { mappedMaintenanceOrder } = useContext(OMContext);
   const route = useRoute();
   const { id } = route.params as { id: number };
 
-  const filteredOM = om.filter((om) => om.id === id);
+  const filteredOM = mappedMaintenanceOrder.filter((om) => om.id === id);
   const activities = filteredOM[0]?.atividades;
 
   const operationInfoProps = {

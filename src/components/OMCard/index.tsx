@@ -10,7 +10,7 @@ interface OMCardProps {
   id: number;
   codigoBem: string;
   ordemManutencao: string;
-  operacao: string;
+  operacao: number;
   paradaReal: string;
   prevFim: string;
   isFinishOrCancel?: boolean;

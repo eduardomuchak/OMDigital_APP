@@ -1,0 +1,15 @@
+número da OM é o id? SIM
+latitude: "",
+longitude: "",
+localDeManutencao: "",
+telefone: "",
+atividades: [],
+sintomas: [],
+
+
+CRIAÇÃO OM: 
+
+SÃO ESSAS DATAS NA HORA DE CRIAR:
+
+paradaReal: order.start_prev_date + "T" + order.start_prev_hr + ".000Z",
+prevFim: order.end_prev_date + "T" + order.end_prev_hr + ".000Z",

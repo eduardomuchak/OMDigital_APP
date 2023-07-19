@@ -1,33 +1,40 @@
-import { encode } from 'base-64';
-import { createContext, useEffect, useState } from 'react';
-import { OM } from '../interfaces/om-context.interface';
-import { OMMock } from '../mocks/om';
+import { createContext, useEffect, useState } from "react";
+import { OM } from "../interfaces/om-context.interface";
+import { OMMock } from "../mocks/om";
+import { fetchOMFromAPI } from "../services/GET/OMs/fetchAllOms/fetchOM";
+import { MaintenanceOrderList } from "../services/GET/OMs/fetchAllOms/om.interface";
+import { createNewMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts";
+import { newMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface";
+import { maintenanceOrderMapper } from "../utils/maintenanceOrderMapper";
 
 interface OMContextData {
   om: OM.MaintenanceOrderInfo[];
   mockFetchOM: () => Promise<OM.MaintenanceOrderInfo[]>;
   setOm: React.Dispatch<React.SetStateAction<OM.MaintenanceOrderInfo[]>>;
   createNewOM: (om: OM.MaintenanceOrderInfo) => void;
-  createNewOMAPI: (om: OM.MaintenanceOrderInfoAPI) => void;
+  createNewOMAPI: (om: newMaintenanceOrder) => void;
   createNewActivity: (activity: OM.Activity, omId: number) => void;
   deleteActivity: (activityId: number, omId: number) => void;
   pauseOrInitiateActivity: (
     activityId: number,
     omId: number,
-    option: OM.Activity['status'],
+    option: OM.Activity["status"]
   ) => void;
   cancelOM: (omId: number) => void;
   finishActivity: (
     activityId: number,
     omId: number,
-    finishDate: string,
+    finishDate: string
   ) => void;
   finishOM: (
     omId: number,
     finishDate: string,
     counter: number,
-    comment: string | undefined,
+    comment: string | undefined
   ) => void;
+  fetchOM: () => void;
+  maintenanceOrders: MaintenanceOrderList[];
+  mappedMaintenanceOrder: OM.MaintenanceOrderInfo[];
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -39,29 +46,36 @@ interface OMProviderProps {
 export function OMContextProvider({ children }: OMProviderProps) {
   const [om, setOm] = useState<OM.MaintenanceOrderInfo[]>(OMMock);
 
+  const [maintenanceOrders, setMaintenanceOrders] = useState<
+    MaintenanceOrderList[]
+  >([]);
+
   async function mockFetchOM(): Promise<OM.MaintenanceOrderInfo[]> {
     return new Promise((resolve) => {
       resolve(OMMock);
     });
   }
 
+  async function fetchOM() {
+    try {
+      const response = await fetchOMFromAPI();
+      setMaintenanceOrders(response);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   function createNewOM(newOM: OM.MaintenanceOrderInfo) {
     setOm((currentOm) => [...currentOm, newOM]);
   }
 
-  function createNewOMAPI(newOM: OM.MaintenanceOrderInfoAPI) {
-    const encodedCredentials = encode('mobile:+lXbfB3%QSF');
-    fetch('https://hom-en-mnt-004.mvxsistemas.com.br/api', {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Basic ' + encodedCredentials,
-      },
-      body: JSON.stringify(newOM),
-    })
-      .then((response) => response.json())
-      .then((result) => console.log(result));
+  async function createNewOMAPI(newOM: newMaintenanceOrder) {
+    try {
+      const response = await createNewMaintenanceOrder(newOM);
+      console.log(response);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   function createNewActivity(activity: OM.Activity, omId: number) {
@@ -78,7 +92,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
       const activityIndex = newOm.atividades.findIndex(
-        (activity) => activity.id === activityId,
+        (activity) => activity.id === activityId
       );
       newOm.atividades.splice(activityIndex, 1);
       return [...currentOm];
@@ -88,13 +102,13 @@ export function OMContextProvider({ children }: OMProviderProps) {
   function pauseOrInitiateActivity(
     activityId: number,
     omId: number,
-    option: OM.Activity['status'],
+    option: OM.Activity["status"]
   ) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
       const activityIndex = newOm.atividades.findIndex(
-        (activity) => activity.id === activityId,
+        (activity) => activity.id === activityId
       );
       newOm.atividades[activityIndex].status = option;
       return [...currentOm];
@@ -104,15 +118,15 @@ export function OMContextProvider({ children }: OMProviderProps) {
   function finishActivity(
     activityId: number,
     omId: number,
-    finishDate: string,
+    finishDate: string
   ) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
       const activityIndex = newOm.atividades.findIndex(
-        (activity) => activity.id === activityId,
+        (activity) => activity.id === activityId
       );
-      newOm.atividades[activityIndex].status = 'Concluída';
+      newOm.atividades[activityIndex].status = "Concluída";
       newOm.atividades[activityIndex].dataFimReal = finishDate;
       return [...currentOm];
     });
@@ -122,7 +136,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
-      newOm.status = 'Cancelada';
+      newOm.status = "Cancelada";
       return [...currentOm];
     });
   }
@@ -131,12 +145,12 @@ export function OMContextProvider({ children }: OMProviderProps) {
     omId: number,
     finishDate: string,
     counter: number,
-    comment: string | undefined,
+    comment: string | undefined
   ) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
-      newOm.status = 'Concluída';
+      newOm.status = "Concluída";
       newOm.dataFim = finishDate;
       newOm.comentario = comment;
       newOm.contador = counter;
@@ -153,6 +167,8 @@ export function OMContextProvider({ children }: OMProviderProps) {
     fetchOM();
   }, []);
 
+  const mappedMaintenanceOrder = maintenanceOrderMapper(maintenanceOrders);
+
   const omContextData: OMContextData = {
     om,
     mockFetchOM,
@@ -165,6 +181,9 @@ export function OMContextProvider({ children }: OMProviderProps) {
     cancelOM,
     finishActivity,
     finishOM,
+    fetchOM,
+    maintenanceOrders,
+    mappedMaintenanceOrder,
   };
 
   return (

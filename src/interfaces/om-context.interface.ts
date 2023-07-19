@@ -4,7 +4,7 @@ export namespace OM {
     criadaEm: string;
     codigoBem: string;
     ordemManutencao: string;
-    operacao: string;
+    operacao: number;
     paradaReal: string;
     prevFim: string;
     status: string;
