@@ -44,7 +44,7 @@ export function Home() {
     },
   ];
 
-  const { user } = useAuth();
+  const { employee } = useAuth();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [allStatus, setAllStatus] = useState({
     todas: true,
@@ -77,7 +77,7 @@ export function Home() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header isHomeScreen title={`Olá, ${user?.user}`} />
+      <Header isHomeScreen title={`Olá, ${employee?.name}`} />
 
       {isModalVisible && (
         <StatusFilterModal
