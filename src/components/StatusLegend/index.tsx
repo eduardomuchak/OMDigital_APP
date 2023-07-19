@@ -1,10 +1,10 @@
-import { CheckCircle, Pause, WarningCircle } from 'phosphor-react-native';
-import React from 'react';
-import { Text, View } from 'react-native';
+import { CheckCircle, Pause, WarningCircle } from "phosphor-react-native";
+import React from "react";
+import { Text, View } from "react-native";
 
 interface Status {
   id: number;
-  name: string;
+  description: string;
   color: string;
 }
 interface StatusLegendProps {
@@ -14,11 +14,11 @@ interface StatusLegendProps {
 export function StatusLegend({ status }: StatusLegendProps) {
   const handleStatus = (item: Status) => {
     switch (item.color) {
-      case 'Concluída':
+      case "Finalizada":
         return <CheckCircle color="#046700" weight="bold" size={14} />;
-      case 'Cancelada':
+      case "Cancelada":
         return <WarningCircle color="#B50202" weight="bold" size={14} />;
-      case 'Pausada':
+      case "Pausada":
         return <Pause color="#B50202" weight="bold" size={14} />;
       default:
         return <View className={`h-2 w-2 rounded-full ${item.color}`} />;
@@ -31,7 +31,7 @@ export function StatusLegend({ status }: StatusLegendProps) {
         <View className="flex flex-row items-center space-x-2" key={item.id}>
           {handleStatus(item)}
           <Text className="font-poppinsRegular text-sm text-neutral-900">
-            {item.name}
+            {item.description}
           </Text>
         </View>
       ))}
