@@ -1,19 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
+import { postLogin } from '../services/POST/Login';
+import { PostLogin } from '../services/POST/Login/interface';
 import { LoginFormData } from '../validations/common/LoginScreen';
-import { SignInWithCredentials } from './mock';
-
-interface User {
-  id: number;
-  user: string;
-  role: string;
-  session: string;
-}
 
 interface AuthContextData {
-  user: User | null;
-  token: string | null;
+  user: PostLogin.User | null;
+  employee: PostLogin.Employee | null;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   signIn(data: LoginFormData): Promise<void>;
@@ -23,35 +16,43 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<PostLogin.User | null>(null);
+  const [employee, setEmployee] = useState<PostLogin.Employee | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   async function signIn({ userCPF, password }: LoginFormData) {
-    setIsLoading(true);
-    const { error, data } = SignInWithCredentials({
-      userCPF: userCPF,
-      password: password,
-    });
+    try {
+      setIsLoading(true);
+      const response = await postLogin({
+        userCPF: userCPF,
+        password: password,
+      });
 
-    if (data) {
-      await AsyncStorage.setItem('@Auth:user', JSON.stringify(data));
-      await AsyncStorage.setItem('@Auth:token', data.session);
-      setUser(data);
+      if (response.return) {
+        await AsyncStorage.setItem(
+          '@Auth:user',
+          JSON.stringify(response.return.user),
+        );
+        await AsyncStorage.setItem(
+          '@Auth:employee',
+          JSON.stringify(response.return.employee),
+        );
+        setUser(response.return.user);
+        setEmployee(response.return.employee);
+      }
+    } catch (error) {
+      throw error;
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
     }
-
-    if (error) {
-      Alert.alert(error.message);
-    }
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
   }
 
   async function signOut() {
     setIsLoading(true);
     await AsyncStorage.removeItem('@Auth:user');
-    await AsyncStorage.removeItem('@Auth:token');
+
     setUser(null);
     setTimeout(() => {
       setIsLoading(false);
@@ -61,11 +62,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   async function loadStorageData() {
     try {
       const storagedUser = await AsyncStorage.getItem('@Auth:user');
-      const storagedToken = await AsyncStorage.getItem('@Auth:token');
+      const storagedEmployee = await AsyncStorage.getItem('@Auth:employee');
 
-      if (storagedUser && storagedToken) {
+      if (storagedUser) {
         setUser(JSON.parse(storagedUser));
-        setToken(storagedToken);
+      }
+      if (storagedEmployee) {
+        setEmployee(JSON.parse(storagedEmployee));
       }
     } catch (error) {
       console.log('Error loading storage data:', error);
@@ -82,7 +85,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
-        token,
+        employee,
         isLoading,
         setIsLoading,
         signIn,

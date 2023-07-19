@@ -16,13 +16,13 @@ const Routes: React.FC = () => {
   }
 
   switch (true) {
-    case user?.role === 'solicitante':
+    case user?.user_type_name.toLowerCase() === 'solicitante':
       return <SolicitanteRoutes />;
-    case user?.role === 'logistica':
+    case user?.user_type_name.toLowerCase() === 'logistica':
       return <LogisticaRoutes />;
-    case user?.role === 'manutencao':
+    case user?.user_type_name.toLowerCase() === 'manutencao':
       return <ManutencaoRoutes />;
-    case user?.role === 'operador':
+    case user?.user_type_name.toLowerCase() === 'utilizador':
       return <OperadorRoutes />;
     default:
       return <AuthRoutes />;

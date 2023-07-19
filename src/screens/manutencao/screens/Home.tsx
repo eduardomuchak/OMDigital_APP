@@ -1,64 +1,64 @@
-import { useNavigation } from "@react-navigation/native";
-import { useContext, useState } from "react";
-import { View } from "react-native";
+import { useNavigation } from '@react-navigation/native';
+import { useContext, useState } from 'react';
+import { View } from 'react-native';
 
-import { CardContainer } from "../../../components/CardContainer";
-import { FooterModal } from "../../../components/FooterModal";
-import { OMCard } from "../../../components/OMCard";
-import { StatusFilter } from "../../../components/StatusFilter";
+import { CardContainer } from '../../../components/CardContainer';
+import { FooterModal } from '../../../components/FooterModal';
+import { OMCard } from '../../../components/OMCard';
+import { StatusFilter } from '../../../components/StatusFilter';
 
-import { StatusLegend } from "../../../components/StatusLegend";
-import { useAuth } from "../../../contexts/auth";
-import { OMContext } from "../../../contexts/om-context";
-import { FilterModalLogistica } from "../../logistica/components/FilterModalLogistica";
-import { Logistica } from "../../logistica/interfaces";
+import { StatusLegend } from '../../../components/StatusLegend';
+import { useAuth } from '../../../contexts/auth';
+import { OMContext } from '../../../contexts/om-context';
+import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
+import { Logistica } from '../../logistica/interfaces';
 
 const operationsMock = [
   {
     id: 1,
-    name: "Operação 1",
+    name: 'Operação 1',
   },
   {
     id: 2,
-    name: "Operação 2",
+    name: 'Operação 2',
   },
   {
     id: 3,
-    name: "Operação 3",
+    name: 'Operação 3',
   },
 ];
 
 const statusLegendInfo = [
   {
     id: 1,
-    name: "Aberta",
-    color: "bg-status-green",
+    name: 'Aberta',
+    color: 'bg-status-green',
   },
   {
     id: 2,
-    name: "Aguardando",
-    color: "bg-status-yellow",
+    name: 'Aguardando',
+    color: 'bg-status-yellow',
   },
   {
     id: 3,
-    name: "Atrasada",
-    color: "bg-status-red",
+    name: 'Atrasada',
+    color: 'bg-status-red',
   },
   {
     id: 4,
-    name: "Concluída",
-    color: "Concluída",
+    name: 'Concluída',
+    color: 'Concluída',
   },
   {
     id: 5,
-    name: "Cancelada",
-    color: "Cancelada",
+    name: 'Cancelada',
+    color: 'Cancelada',
   },
 ];
 
 export function Home() {
   const { navigate } = useNavigation();
-  const { user } = useAuth();
+  const { employee } = useAuth();
   const { om } = useContext(OMContext);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -75,7 +75,7 @@ export function Home() {
         showAll: true,
         [operation.name]: false,
       };
-    })
+    }),
   );
 
   function handleOpenModal() {
@@ -88,7 +88,7 @@ export function Home() {
 
   function handleFilterOptionsConfirmation(
     pickedStatus: Logistica.StatusFilterStateOptions,
-    pickedOperations: Logistica.OperationState[]
+    pickedOperations: Logistica.OperationState[],
   ) {
     setStatus(pickedStatus);
     setOperations(pickedOperations);
@@ -98,12 +98,12 @@ export function Home() {
   const filteredOperations = om.filter((item) => {
     const matchStatus =
       status.todas ||
-      (item.status === "Aberta" && status.abertas) ||
-      (item.status === "Aguardando" && status.aguardando) ||
-      (item.status === "Concluída" && status.concluidas) ||
-      (item.status === "Cancelada" && status.canceladas);
+      (item.status === 'Aberta' && status.abertas) ||
+      (item.status === 'Aguardando' && status.aguardando) ||
+      (item.status === 'Concluída' && status.concluidas) ||
+      (item.status === 'Cancelada' && status.canceladas);
     const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao]
+      (operation) => operation.showAll || operation[item.operacao],
     );
 
     return matchStatus && matchOperacao;
@@ -111,7 +111,7 @@ export function Home() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      {/* <Header isHomeScreen title={`Olá, ${user?.user}`} /> */}
+      {/* <Header isHomeScreen title={`Olá, ${employee?.name}`} /> */}
       {isModalVisible && (
         <FilterModalLogistica
           onClose={handleCloseModal}
@@ -131,12 +131,12 @@ export function Home() {
         {filteredOperations.map((item) => (
           <OMCard
             isFinishOrCancel={
-              item.status === "Cancelada" || item.status === "Concluída"
+              item.status === 'Cancelada' || item.status === 'Concluída'
                 ? true
                 : false
             }
             key={item.id}
-            onPress={() => navigate("RegisteredActivities", { id: item.id })}
+            onPress={() => navigate('RegisteredActivities', { id: item.id })}
             {...item}
           />
         ))}

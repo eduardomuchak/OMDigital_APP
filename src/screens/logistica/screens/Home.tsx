@@ -74,7 +74,7 @@ export function Home() {
       };
     }),
   );
-  const { user } = useAuth();
+  const { employee } = useAuth();
 
   function handleOpenModal() {
     setIsModalVisible(true);
@@ -109,7 +109,7 @@ export function Home() {
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header isHomeScreen title={`Olá, ${user?.user}`} />
+      <Header isHomeScreen title={`Olá, ${employee?.name}`} />
       {isModalVisible && (
         <FilterModalLogistica
           onClose={handleCloseModal}

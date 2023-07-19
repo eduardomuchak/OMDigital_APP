@@ -116,13 +116,13 @@ export function Login() {
         <CustomButton variant="primary" onPress={handleSubmit(onSubmit)}>
           Entrar
         </CustomButton>
-        <CustomButton
+        {/* <CustomButton
           style={{ marginTop: 10 }}
           variant="primary"
           onPress={() => navigate('RegisterNewPassword')}
         >
           Cadastrar Senha
-        </CustomButton>
+        </CustomButton> */}
       </BackgroundCardContainer>
     </View>
   );
