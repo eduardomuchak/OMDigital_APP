@@ -7,7 +7,7 @@ interface CardInfoProps {
   isFinishOrCancel?: boolean;
   codigoBem: string;
   ordemManutencao: string;
-  operacao: string;
+  operacao: number;
   paradaReal: string;
   prevFim: string;
   tipo: string;
@@ -21,14 +21,14 @@ export function CardInfo(props: CardInfoProps) {
           ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
         })}
       >
-        {props.ordemManutencao}
+        OM: {props.ordemManutencao}
       </Text>
       <Text
         className={clsx("font-poppinsMedium text-base text-white", {
           ["font-poppinsMedium text-neutral-900"]: props.isFinishOrCancel,
         })}
       >
-        {props.operacao}
+        Operação: {props.operacao}
       </Text>
       <Text
         className={clsx("font-poppinsMedium text-base text-white", {

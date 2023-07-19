@@ -10,7 +10,7 @@ interface OperationInfoCardProps {
   operationInfo: {
     codigoBem: string;
     ordemManutencao: string;
-    operacao: string;
+    operacao: number;
     paradaReal: string;
     prevFim: string;
     latitude: string;
