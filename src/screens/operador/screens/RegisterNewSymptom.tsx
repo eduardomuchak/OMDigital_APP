@@ -22,8 +22,7 @@ export function RegisterNewSymptom() {
 
   const { user } = useAuth();
 
-  const { om, setOm, mappedMaintenanceOrder, registerNewSymptom } =
-    useContext(OMContext);
+  const { mappedMaintenanceOrder, registerNewSymptom } = useContext(OMContext);
   const {
     control,
     handleSubmit,

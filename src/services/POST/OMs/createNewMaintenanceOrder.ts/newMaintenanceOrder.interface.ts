@@ -1,5 +1,4 @@
 export interface newMaintenanceOrder {
-  // id: string | null;
   asset_code: string;
   counter: number;
   service_type: string;
@@ -8,6 +7,7 @@ export interface newMaintenanceOrder {
   start_prev_hr: string;
   end_prev_date: string;
   end_prev_hr: string;
-  obs: string;
+  obs?: string;
   resp_id: number;
+  symptom: string;
 }

@@ -60,38 +60,15 @@ export function RegisterNewMaintenanceOrder() {
       start_prev_hr: payload.startDate.split("T")[1],
       end_prev_date: payload.endDate.split("T")[0],
       end_prev_hr: payload.endDate.split("T")[1],
-      obs: payload.symptom, // VAI SER CRIADO UM CAMPO DE SINTOMAS
+      symptom: payload.symptom,
       resp_id: user ? user.id : 0,
     };
 
-    console.log("PAYLOAD", payloadAPI);
-
     createNewOMAPI(payloadAPI);
 
-    // createNewOM({
-    //   id: om.length === 0 ? 1 : om[om.length - 1].id + 1,
-    //   criadaEm: new Date().toISOString(),
-    //   codigoBem: payload.propertyCode,
-    //   ordemManutencao: "",
-    //   operacao: "",
-    //   paradaReal: payload.startDate,
-    //   prevFim: payload.endDate,
-    //   status: "Aberta",
-    //   latitude: payload.location.latitude.toString(),
-    //   longitude: payload.location.longitude.toString(),
-    //   localDeManutencao: "",
-    //   controlador: "",
-    //   telefone: "",
-    //   atividades: [],
-    //   sintomas: [{ id: 1, descricao: payload.symptom }],
-    //   contador: Number(payload.counter),
-    //   tipo: payload.type,
-    // });
     reset();
     goBack();
   };
-
-  // PAYLOAD => {"counter": "5555", "endDate": "2023-06-12T14:13:59.891Z", "location": {"latitude": 37.4226711, "longitude": -122.0849872}, "propertyCode": "ABC-123", "startDate": "2023-06-08T13:13:59.891Z", "symptom": "QUEBROU", "type": "Corretiva"}
 
   return (
     <>

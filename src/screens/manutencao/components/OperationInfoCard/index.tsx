@@ -5,6 +5,7 @@ import { PencilSimple } from "phosphor-react-native";
 import { GPSLocationModal } from "../../../../components/GPSLocationModal";
 import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
 import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
+import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -20,10 +21,7 @@ interface OperationInfoCardProps {
   };
   operador?: boolean;
   operationId?: number;
-  symptoms?: {
-    id: number;
-    descricao: string;
-  }[];
+  symptoms?: Symptom.SymptomList[];
 }
 
 export function OperationInfoCard({

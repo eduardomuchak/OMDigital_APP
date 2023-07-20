@@ -8,13 +8,15 @@ import { HourglassHigh, HourglassLow } from "phosphor-react-native";
 import { AttachmentPreviewModal } from "../../../../components/AttachmentPreviewModal";
 import { OM } from "../../../../interfaces/om-context.interface";
 import { ObservationsModal } from "../ObservationsModal";
+import { Stage } from "../../../../services/POST/Stages/stages.interface";
+import { formatMaintenanceOrderStatus } from "../../../../utils/formatMaintenanceOrderStatus";
 
-export function ActivityCard({ activity }: OM.ActivityProps) {
+export function ActivityCard({ stage }: Stage.StagesListProps) {
   const handleFinishedActivity = () => {
-    if (activity.dataFimReal) {
+    if (stage.end_date) {
       const diff =
-        new Date(activity.dataFimReal).getTime() -
-        new Date(activity.dataFimPrevista).getTime();
+        new Date(stage.end_date).getTime() -
+        new Date(stage.end_date).getTime(); // aqui seria a data fim prevista
 
       const diffFormatted = new Date(new Date(diff).toISOString())
         .toLocaleTimeString("pt-BR", {
@@ -59,43 +61,43 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
   return (
     <View className="flex flex-row rounded-xl bg-neutral-100">
       <View className="relative flex-1 p-4">
-        {activity.images.length > 0 ? (
+        {/* {stage.images.length > 0 ? (
           <View className="absolute right-0 top-4 flex items-center justify-start px-4">
             <AttachmentPreviewModal
-              images={activity.images}
+              images={stage.images}
               iconColor="#000000"
             />
           </View>
-        ) : null}
+        ) : null} */}
         <View className="mr-8 flex flex-row justify-between">
           <View className="mb-3 flex flex-row items-start">
-            {activity.status === "Pausada" ? (
+            {/* {stage.status === "Pausada" ? (
               <View className="mr-5 mt-2 h-2 w-2">
                 <Pause size={20} color="#B50202" weight="bold" />
               </View>
             ) : (
               <View
                 className={clsx("mr-2 mt-2 h-2 w-2 rounded-full", {
-                  "bg-status-green": activity.status === "Concluída",
-                  "bg-status-yellow": activity.status === "Em andamento",
-                  "bg-status-red": activity.status === "Atrasada",
-                  "bg-status-blue": activity.status === "Não iniciada",
+                  "bg-status-green": stage.status === "Concluída",
+                  "bg-status-yellow": stage.status === "Em andamento",
+                  "bg-status-red": stage.status === "Atrasada",
+                  "bg-status-blue": stage.status === "Não iniciada",
                 })}
               />
-            )}
+            )} */}
             <Text className="font-poppinsBold text-base text-neutral-900">
-              {activity.descricao}
+              {stage.description}
             </Text>
-            {activity.obs ? (
+            {/* {stage.description ? ( //AQUI SERIA OBSERVAÇÃO, NÃO DESCRICAO
               <View
                 className={clsx("relative", {
-                  "left-28": activity.images.length > 0,
-                  "left-36": activity.images.length === 0,
+                  "left-28": stage.images.length > 0,
+                  "left-36": stage.images.length === 0,
                 })}
               >
-                <ObservationsModal observations={activity.obs} />
+                <ObservationsModal observations={stage.obs} />
               </View>
-            ) : null}
+            ) : null} */}
           </View>
         </View>
         <View className="flex flex-col items-start">
@@ -104,12 +106,12 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
             {`Início: ${formatISOStringToPTBRDateString(
-              activity.dataInicioPrevista
+              stage.start_date //AQUI SDERIA DATA INICIO PREVISTA
             )}`}
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
             {`Fim: ${formatISOStringToPTBRDateString(
-              activity.dataFimPrevista
+              stage.end_date // AQUI SERIA DATA FIM PREVISTA
             )}`}
           </Text>
         </View>
@@ -118,14 +120,14 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
          
         </View> */}
 
-        {activity.status === "Concluída" && activity.dataFimReal ? (
+        {formatMaintenanceOrderStatus(stage.status) === "Finalizada" && stage.end_date ? (
           <>
             <View className="mt-3 flex flex-col items-start">
               <Text className="font-poppinsBold text-base text-neutral-900">
                 Finalizado em:
               </Text>
               <Text className="font-poppinsMedium text-sm text-neutral-900">
-                {`${formatISOStringToPTBRDateString(activity.dataFimReal)}`}
+                {`${formatISOStringToPTBRDateString(stage.end_date)}`}
               </Text>
             </View>
             <View className="mt-3 items-start">{handleFinishedActivity()}</View>
@@ -133,7 +135,7 @@ export function ActivityCard({ activity }: OM.ActivityProps) {
         ) : null}
       </View>
 
-      <DeleteActivityModal activityId={activity.id} />
+      <DeleteActivityModal activityId={stage.id} />
     </View>
   );
 }

@@ -41,7 +41,7 @@ interface OMContextData {
   maintenanceOrders: MaintenanceOrderList[];
   mappedMaintenanceOrder: OM.MaintenanceOrderInfo[];
   statusLegendInfo: StatusWithBgColor[];
-  registerNewSymptom: (symptom: Symptom) => void;
+  registerNewSymptom: (symptom: Symptom.CreateNewSymptom) => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -90,12 +90,12 @@ export function OMContextProvider({ children }: OMProviderProps) {
   }
 
   function createNewActivity(activity: OM.Activity, omId: number) {
-    setOm((currentOm) => {
-      const omIndex = currentOm.findIndex((om) => om.id === omId);
-      const newOm = currentOm[omIndex];
-      newOm.atividades.push(activity);
-      return [...currentOm];
-    });
+    // setOm((currentOm) => {
+    //   const omIndex = currentOm.findIndex((om) => om.id === omId);
+    //   const newOm = currentOm[omIndex];
+    //   newOm.atividades.push(activity);
+    //   return [...currentOm];
+    // });
   }
 
   function deleteActivity(activityId: number, omId: number) {
@@ -115,15 +115,15 @@ export function OMContextProvider({ children }: OMProviderProps) {
     omId: number,
     option: OM.Activity["status"]
   ) {
-    setOm((currentOm) => {
-      const omIndex = currentOm.findIndex((om) => om.id === omId);
-      const newOm = currentOm[omIndex];
-      const activityIndex = newOm.atividades.findIndex(
-        (activity) => activity.id === activityId
-      );
-      newOm.atividades[activityIndex].status = option;
-      return [...currentOm];
-    });
+    // setOm((currentOm) => {
+    //   const omIndex = currentOm.findIndex((om) => om.id === omId);
+    //   const newOm = currentOm[omIndex];
+    //   const activityIndex = newOm.atividades.findIndex(
+    //     (activity) => activity.id === activityId
+    //   );
+    //   newOm.atividades[activityIndex].status = option;
+    //   return [...currentOm];
+    // });
   }
 
   function finishActivity(
@@ -131,16 +131,16 @@ export function OMContextProvider({ children }: OMProviderProps) {
     omId: number,
     finishDate: string
   ) {
-    setOm((currentOm) => {
-      const omIndex = currentOm.findIndex((om) => om.id === omId);
-      const newOm = currentOm[omIndex];
-      const activityIndex = newOm.atividades.findIndex(
-        (activity) => activity.id === activityId
-      );
-      newOm.atividades[activityIndex].status = "Concluída";
-      newOm.atividades[activityIndex].dataFimReal = finishDate;
-      return [...currentOm];
-    });
+    // setOm((currentOm) => {
+    //   const omIndex = currentOm.findIndex((om) => om.id === omId);
+    //   const newOm = currentOm[omIndex];
+    //   const activityIndex = newOm.atividades.findIndex(
+    //     (activity) => activity.id === activityId
+    //   );
+    //   newOm.atividades[activityIndex].status = "Concluída";
+    //   newOm.atividades[activityIndex].dataFimReal = finishDate;
+    //   return [...currentOm];
+    // });
   }
 
   function cancelOM(omId: number) {
@@ -180,7 +180,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setStatusLegendInfo(statusLegendWithColors);
   }
 
-  async function registerNewSymptom(symptom: Symptom) {
+  async function registerNewSymptom(symptom: Symptom.CreateNewSymptom) {
     await createNewSymptom(symptom);
   }
 

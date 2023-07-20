@@ -12,9 +12,11 @@ import { StartActivityModal } from "../StartActivityModal";
 import { StatusLegend } from "../../../../components/StatusLegend";
 import { OMContext } from "../../../../contexts/om-context";
 import { OM } from "../../../../interfaces/om-context.interface";
+import { Stage } from "../../../../services/POST/Stages/stages.interface";
+import { formatMaintenanceOrderStatus } from "../../../../utils/formatMaintenanceOrderStatus";
 
 interface SwipeableActivityCardListProps {
-  activities: OM.Activity[];
+  activities: Stage.StagesList[];
   omId: number;
 }
 
@@ -29,9 +31,9 @@ export const SwipeableActivityCardList = ({
   const screenWidth = Dimensions.get("window").width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
-  const HandleStatus = ({ activity }: OM.ActivityProps) => {
-    switch (activity.status) {
-      case "Concluída":
+  const HandleStatus = ({ stage }: Stage.StagesListProps) => {
+    switch (formatMaintenanceOrderStatus(stage.status)) {
+      case "Finalizada":
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -43,17 +45,17 @@ export const SwipeableActivityCardList = ({
       case "Em andamento":
         return (
           <View className="flex flex-row">
-            <PauseActivityModal omId={omId} activityId={activity.id} />
+            <PauseActivityModal omId={omId} activityId={stage.id} />
             <View className="w-4" />
             <FinishActivityModal
               isSwipeableTrigger
               omId={omId}
-              activityId={activity.id}
+              activityId={stage.id}
             />
           </View>
         );
       default:
-        return <StartActivityModal omId={omId} activityId={activity.id} />;
+        return <StartActivityModal omId={omId} activityId={stage.id} />;
     }
   };
 
@@ -80,7 +82,10 @@ export const SwipeableActivityCardList = ({
           Adicionar Sintoma
         </CustomButton>
       </View>
-      {activities.every((activity) => activity.status === "Concluída") ? (
+      {activities.every(
+        (activity) =>
+          formatMaintenanceOrderStatus(activity.status) === "Finalizada"
+      ) ? (
         <View className="mb-10">
           <CustomButton
             variant="finish"
@@ -95,20 +100,20 @@ export const SwipeableActivityCardList = ({
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<OM.ActivityProps["activity"]>): JSX.Element => {
-    return <ActivityCard activity={item} />;
+  }: ListRenderItemInfo<Stage.StagesListProps["stage"]>): JSX.Element => {
+    return <ActivityCard stage={item} />;
   };
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<OM.ActivityProps["activity"]>): JSX.Element => (
+  }: ListRenderItemInfo<Stage.StagesListProps["stage"]>): JSX.Element => (
     <View
       className={`flex-1 items-center justify-center`}
       style={{
         width: halfScreenWidth,
       }}
     >
-      {HandleStatus({ activity: item })}
+      {HandleStatus({ stage: item })}
     </View>
   );
 

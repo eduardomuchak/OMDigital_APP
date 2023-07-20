@@ -1,3 +1,6 @@
+import { Stage } from "../../../POST/Stages/stages.interface";
+import { Symptom } from "../../../POST/Symptoms/symptom.interface";
+
 export interface MaintenanceOrderList {
   id: number;
   asset_code: string;
@@ -37,4 +40,6 @@ export interface MaintenanceOrderList {
   service_charac: string;
   service_maintenance: string;
   service_description: string;
+  symptoms: Symptom.SymptomList[];
+  stages: Stage.StagesList[];
 }
