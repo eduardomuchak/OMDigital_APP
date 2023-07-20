@@ -40,14 +40,14 @@ export function PasswordRecoverySMS() {
                 onChangeText={onChange}
                 value={value}
                 label="NÚMERO DE TELEFONE"
-                placeholder="(99) 99999-9999"
+                placeholder="(99)99999-9999"
                 keyboardType="numeric"
                 maskedInput={true}
                 maskType="cel-phone"
                 maskOptions={{
                   maskType: 'BRL',
                   withDDD: true,
-                  dddMask: '(99) ',
+                  dddMask: '(99)',
                 }}
               />
             )}

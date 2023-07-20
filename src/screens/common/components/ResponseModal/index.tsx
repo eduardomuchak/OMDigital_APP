@@ -6,6 +6,7 @@ import { Text, View } from 'react-native';
 import { ButtonLoading } from '../../../../components/ButtonLoading';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
+import { getRecoveryPassword } from '../../../../services/GET/PasswordRecovery';
 
 type FormData = {
   userCPF?: string;
@@ -33,25 +34,52 @@ export function ResponseModal({
     null,
   );
 
-  function onSubmit() {
+  function handleModalMessage(response: boolean) {
+    if (response === true) {
+      setModalMessage(
+        'Para finalizar a recuperação, entre em contato com o operador responsável',
+      );
+    }
+    if (response === false) {
+      setModalMessage(
+        'Ocorreu um erro ao tentar recuperar a senha. Tente novamente mais tarde.',
+      );
+    }
+  }
+
+  function onSubmit(data: FormData) {
     try {
       setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        setIsModalVisible(true);
-        setIsSuccessResponse(true);
-      }, 2000);
+      if (data?.userEmail) {
+        getRecoveryPassword({ text: data.userEmail }).then((response) => {
+          setIsSuccessResponse(response);
+          handleModalMessage(response);
+          setIsModalVisible(true);
+        });
+      }
+      if (data?.userCPF) {
+        getRecoveryPassword({ text: data.userCPF }).then((response) => {
+          setIsSuccessResponse(response);
+          handleModalMessage(response);
+          setIsModalVisible(true);
+        });
+      }
+      if (data?.userSMSNumber) {
+        getRecoveryPassword({ text: data.userSMSNumber }).then((response) => {
+          setIsSuccessResponse(response);
+          handleModalMessage(response);
+          setIsModalVisible(true);
+        });
+      }
+    } catch (error) {
+      setIsSuccessResponse(false);
+      setIsModalVisible(true);
+    } finally {
+      setIsLoading(false);
       setTimeout(() => {
         setIsModalVisible(false);
         navigate('Login');
       }, 5000);
-      setModalMessage(
-        'Para finalizar a recuperação, entre em contato com o operador responsável',
-      );
-    } catch (error) {
-      setModalMessage(
-        'Ocorreu um erro ao tentar recuperar a senha. Tente novamente mais tarde.',
-      );
     }
   }
 
