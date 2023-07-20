@@ -1,7 +1,7 @@
 import { api } from "../../api";
 import { Symptom } from "./symptom.interface";
 
-export async function createNewSymptom(payload: Symptom) {
+export async function createNewSymptom(payload: Symptom.CreateNewSymptom) {
   const formattedPayload = new FormData();
   formattedPayload.append(
     "maintenance_order_id",

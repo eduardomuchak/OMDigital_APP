@@ -1,10 +1,8 @@
-import { ScrollView, Text, View } from 'react-native';
+import { ScrollView, Text, View } from "react-native";
+import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
 
 interface CardProps {
-  symptom: {
-    id: number;
-    descricao: string;
-  };
+  symptom: Symptom.SymptomList;
 }
 
 function Card({ symptom }: CardProps) {
@@ -12,17 +10,16 @@ function Card({ symptom }: CardProps) {
     <View className="flex-1 flex-row items-center pb-1">
       <View className="flex-1 flex-row space-x-2 rounded-xl">
         <View className="top-2 h-2 w-2 rounded-full bg-black" />
-        <Text className="font-poppinsMedium text-lg">{symptom.descricao}</Text>
+        <Text className="font-poppinsMedium text-lg">
+          {symptom.description}
+        </Text>
       </View>
     </View>
   );
 }
 
 interface StaticSymptomListProps {
-  symptoms: {
-    id: number;
-    descricao: string;
-  }[];
+  symptoms: Symptom.SymptomList[];
 }
 
 export function StaticSymptomList({ symptoms }: StaticSymptomListProps) {

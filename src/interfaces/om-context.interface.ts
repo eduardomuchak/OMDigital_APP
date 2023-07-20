@@ -1,3 +1,5 @@
+import { Stage } from "../services/POST/Stages/stages.interface";
+
 export namespace OM {
   export interface MaintenanceOrderInfo {
     id: number;
@@ -13,7 +15,7 @@ export namespace OM {
     localDeManutencao?: string;
     controlador: string;
     telefone?: string;
-    atividades: Activity[];
+    atividades: Stage.StagesList[];
     sintomas: Symptom[];
     contador: number;
     tipo: string;
@@ -35,9 +37,23 @@ export namespace OM {
     resp_id: number;
   }
 
+  // export interface Symptom {
+  //   id: number;
+  //   descricao: string;
+  // }
+
   export interface Symptom {
     id: number;
-    descricao: string;
+    maintenance_order_id: number;
+    description: string;
+    symptom_protheus: null | string;
+    datetime: string;
+    resp_id: number;
+    st: number;
+    asset_code: string;
+    service_type: string;
+    service_code: string;
+    status: number;
   }
 
   export interface Activity {

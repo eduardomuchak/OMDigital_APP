@@ -13,7 +13,7 @@ export const createNewMaintenanceOrder = async (
   formattedPayload.append("start_prev_hr", payload.start_prev_hr);
   formattedPayload.append("end_prev_date", payload.end_prev_date);
   formattedPayload.append("end_prev_hr", payload.end_prev_hr);
-  formattedPayload.append("obs", payload.obs);
+  formattedPayload.append("symptom", payload.symptom);
   formattedPayload.append("resp_id", payload.resp_id.toString());
 
   const response = await api.post(
