@@ -1,10 +1,10 @@
-import { Square, Trash } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../../components/ui/CustomDateTimePicker";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { Square, Trash } from 'phosphor-react-native';
+import { useContext, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../../components/ui/CustomDateTimePicker';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { OMContext } from '../../../../contexts/om-context';
 
 interface FinishActivityModalProps {
   isSwipeableTrigger?: boolean;
