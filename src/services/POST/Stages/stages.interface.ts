@@ -23,4 +23,15 @@ export namespace Stage {
   export interface StagesListProps {
     stage: StagesList;
   }
+
+  export interface CreateStage {
+    maintenance_order_id: number;
+    description: string;
+    obs: string;
+    start_date: string;
+    start_hr: string;
+    end_date: string;
+    end_hr: string;
+    resp_id: number;
+  }
 }

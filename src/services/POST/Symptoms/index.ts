@@ -19,5 +19,6 @@ export async function createNewSymptom(payload: Symptom.CreateNewSymptom) {
       },
     }
   );
+
   return response;
 }
