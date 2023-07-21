@@ -1,10 +1,10 @@
-import { useRoute } from "@react-navigation/native";
-import { Trash } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { useRoute } from '@react-navigation/native';
+import { Trash } from 'phosphor-react-native';
+import { useContext, useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { OMContext } from '../../../../contexts/om-context';
 
 interface DeleteActivityModalProps {
   activityId: number;
@@ -12,14 +12,14 @@ interface DeleteActivityModalProps {
 
 export function DeleteActivityModal({ activityId }: DeleteActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { deleteActivity } = useContext(OMContext);
+  const { deleteStage } = useContext(OMContext);
 
   // id da OM
   const route = useRoute();
   const { id: omId } = route.params as { id: number };
 
   function handleDeleteActivity() {
-    deleteActivity(activityId, omId);
+    deleteStage(activityId.toString());
     setIsModalVisible(false);
   }
 
