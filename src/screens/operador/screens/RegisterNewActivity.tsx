@@ -11,7 +11,12 @@ import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicke
 import { ErrorText } from "../../../components/ui/ErrorText";
 import { Input } from "../../../components/ui/Input";
 import { TextArea } from "../../../components/ui/TextArea";
+import { useAuth } from "../../../contexts/auth";
 import { OMContext } from "../../../contexts/om-context";
+import {
+  getDateWithoutTime,
+  getHoursAndMinutes,
+} from "../../../utils/formatDates";
 import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
@@ -33,11 +38,12 @@ export function RegisterNewActivity() {
     resolver: zodResolver(registerNewActivitySchema),
   });
   const { goBack } = useNavigation();
+  const { user } = useAuth();
 
   const route = useRoute();
   const omId = route.params as { id: number };
 
-  const { createNewActivity } = useContext(OMContext);
+  const { createNewStage } = useContext(OMContext);
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
     const payload = {
@@ -46,24 +52,20 @@ export function RegisterNewActivity() {
       endDate: data.endDate.toISOString(),
     };
 
-    createNewActivity(
-      {
-        id: Math.random() * 1000,
-        descricao: payload.activity,
-        status: "Não iniciada",
-        dataFimReal: payload.endDate,
-        dataInicioPrevista: payload.startDate,
-        dataFimPrevista: payload.endDate,
-        images: [],
-      },
-      omId.id
-    );
+    createNewStage({
+      maintenance_order_id: omId.id,
+      description: payload.activity,
+      obs: payload.note || "",
+      start_date: getDateWithoutTime(new Date(payload.startDate)),
+      start_hr: getHoursAndMinutes(new Date(payload.startDate)),
+      end_date: getDateWithoutTime(new Date(payload.endDate)),
+      end_hr: getHoursAndMinutes(new Date(payload.endDate)),
+      resp_id: user?.id || 0,
+    });
 
     reset();
     goBack();
   };
-
-  //{"activity": "Nova atv", "endDate": "2023-06-12T18:01:57.826Z", "note": "sim", "startDate": "2023-06-10T17:01:57.826Z"}
 
   return (
     <View className="flex flex-1 flex-col bg-white">

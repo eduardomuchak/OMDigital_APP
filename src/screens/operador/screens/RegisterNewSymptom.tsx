@@ -68,9 +68,9 @@ export function RegisterNewSymptom() {
     // setOm(updatedOM);
 
     const newSymptom = {
-      maintenance_order_id: user?.id || 0,
+      maintenance_order_id: id,
       description: data.symptom,
-      resp_id: 1,
+      resp_id: user?.id || 0,
     };
 
     try {
