@@ -1,6 +1,6 @@
-import { CheckCircle, Pause, WarningCircle } from "phosphor-react-native";
-import React from "react";
-import { Text, View } from "react-native";
+import { CheckCircle, Pause, WarningCircle } from 'phosphor-react-native';
+import React from 'react';
+import { Text, View } from 'react-native';
 
 interface Status {
   id: number;
@@ -14,11 +14,11 @@ interface StatusLegendProps {
 export function StatusLegend({ status }: StatusLegendProps) {
   const handleStatus = (item: Status) => {
     switch (item.color) {
-      case "Finalizada":
+      case 'Finalizada':
         return <CheckCircle color="#046700" weight="bold" size={14} />;
-      case "Cancelada":
+      case 'Cancelada':
         return <WarningCircle color="#B50202" weight="bold" size={14} />;
-      case "Pausada":
+      case 'Pausada':
         return <Pause color="#B50202" weight="bold" size={14} />;
       default:
         return <View className={`h-2 w-2 rounded-full ${item.color}`} />;
@@ -26,15 +26,23 @@ export function StatusLegend({ status }: StatusLegendProps) {
   };
 
   return (
-    <View className="flex flex-row flex-wrap items-center justify-center space-x-3 px-4 pb-2">
-      {status.map((item) => (
-        <View className="flex flex-row items-center space-x-2" key={item.id}>
-          {handleStatus(item)}
-          <Text className="font-poppinsRegular text-sm text-neutral-900">
-            {item.description}
-          </Text>
-        </View>
-      ))}
+    <View className="flex flex-row flex-wrap items-center justify-center space-x-2 px-3 pb-2">
+      {status
+        .sort((a, b) =>
+          a.description > b.description
+            ? 1
+            : b.description > a.description
+            ? -1
+            : 0,
+        )
+        .map((item) => (
+          <View className="flex flex-row items-center space-x-1" key={item.id}>
+            {handleStatus(item)}
+            <Text className="font-poppinsRegular text-sm text-neutral-900">
+              {item.description}
+            </Text>
+          </View>
+        ))}
     </View>
   );
 }
