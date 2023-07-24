@@ -14,9 +14,21 @@
       }
     },
     "preview": {
-      "distribution": "internal"
+      "env": {
+        "ENVIRONMENT": "local",
+        "API_BASE_URL": "https://hom-en-mnt-004.mvxsistemas.com.br/api",
+        "API_USER": "mobile",
+        "API_PASSWORD": "N%+qMpy(zi"
+      }
     },
-    "production": {}
+    "production": {
+      "env": {
+        "ENVIRONMENT": "production",
+        "API_BASE_URL": "https://hom-en-mnt-004.mvxsistemas.com.br/api",
+        "API_USER": "mobile",
+        "API_PASSWORD": "N%+qMpy(zi"
+      }
+    }
   },
   "submit": {
     "production": {
