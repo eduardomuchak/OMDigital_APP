@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { View } from "react-native";
 
 import { Header } from "../../../components/Header";
@@ -9,7 +9,8 @@ import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard
 import { SwipeableActivityCardList } from "../components/SwipeableActivityCardList";
 
 export function RegisteredActivities() {
-  const { mappedMaintenanceOrder } = useContext(OMContext);
+  const { mappedMaintenanceOrder, handleLegendStageStatus } =
+    useContext(OMContext);
   const route = useRoute();
   const { id } = route.params as { id: number };
 
@@ -29,6 +30,10 @@ export function RegisteredActivities() {
   };
 
   const symptoms = filteredOM[0]?.sintomas;
+
+  useEffect(() => {
+    handleLegendStageStatus();
+  }, []);
 
   return (
     <View className="flex flex-1 flex-col bg-white">

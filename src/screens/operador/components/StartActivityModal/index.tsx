@@ -3,6 +3,7 @@ import { useContext, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { CustomButton } from "../../../../components/ui/CustomButton";
 import { CustomModal } from "../../../../components/ui/Modal";
+import { startStage } from "../../../../services/GET/Stages/startStage";
 import { OMContext } from "../../../../contexts/om-context";
 
 interface StartActivityModalProps {
@@ -16,10 +17,17 @@ export function StartActivityModal({
 }: StartActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { pauseOrInitiateActivity } = useContext(OMContext);
+  const { pauseOrInitiateActivity, mappedMaintenanceOrder } = useContext(OMContext);
 
-  function handleStartActivity() {
-    pauseOrInitiateActivity(activityId, omId, "Em andamento");
+  // console.log(mappedMaintenanceOrder.find((om) => om.id === omId));
+
+  async function handleStartActivity() {
+    // pauseOrInitiateActivity(activityId, omId, "Em andamento");
+    try {
+      await startStage(activityId);
+    } catch (error) {
+      console.log(error);
+    }
     setIsModalVisible(false);
   }
 
