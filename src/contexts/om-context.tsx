@@ -113,13 +113,13 @@ export function OMContextProvider({ children }: OMProviderProps) {
   //   // });
   // }
 
-  async function createNewStage(stage: Stage.CreateStage) {
-    try {
-      await createNewMaintenanceOrderStage(stage);
-    } catch (error) {
-      console.error(error);
-    }
-    setRender(!render);
+  // async function createNewStage(stage: Stage.CreateStage) {
+  //   try {
+  //     await createNewMaintenanceOrderStage(stage);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   setRender(!render);
   // function createNewStage(activity: OM.Activity, omId: number) {
   //   // setOm((currentOm) => {
   //   //   const omIndex = currentOm.findIndex((om) => om.id === omId);
@@ -279,4 +279,4 @@ export function OMContextProvider({ children }: OMProviderProps) {
   return (
     <OMContext.Provider value={omContextData}>{children}</OMContext.Provider>
   );
-}}
+}
