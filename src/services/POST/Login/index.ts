@@ -9,12 +9,12 @@ export const postLogin = async ({
 }: LoginFormData): Promise<PostLogin.Response> => {
   try {
     const payload = new FormData();
-    const mock = {
-      username: '125.477.326-61',
-      password: 'teste#EN2023',
-    };
-    payload.append('username', mock.username);
-    payload.append('password', mock.password);
+    // const mock = {
+    //   username: '125.477.326-61',
+    //   password: 'teste#EN2023',
+    // };
+    payload.append('username', userCPF);
+    payload.append('password', password);
 
     const { data } = await api.post('/user/auth', payload, {
       headers: {

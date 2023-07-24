@@ -17,4 +17,4 @@ web-build/
 .metro-health-check*
 
 service-account.json
-.env
+.env.*

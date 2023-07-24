@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import Animated, { FadeIn, FadeOutUp } from 'react-native-reanimated';
 import circles from '../../../../assets/circles-full.png';
-import logo from '../../../../assets/logo/logo.png';
+import Logo from '../../../../assets/logo/logo.svg';
+import Waves from '../../../../assets/waves.svg';
 import { GoToPreviousScreen } from '../../../../components/GoToPreviousScreen';
 
 export function LogoAndCircles({
@@ -89,7 +90,7 @@ export function LogoAndCircles({
         </Animated.Text>
       )}
 
-      <Image
+      {/* <Image
         source={logo}
         className={clsx('absolute', {
           'bottom-4': screenWidth < 500,
@@ -102,7 +103,13 @@ export function LogoAndCircles({
             },
           ],
         }}
-      />
+      /> */}
+      <View className="absolute bottom-0 flex w-full items-center justify-center">
+        <View className="absolute -bottom-4 right-0 h-16">
+          <Waves />
+        </View>
+        <Logo width={'90%'} />
+      </View>
     </View>
   );
 }
