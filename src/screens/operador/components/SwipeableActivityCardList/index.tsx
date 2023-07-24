@@ -11,9 +11,8 @@ import { StartActivityModal } from "../StartActivityModal";
 
 import { StatusLegend } from "../../../../components/StatusLegend";
 import { OMContext } from "../../../../contexts/om-context";
-import { OM } from "../../../../interfaces/om-context.interface";
 import { Stage } from "../../../../services/POST/Stages/stages.interface";
-import { formatMaintenanceOrderStatus } from "../../../../utils/formatMaintenanceOrderStatus";
+import { formatStagesStatus } from "../../../../utils/formatMaintenanceOrderStatus";
 
 interface SwipeableActivityCardListProps {
   activities: Stage.StagesList[];
@@ -26,14 +25,14 @@ export const SwipeableActivityCardList = ({
 }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
 
-  const { statusLegendInfo } = useContext(OMContext);
+  const { statusLegendStageInfo } = useContext(OMContext);
 
   const screenWidth = Dimensions.get("window").width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
   const HandleStatus = ({ stage }: Stage.StagesListProps) => {
-    switch (formatMaintenanceOrderStatus(stage.status)) {
-      case "Finalizada":
+    switch (formatStagesStatus(stage.status)) {
+      case "Concluída":
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -42,7 +41,7 @@ export const SwipeableActivityCardList = ({
             </Text>
           </View>
         );
-      case "Em andamento":
+      case "Iniciada":
         return (
           <View className="flex flex-row">
             <PauseActivityModal omId={omId} activityId={stage.id} />
@@ -62,7 +61,7 @@ export const SwipeableActivityCardList = ({
   const listHeaderComponent = () => (
     <>
       <Text className="font-poppinsBold text-lg">Etapas:</Text>
-      <StatusLegend status={statusLegendInfo} />
+      <StatusLegend status={statusLegendStageInfo} />
     </>
   );
 
@@ -83,8 +82,7 @@ export const SwipeableActivityCardList = ({
         </CustomButton>
       </View>
       {activities.every(
-        (activity) =>
-          formatMaintenanceOrderStatus(activity.status) === "Finalizada"
+        (activity) => formatStagesStatus(activity.status) === "Concluída"
       ) ? (
         <View className="mb-10">
           <CustomButton

@@ -20,3 +20,19 @@ export function handleStatusColor(status: string) {
       return "bg-zinc-900";
   }
 }
+
+
+export function handleStageStatusColor(status: string) {
+  switch (status) {
+    case "Não iniciada":
+      return "bg-status-red";
+    case "Iniciada":
+      return "bg-status-yellow";
+    case "Pausada":
+      return "bg-status-red";
+    case "Concluída":
+      return "bg-status-green";
+    default:
+      return "bg-zinc-900";
+  }
+}

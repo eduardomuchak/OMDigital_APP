@@ -1,15 +1,15 @@
-// export function formatMaintenanceOrderStatus(status: number) {
-//   switch (status) {
-//     case 5:
-//       return "Aberta";
-//     case 4:
-//       return "Aguardando";
-//     case 7:
-//       return "Concluída";
-//     case 8:
-//       return "Cancelada";
-//   }
-// }
+export function formatStagesStatus(status: number) {
+  switch (status) {
+    case 1:
+      return "Não iniciada";
+    case 2:
+      return "Iniciada";
+    case 3:
+      return "Pausada";
+    case 4:
+      return "Concluída";
+  }
+}
 
 export function formatMaintenanceOrderStatus(status: number) {
   switch (status) {

@@ -4,7 +4,8 @@ import { OMMock } from "../mocks/om";
 import { apiDeleteStage } from "../services/DELETE/Stages";
 import { fetchOMFromAPI } from "../services/GET/OMs/fetchAllOms/fetchOM";
 import { MaintenanceOrderList } from "../services/GET/OMs/fetchAllOms/om.interface";
-import { fetchAllStatus } from "../services/GET/Status/fetchAllStatus";
+import { fetchMainOrderStatus } from "../services/GET/Status/fetchMaintenanceOrdersStatus";
+import { fetchStagesStatus } from "../services/GET/Status/fetchStagesStatus";
 import { StatusWithBgColor } from "../services/GET/Status/status.interface";
 import { createNewMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts";
 import { newMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface";
@@ -12,7 +13,10 @@ import { createNewMaintenanceOrderStage } from "../services/POST/Stages";
 import { Stage } from "../services/POST/Stages/stages.interface";
 import { createNewSymptom } from "../services/POST/Symptoms";
 import { Symptom } from "../services/POST/Symptoms/symptom.interface";
-import { handleStatusColor } from "../utils/handleStatusColor";
+import {
+  handleStageStatusColor,
+  handleStatusColor,
+} from "../utils/handleStatusColor";
 import { maintenanceOrderMapper } from "../utils/maintenanceOrderMapper";
 
 interface OMContextData {
@@ -45,6 +49,8 @@ interface OMContextData {
   statusLegendInfo: StatusWithBgColor[];
   registerNewSymptom: (symptom: Symptom.CreateNewSymptom) => void;
   deleteStage: (stageId: string) => void;
+  handleLegendStageStatus: () => void;
+  statusLegendStageInfo: StatusWithBgColor[];
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -64,6 +70,10 @@ export function OMContextProvider({ children }: OMProviderProps) {
   const [statusLegendInfo, setStatusLegendInfo] = useState<StatusWithBgColor[]>(
     []
   );
+
+  const [statusLegendStageInfo, setStatusLegendStageInfo] = useState<
+    StatusWithBgColor[]
+  >([]);
 
   async function mockFetchOM(): Promise<OM.MaintenanceOrderInfo[]> {
     return new Promise((resolve) => {
@@ -94,6 +104,22 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setRender(!render);
   }
 
+  // function createNewStage(activity: OM.Activity, omId: number) {
+  //   // setOm((currentOm) => {
+  //   //   const omIndex = currentOm.findIndex((om) => om.id === omId);
+  //   //   const newOm = currentOm[omIndex];
+  //   //   newOm.atividades.push(activity);
+  //   //   return [...currentOm];
+  //   // });
+  // }
+
+  async function createNewStage(stage: Stage.CreateStage) {
+    try {
+      await createNewMaintenanceOrderStage(stage);
+    } catch (error) {
+      console.error(error);
+    }
+    setRender(!render);
   // function createNewStage(activity: OM.Activity, omId: number) {
   //   // setOm((currentOm) => {
   //   //   const omIndex = currentOm.findIndex((om) => om.id === omId);
@@ -194,7 +220,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
   }
 
   async function handleLegendStatus() {
-    const response = await fetchAllStatus();
+    const response = await fetchMainOrderStatus();
 
     const statusLegendWithColors = response.map((item) => ({
       ...item,
@@ -202,6 +228,16 @@ export function OMContextProvider({ children }: OMProviderProps) {
     }));
 
     setStatusLegendInfo(statusLegendWithColors);
+  }
+
+  async function handleLegendStageStatus() {
+    const response = await fetchStagesStatus();
+    const statusLegendWithColors = response.map((item) => ({
+      ...item,
+      color: handleStageStatusColor(item.description),
+    }));
+
+    setStatusLegendStageInfo(statusLegendWithColors);
   }
 
   async function registerNewSymptom(symptom: Symptom.CreateNewSymptom) {
@@ -236,9 +272,11 @@ export function OMContextProvider({ children }: OMProviderProps) {
     mappedMaintenanceOrder,
     statusLegendInfo,
     registerNewSymptom,
+    handleLegendStageStatus,
+    statusLegendStageInfo,
   };
 
   return (
     <OMContext.Provider value={omContextData}>{children}</OMContext.Provider>
   );
-}
+}}
