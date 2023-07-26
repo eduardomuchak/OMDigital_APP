@@ -14,25 +14,25 @@ export function ActivityCard({ stage }: Stage.StagesListProps) {
   const handleFinishedActivity = () => {
     if (stage.end_date) {
       const diff =
-        new Date(stage.end_date).getTime() - new Date(stage.end_date).getTime(); // aqui seria a data fim prevista
+        new Date(stage.end_date).getTime() - new Date(stage.end_date).getTime();
 
       const diffFormatted = new Date(new Date(diff).toISOString())
-        .toLocaleTimeString('pt-BR', {
-          hour: '2-digit',
-          minute: '2-digit',
+        .toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
         })
         .toString()
-        .replace(':', 'h');
+        .replace(":", "h");
 
       if (diff > 0) {
         return (
           <View className="flex w-full flex-row items-center justify-start space-x-2">
             <HourglassLow size={20} color="#B50202" weight="bold" />
             <Text className="break-words font-poppinsMedium text-sm">
-              Atividade finalizada com{' '}
+              Atividade finalizada com{" "}
               <Text className="font-poppinsBold text-sm text-status-red">
                 {diffFormatted}
-              </Text>{' '}
+              </Text>{" "}
               de atraso
             </Text>
           </View>
@@ -99,14 +99,18 @@ export function ActivityCard({ stage }: Stage.StagesListProps) {
             Previsão:
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
-            {`Início: ${formatDateToPTBR(
-              stage.start_date
-            )} - ${removeSecondsFromTime(stage.start_hr)}`}
+            {stage.start_date
+              ? `Início: ${formatDateToPTBR(
+                  stage.start_date
+                )} - ${removeSecondsFromTime(stage.start_hr)}`
+              : ""}
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
-            {`Fim: ${formatDateToPTBR(
-              stage.end_date
-            )} - ${removeSecondsFromTime(stage.end_hr)}`}
+            {stage.end_date
+              ? `Fim: ${formatDateToPTBR(
+                  stage.end_date
+                )} - ${removeSecondsFromTime(stage.end_hr)}`
+              : ""}
           </Text>
         </View>
 

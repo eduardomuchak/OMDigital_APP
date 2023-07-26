@@ -5,7 +5,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Header } from "../../../components/Header";
-import { OrderInfoCard } from "../../../components/OrderInfoCard";
 import { CustomButton } from "../../../components/ui/CustomButton";
 import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
 import { ErrorText } from "../../../components/ui/ErrorText";
@@ -21,6 +20,7 @@ import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
 } from "../../../validations/operador/RegisterNewActivityScreen";
+import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
 
 export function RegisterNewActivity() {
   const {
@@ -43,7 +43,7 @@ export function RegisterNewActivity() {
   const route = useRoute();
   const omId = route.params as { id: number };
 
-  const { createNewStage } = useContext(OMContext);
+  const { createNewStage, mappedMaintenanceOrder } = useContext(OMContext);
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
     const payload = {
@@ -67,11 +67,29 @@ export function RegisterNewActivity() {
     goBack();
   };
 
+  const filteredOM = mappedMaintenanceOrder.filter((om) => om.id === omId.id);
+
+  const operationInfoProps = {
+    codigoBem: filteredOM[0]?.codigoBem,
+    ordemManutencao: filteredOM[0]?.ordemManutencao,
+    operacao: filteredOM[0]?.operacao,
+    paradaReal: filteredOM[0]?.paradaReal,
+    prevFim: filteredOM[0]?.prevFim,
+    latitude: filteredOM[0]?.latitude,
+    longitude: filteredOM[0]?.longitude,
+    contador: filteredOM[0]?.contador,
+    tipo: filteredOM[0]?.tipo,
+  };
+
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header title="Adicionar Nova Etapa" />
       <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1">
-        <OrderInfoCard />
+        <OperationInfoCard
+          operador={true}
+          operationInfo={operationInfoProps}
+          operationId={omId.id}
+        />
         <View className="flex flex-1 px-6 py-4">
           <View className="mb-4">
             <Controller

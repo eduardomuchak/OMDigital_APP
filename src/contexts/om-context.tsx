@@ -4,6 +4,9 @@ import { OMMock } from "../mocks/om";
 import { apiDeleteStage } from "../services/DELETE/Stages";
 import { fetchOMFromAPI } from "../services/GET/OMs/fetchAllOms/fetchOM";
 import { MaintenanceOrderList } from "../services/GET/OMs/fetchAllOms/om.interface";
+import { endStage } from "../services/GET/Stages/endStage";
+import { pauseStage } from "../services/GET/Stages/pauseStage";
+import { startStage } from "../services/GET/Stages/startStage";
 import { fetchMainOrderStatus } from "../services/GET/Status/fetchMaintenanceOrdersStatus";
 import { fetchStagesStatus } from "../services/GET/Status/fetchStagesStatus";
 import { StatusWithBgColor } from "../services/GET/Status/status.interface";
@@ -26,23 +29,7 @@ interface OMContextData {
   createNewOM: (om: OM.MaintenanceOrderInfo) => void;
   createNewOMAPI: (om: newMaintenanceOrder) => void;
   createNewStage: (stage: Stage.CreateStage) => void;
-  pauseOrInitiateActivity: (
-    activityId: number,
-    omId: number,
-    option: OM.Activity["status"]
-  ) => void;
   cancelOM: (omId: number) => void;
-  finishActivity: (
-    activityId: number,
-    omId: number,
-    finishDate: string
-  ) => void;
-  finishOM: (
-    omId: number,
-    finishDate: string,
-    counter: number,
-    comment: string | undefined
-  ) => void;
   fetchOM: () => void;
   maintenanceOrders: MaintenanceOrderList[];
   mappedMaintenanceOrder: OM.MaintenanceOrderInfo[];
@@ -51,6 +38,9 @@ interface OMContextData {
   deleteStage: (stageId: string) => void;
   handleLegendStageStatus: () => void;
   statusLegendStageInfo: StatusWithBgColor[];
+  initiateStage: (stageId: number) => void;
+  pauseMainOrderStage: (stageId: number) => void;
+  endMainOrderStage: (stageId: number) => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -104,31 +94,6 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setRender(!render);
   }
 
-  // function createNewStage(activity: OM.Activity, omId: number) {
-  //   // setOm((currentOm) => {
-  //   //   const omIndex = currentOm.findIndex((om) => om.id === omId);
-  //   //   const newOm = currentOm[omIndex];
-  //   //   newOm.atividades.push(activity);
-  //   //   return [...currentOm];
-  //   // });
-  // }
-
-  // async function createNewStage(stage: Stage.CreateStage) {
-  //   try {
-  //     await createNewMaintenanceOrderStage(stage);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   setRender(!render);
-  // function createNewStage(activity: OM.Activity, omId: number) {
-  //   // setOm((currentOm) => {
-  //   //   const omIndex = currentOm.findIndex((om) => om.id === omId);
-  //   //   const newOm = currentOm[omIndex];
-  //   //   newOm.atividades.push(activity);
-  //   //   return [...currentOm];
-  //   // });
-  // }
-
   async function createNewStage(stage: Stage.CreateStage) {
     try {
       await createNewMaintenanceOrderStage(stage);
@@ -138,17 +103,32 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setRender(!render);
   }
 
-  // function deleteStage(activityId: number, omId: number) {
-  //   setOm((currentOm) => {
-  //     const omIndex = currentOm.findIndex((om) => om.id === omId);
-  //     const newOm = currentOm[omIndex];
-  //     const activityIndex = newOm.atividades.findIndex(
-  //       (activity) => activity.id === activityId,
-  //     );
-  //     newOm.atividades.splice(activityIndex, 1);
-  //     return [...currentOm];
-  //   });
-  // }
+  async function initiateStage(stageId: number) {
+    try {
+      await startStage(stageId);
+      setRender(!render);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function pauseMainOrderStage(stageId: number) {
+    try {
+      await pauseStage(stageId);
+      setRender(!render);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function endMainOrderStage(stageId: number) {
+    try {
+      await endStage(stageId);
+      setRender(!render);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function deleteStage(stageId: string) {
     try {
@@ -160,61 +140,11 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setRender(!render);
   }
 
-  function pauseOrInitiateActivity(
-    activityId: number,
-    omId: number,
-    option: OM.Activity["status"]
-  ) {
-    // setOm((currentOm) => {
-    //   const omIndex = currentOm.findIndex((om) => om.id === omId);
-    //   const newOm = currentOm[omIndex];
-    //   const activityIndex = newOm.atividades.findIndex(
-    //     (activity) => activity.id === activityId
-    //   );
-    //   newOm.atividades[activityIndex].status = option;
-    //   return [...currentOm];
-    // });
-  }
-
-  function finishActivity(
-    activityId: number,
-    omId: number,
-    finishDate: string
-  ) {
-    // setOm((currentOm) => {
-    //   const omIndex = currentOm.findIndex((om) => om.id === omId);
-    //   const newOm = currentOm[omIndex];
-    //   const activityIndex = newOm.atividades.findIndex(
-    //     (activity) => activity.id === activityId
-    //   );
-    //   newOm.atividades[activityIndex].status = "Concluída";
-    //   newOm.atividades[activityIndex].dataFimReal = finishDate;
-    //   return [...currentOm];
-    // });
-  }
-
   function cancelOM(omId: number) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
       newOm.status = "Cancelada";
-      return [...currentOm];
-    });
-  }
-
-  function finishOM(
-    omId: number,
-    finishDate: string,
-    counter: number,
-    comment: string | undefined
-  ) {
-    setOm((currentOm) => {
-      const omIndex = currentOm.findIndex((om) => om.id === omId);
-      const newOm = currentOm[omIndex];
-      newOm.status = "Concluída";
-      newOm.dataFim = finishDate;
-      newOm.comentario = comment;
-      newOm.contador = counter;
       return [...currentOm];
     });
   }
@@ -263,10 +193,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
     createNewOMAPI,
     createNewStage,
     deleteStage,
-    pauseOrInitiateActivity,
     cancelOM,
-    finishActivity,
-    finishOM,
     fetchOM,
     maintenanceOrders,
     mappedMaintenanceOrder,
@@ -274,6 +201,9 @@ export function OMContextProvider({ children }: OMProviderProps) {
     registerNewSymptom,
     handleLegendStageStatus,
     statusLegendStageInfo,
+    initiateStage,
+    pauseMainOrderStage,
+    endMainOrderStage,
   };
 
   return (

@@ -3,9 +3,9 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { PencilSimple } from "phosphor-react-native";
 import { GPSLocationModal } from "../../../../components/GPSLocationModal";
+import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
 import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
 import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
-import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
 
 interface OperationInfoCardProps {
   operationInfo: {
@@ -96,9 +96,7 @@ export function OperationInfoCard({
           </Text>
         </View>
       </View>
-      {operador && symptoms!.length > 0 ? (
-        <SymptomListModal symptoms={symptoms!} />
-      ) : null}
+      {operador && symptoms ? <SymptomListModal symptoms={symptoms!} /> : null}
     </View>
   );
 }
