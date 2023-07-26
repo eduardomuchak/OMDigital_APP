@@ -15,10 +15,10 @@ export function PauseActivityModal({
   activityId,
 }: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { pauseOrInitiateActivity } = useContext(OMContext);
+  const { pauseMainOrderStage } = useContext(OMContext);
 
   function handlePauseActivity() {
-    pauseOrInitiateActivity(activityId, omId, "Pausada");
+    pauseMainOrderStage(activityId);
     setIsModalVisible(false);
   }
 

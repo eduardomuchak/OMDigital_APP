@@ -52,7 +52,7 @@ export function RegisterNewMaintenanceOrder() {
     };
 
     const payloadAPI = {
-      asset_code: payload.propertyCode,
+      asset_code: payload.propertyCode.toUpperCase(),
       counter: Number(payload.counter),
       service_type: payload.type === "Preventiva" ? "P" : "C",
       status: 5, //TODO: Verificar
