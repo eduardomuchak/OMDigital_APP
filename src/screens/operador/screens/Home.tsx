@@ -64,10 +64,10 @@ export function Home() {
     setCodigoBem(value.trim());
   }
 
-  async function handleFilterOptionsConfirmation(
+  const handleFilterOptionsConfirmation = async (
     pickedStatus: Logistica.StatusFilterStateOptions,
     pickedOperations: Logistica.OperationState[],
-  ) {
+  ) => {
     setStatus(pickedStatus);
     setOperations(pickedOperations);
     await AsyncStorage.setItem(
