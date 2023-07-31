@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { OM } from "../interfaces/om-context.interface";
 import { OMMock } from "../mocks/om";
 import { apiDeleteStage } from "../services/DELETE/Stages";
@@ -183,7 +183,9 @@ export function OMContextProvider({ children }: OMProviderProps) {
     fetchOM();
   }, [render]);
 
-  const mappedMaintenanceOrder = maintenanceOrderMapper(maintenanceOrders);
+  const mappedMaintenanceOrder = useMemo(() => {
+    return maintenanceOrderMapper(maintenanceOrders);
+  }, [maintenanceOrders]);
 
   const omContextData: OMContextData = {
     om,

@@ -1,5 +1,5 @@
 import { useRoute } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { View } from "react-native";
 
 import { Header } from "../../../components/Header";
@@ -14,7 +14,10 @@ export function RegisteredActivities() {
   const route = useRoute();
   const { id } = route.params as { id: number };
 
-  const filteredOM = mappedMaintenanceOrder.filter((om) => om.id === id);
+  const filteredOM = useMemo(() => {
+    return mappedMaintenanceOrder.filter((om) => om.id === id);
+  }, [mappedMaintenanceOrder, id]);
+
   const activities = filteredOM[0]?.atividades;
 
   const operationInfoProps = {
