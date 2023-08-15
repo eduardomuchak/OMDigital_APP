@@ -1,26 +1,28 @@
-import { createContext, useEffect, useMemo, useState } from "react";
-import { OM } from "../interfaces/om-context.interface";
-import { OMMock } from "../mocks/om";
-import { apiDeleteStage } from "../services/DELETE/Stages";
-import { fetchOMFromAPI } from "../services/GET/OMs/fetchAllOms/fetchOM";
-import { MaintenanceOrderList } from "../services/GET/OMs/fetchAllOms/om.interface";
-import { endStage } from "../services/GET/Stages/endStage";
-import { pauseStage } from "../services/GET/Stages/pauseStage";
-import { startStage } from "../services/GET/Stages/startStage";
-import { fetchMainOrderStatus } from "../services/GET/Status/fetchMaintenanceOrdersStatus";
-import { fetchStagesStatus } from "../services/GET/Status/fetchStagesStatus";
-import { StatusWithBgColor } from "../services/GET/Status/status.interface";
-import { createNewMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts";
-import { newMaintenanceOrder } from "../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface";
-import { createNewMaintenanceOrderStage } from "../services/POST/Stages";
-import { Stage } from "../services/POST/Stages/stages.interface";
-import { createNewSymptom } from "../services/POST/Symptoms";
-import { Symptom } from "../services/POST/Symptoms/symptom.interface";
+import { createContext, useEffect, useMemo, useState } from 'react';
+import { OM } from '../interfaces/om-context.interface';
+import { OMMock } from '../mocks/om';
+import { apiDeleteStage } from '../services/DELETE/Stages';
+import { fetchOMFromAPI } from '../services/GET/OMs/fetchAllOms/fetchOM';
+import { MaintenanceOrderList } from '../services/GET/OMs/fetchAllOms/om.interface';
+import { fetchOperationsFromAPI } from '../services/GET/Operations/fetchOperations';
+import { Operation } from '../services/GET/Operations/operation.interface';
+import { endStage } from '../services/GET/Stages/endStage';
+import { pauseStage } from '../services/GET/Stages/pauseStage';
+import { startStage } from '../services/GET/Stages/startStage';
+import { fetchMainOrderStatus } from '../services/GET/Status/fetchMaintenanceOrdersStatus';
+import { fetchStagesStatus } from '../services/GET/Status/fetchStagesStatus';
+import { StatusWithBgColor } from '../services/GET/Status/status.interface';
+import { createNewMaintenanceOrder } from '../services/POST/OMs/createNewMaintenanceOrder.ts';
+import { newMaintenanceOrder } from '../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { createNewMaintenanceOrderStage } from '../services/POST/Stages';
+import { Stage } from '../services/POST/Stages/stages.interface';
+import { createNewSymptom } from '../services/POST/Symptoms';
+import { Symptom } from '../services/POST/Symptoms/symptom.interface';
 import {
   handleStageStatusColor,
   handleStatusColor,
-} from "../utils/handleStatusColor";
-import { maintenanceOrderMapper } from "../utils/maintenanceOrderMapper";
+} from '../utils/handleStatusColor';
+import { maintenanceOrderMapper } from '../utils/maintenanceOrderMapper';
 
 interface OMContextData {
   om: OM.MaintenanceOrderInfo[];
@@ -41,6 +43,8 @@ interface OMContextData {
   initiateStage: (stageId: number) => void;
   pauseMainOrderStage: (stageId: number) => void;
   endMainOrderStage: (stageId: number) => void;
+  operations: Operation[];
+  handleOperations: () => void;
 }
 
 export const OMContext = createContext<OMContextData>({} as OMContextData);
@@ -53,12 +57,14 @@ export function OMContextProvider({ children }: OMProviderProps) {
   const [om, setOm] = useState<OM.MaintenanceOrderInfo[]>(OMMock);
   const [render, setRender] = useState(false);
 
+  const [operations, setOperations] = useState<Operation[]>([]);
+
   const [maintenanceOrders, setMaintenanceOrders] = useState<
     MaintenanceOrderList[]
   >([]);
 
   const [statusLegendInfo, setStatusLegendInfo] = useState<StatusWithBgColor[]>(
-    []
+    [],
   );
 
   const [statusLegendStageInfo, setStatusLegendStageInfo] = useState<
@@ -144,7 +150,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setOm((currentOm) => {
       const omIndex = currentOm.findIndex((om) => om.id === omId);
       const newOm = currentOm[omIndex];
-      newOm.status = "Cancelada";
+      newOm.status = 'Cancelada';
       return [...currentOm];
     });
   }
@@ -175,8 +181,14 @@ export function OMContextProvider({ children }: OMProviderProps) {
     setRender(!render);
   }
 
+  async function handleOperations() {
+    const operations = await fetchOperationsFromAPI();
+    setOperations(operations);
+  }
+
   useEffect(() => {
     handleLegendStatus();
+    handleOperations();
   }, []);
 
   useEffect(() => {
@@ -206,6 +218,8 @@ export function OMContextProvider({ children }: OMProviderProps) {
     initiateStage,
     pauseMainOrderStage,
     endMainOrderStage,
+    operations,
+    handleOperations,
   };
 
   return (
