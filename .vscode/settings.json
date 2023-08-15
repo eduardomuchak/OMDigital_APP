@@ -19,5 +19,6 @@
   // InlineFold:
   "inlineFold.regex": "(class|className)=[`'{\"]([^`'\"}]{30,})[`'\"}]",
   "inlineFold.regexFlags": "g",
-  "inlineFold.regexGroup": "2"
+  "inlineFold.regexGroup": "2",
+  "conventionalCommits.scopes": ["wip"]
 }

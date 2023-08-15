@@ -1,15 +1,10 @@
 import { Text, TextInput, View } from 'react-native';
+import { useFilter } from '../../contexts/filter';
 import { QRCodeScannerModal } from '../QRCodeScannerModal';
 
-interface QRCodeScannerInputProps {
-  assetCode: string;
-  setAssetCode: React.Dispatch<React.SetStateAction<string>>;
-}
+export function AssetCodeQRCodeScanner() {
+  const { assetCode, setAssetCode } = useFilter();
 
-export function QRCodeScannerInput({
-  assetCode,
-  setAssetCode,
-}: QRCodeScannerInputProps) {
   return (
     <View className="mb-5 flex-row items-end justify-between space-x-2">
       <View className="flex-1">
