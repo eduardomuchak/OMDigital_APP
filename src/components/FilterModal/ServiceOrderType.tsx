@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useFilter } from '../../contexts/filter';
+import { useFilter } from '../../contexts/OperadorFilter';
 import { Select } from '../ui/Select';
 
 export function ServiceOrderType() {

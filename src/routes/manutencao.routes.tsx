@@ -38,7 +38,7 @@ function DrawerNavigator() {
       screenOptions={{
         header(props) {
           return (
-            <View className="items- flex h-28 w-full flex-row items-end justify-between bg-primary-500 px-5 pb-5">
+            <View className="items- flex h-28 w-full flex-row items-end justify-between bg-nepomuceno-dark-blue px-5 pb-5">
               <View className="flex-row items-end space-x-4">
                 <OpenDrawerIcon {...props} />
                 <Text className="h-6 font-poppinsBold text-lg text-white">{`Olá, ${user?.user}`}</Text>
@@ -48,10 +48,10 @@ function DrawerNavigator() {
           );
         },
         drawerInactiveTintColor: '#fff',
-        drawerActiveTintColor: '#1D2F99',
+        drawerActiveTintColor: '#1F295B',
         drawerActiveBackgroundColor: '#ffffff',
         drawerStyle: {
-          backgroundColor: '#1D2F99',
+          backgroundColor: '#1F295B',
           width: '90%',
           padding: 12,
           paddingTop: 36,
@@ -77,7 +77,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused }) => (
             <Wrench
               size={24}
-              color={focused ? '#1D2F99' : '#ffffff'}
+              color={focused ? '#1F295B' : '#ffffff'}
               weight="bold"
             />
           ),
@@ -91,7 +91,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused }) => (
             <ListBullets
               size={24}
-              color={focused ? '#1D2F99' : '#ffffff'}
+              color={focused ? '#1F295B' : '#ffffff'}
               weight="bold"
             />
           ),

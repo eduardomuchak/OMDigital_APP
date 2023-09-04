@@ -1,8 +1,8 @@
-import { PencilSimple } from "phosphor-react-native";
-import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../ui/CustomButton";
-import { CustomModal } from "../ui/Modal";
+import { PencilSimple } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../ui/CustomButton';
+import { CustomModal } from '../ui/Modal';
 
 export function EditAttachmentModal({
   changeImage,
@@ -15,7 +15,7 @@ export function EditAttachmentModal({
     <>
       {/* Modal Trigger */}
       <TouchableOpacity
-        className="mx-auto h-12 w-12 items-center justify-center rounded-full bg-primary-500 p-3"
+        className="mx-auto h-12 w-12 items-center justify-center rounded-full bg-nepomuceno-dark-blue p-3"
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >

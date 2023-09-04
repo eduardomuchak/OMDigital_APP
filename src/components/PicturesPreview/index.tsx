@@ -42,7 +42,7 @@ export function PicturesPreview({
             activeOpacity={0.7}
             onPress={() => navigate('camera')}
           >
-            <Camera size={30} color="#1D2F99" weight="bold" />
+            <Camera size={30} color="#1F295B" weight="bold" />
           </TouchableOpacity>
         ) : null}
       </ScrollView>

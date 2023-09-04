@@ -93,7 +93,6 @@ export function OMContextProvider({ children }: OMProviderProps) {
   async function createNewOMAPI(newOM: newMaintenanceOrder) {
     try {
       const response = await createNewMaintenanceOrder(newOM);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -114,7 +113,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
       await startStage(stageId);
       setRender(!render);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -123,7 +122,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
       await pauseStage(stageId);
       setRender(!render);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -132,14 +131,13 @@ export function OMContextProvider({ children }: OMProviderProps) {
       await endStage(stageId);
       setRender(!render);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   async function deleteStage(stageId: string) {
     try {
       const response = await apiDeleteStage(stageId);
-      console.log(response);
     } catch (error) {
       console.error(error);
     }
@@ -160,7 +158,7 @@ export function OMContextProvider({ children }: OMProviderProps) {
 
     const statusLegendWithColors = response.map((item) => ({
       ...item,
-      color: handleStatusColor(item.description),
+      color: handleStatusColor(item),
     }));
 
     setStatusLegendInfo(statusLegendWithColors);

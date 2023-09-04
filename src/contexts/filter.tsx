@@ -1,8 +1,8 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useOperador } from '../hooks/useOperador';
 import { OM } from '../interfaces/om-context.interface';
+import { storage } from '../lib/mmkv/storage';
 import { Operation } from '../services/GET/Operations/operation.interface';
-import { OMContext } from './om-context';
 
 interface StatusFilter {
   id: number;
@@ -24,10 +24,10 @@ interface DateSection {
 }
 
 interface FilterContextData {
-  filteredMaintenanceOrders: OM.MaintenanceOrderInfo[];
-  setFilteredMaintenanceOrders: React.Dispatch<
-    React.SetStateAction<OM.MaintenanceOrderInfo[]>
-  >;
+  // filteredMaintenanceOrders: OM.MaintenanceOrderInfo[];
+  // setFilteredMaintenanceOrders: React.Dispatch<
+  //   React.SetStateAction<OM.MaintenanceOrderInfo[]>
+  // >;
   allStatus: StatusFilter[];
   multipleSelectOperationOptions: MultipleSelectOperation[];
   handleToggleCheckbox: (id: number, list: StatusFilter[]) => void;
@@ -49,21 +49,20 @@ interface FilterContextData {
 const FilterContext = createContext<FilterContextData>({} as FilterContextData);
 
 const FilterProvider = ({ children }: { children: React.ReactNode }) => {
-  const { statusLegendInfo, mappedMaintenanceOrder, operations } =
-    useContext(OMContext);
-
-  console.log('mappedMaintenanceOrder =>', mappedMaintenanceOrder);
-
-  // * OM Section
-  const [filteredMaintenanceOrders, setFilteredMaintenanceOrders] = useState<
-    OM.MaintenanceOrderInfo[]
-  >([]);
+  const {
+    operadorDataState: {
+      allMaintenanceOrders,
+      statusOMs,
+      allOperations: operations,
+    },
+    dispatchOperadorData,
+  } = useOperador();
 
   // * Status Section
   const [allStatus, setAllStatus] = useState<StatusFilter[]>([]);
 
   const formattedStatus = () => {
-    const sortedStatusLegendInfo = statusLegendInfo.sort((a, b) =>
+    const sortedStatusLegendInfo = statusOMs.sort((a, b) =>
       a.description.toLowerCase() > b.description.toLowerCase() ? 1 : -1,
     );
     const formattedStatus = [
@@ -115,7 +114,7 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
 
   const filterMaintenanceOrdersByStatus = (): OM.MaintenanceOrderInfo[] => {
     const allStatusCopy = [...allStatus];
-    const allOrdersCopy = [...mappedMaintenanceOrder];
+    const allOrdersCopy = [...allMaintenanceOrders];
 
     const isTodasOptionChecked = allStatusCopy[0]?.isChecked;
     const onlyCheckedStatus = allStatusCopy
@@ -158,7 +157,7 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
 
   const filterMaintenanceOrdersByOperations = (): OM.MaintenanceOrderInfo[] => {
     const allOperationsCopy = [...allOperations];
-    const allOrdersCopy = [...mappedMaintenanceOrder];
+    const allOrdersCopy = [...allMaintenanceOrders];
 
     if (selectedOperations.length === 0) {
       return allOrdersCopy;
@@ -224,7 +223,10 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
         return omDate >= startPeriod && omDate <= endPeriod;
       });
 
-      setFilteredMaintenanceOrders(omByPeriod);
+      dispatchOperadorData({
+        type: 'SET_FILTERED_OMS',
+        payload: omByPeriod,
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -236,14 +238,16 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
         startPeriod: startPeriod.toISOString(),
         endPeriod: endPeriod.toISOString(),
       };
-      await AsyncStorage.setItem('@FilterData', JSON.stringify(filterData));
+      storage.set('operadorFilterData', JSON.stringify(filterData));
     }
   };
 
   // * Get Filter Data from AsyncStorage
   const getFilterDataFromAsyncStorage = async () => {
     try {
-      const filterData = await AsyncStorage.getItem('@FilterData');
+      const filterData = JSON.parse(
+        storage.getString('operadorFilterData') || '{}',
+      );
       if (filterData !== null) {
         const {
           allStatus,
@@ -269,7 +273,7 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     formattedStatus();
-  }, [statusLegendInfo]);
+  }, [statusOMs]);
 
   useEffect(() => {
     setAllOperations(operations);
@@ -277,9 +281,8 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
   }, [operations]);
 
   useEffect(() => {
-    setFilteredMaintenanceOrders(mappedMaintenanceOrder);
-    if (mappedMaintenanceOrder.length > 0) {
-      const dates = mappedMaintenanceOrder.map((order) =>
+    if (allMaintenanceOrders.length > 0) {
+      const dates = allMaintenanceOrders.map((order) =>
         new Date(order.criadaEm).getTime(),
       );
       const smallestDate = new Date(Math.min.apply(null, dates));
@@ -288,13 +291,13 @@ const FilterProvider = ({ children }: { children: React.ReactNode }) => {
       setStartPeriod(smallestDate);
       setEndPeriod(largestDate);
     }
-  }, [mappedMaintenanceOrder]);
+  }, [allMaintenanceOrders]);
 
   return (
     <FilterContext.Provider
       value={{
-        filteredMaintenanceOrders,
-        setFilteredMaintenanceOrders,
+        // filteredMaintenanceOrders,
+        // setFilteredMaintenanceOrders,
         allStatus,
         allOperations,
         multipleSelectOperationOptions,

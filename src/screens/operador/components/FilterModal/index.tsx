@@ -62,7 +62,7 @@ export function FilterModal({
         activeOpacity={0.7}
         className="flex flex-row items-center justify-around"
       >
-        <Funnel size={26} color="#1D2F99" weight="fill" />
+        <Funnel size={26} color="#1F295B" weight="fill" />
       </TouchableOpacity>
 
       {/* Modal */}

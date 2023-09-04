@@ -9,7 +9,7 @@ export function CloseModal({ onClose }: IModal.CloseButtonProps) {
       className="absolute right-2 top-2 z-50 flex h-6 w-6 items-center justify-center rounded-full bg-white"
       activeOpacity={0.7}
     >
-      <X size={16} color="#1D2F99" weight="bold" />
+      <X size={16} color="#1F295B" weight="bold" />
     </TouchableOpacity>
   );
 }

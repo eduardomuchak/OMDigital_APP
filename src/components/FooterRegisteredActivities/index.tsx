@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View } from 'react-native';
 
 interface FooterRegisteredActivitiesProps {
   controladorInfo: {
@@ -12,7 +12,7 @@ export function FooterRegisteredActivities({
   controladorInfo,
 }: FooterRegisteredActivitiesProps) {
   return (
-    <View className="bg-primary-500 px-6 py-5">
+    <View className="bg-nepomuceno-dark-blue px-6 py-5">
       <View className="mb-2">
         <Text className="font-poppinsBold text-lg text-white">
           {controladorInfo.localDeManutencao}:

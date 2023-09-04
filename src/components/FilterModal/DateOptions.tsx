@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useFilter } from '../../contexts/filter';
+import { useFilter } from '../../contexts/OperadorFilter';
 import { CustomDateTimePicker } from '../ui/CustomDateTimePicker';
 
 export function DateOptions() {

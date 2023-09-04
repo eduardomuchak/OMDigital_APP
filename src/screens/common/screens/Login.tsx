@@ -30,7 +30,7 @@ export function Login() {
     formState: { errors },
   } = useForm<LoginFormData>({
     defaultValues: {
-      userCPF: '',
+      user: '',
       password: '',
     },
     resolver: zodResolver(loginSchema),
@@ -61,16 +61,14 @@ export function Login() {
                 onChangeText={onChange}
                 value={value}
                 label="USUÁRIO"
-                placeholder="123.456.789-00"
-                keyboardType="numeric"
-                maskedInput={true}
-                maskType="cpf"
+                placeholder="Digite o usuário ou o CPF"
+                maxLength={20}
               />
             )}
-            name="userCPF"
+            name="user"
           />
-          {errors.userCPF?.message ? (
-            <ErrorText>{errors.userCPF?.message}</ErrorText>
+          {errors.user?.message ? (
+            <ErrorText>{errors.user?.message}</ErrorText>
           ) : null}
         </View>
         <Controller
@@ -107,7 +105,7 @@ export function Login() {
         <Text className="mb-5 font-poppinsSemibold text-xs">
           ESQUECEU SUA SENHA?{' '}
           <Text
-            className="font-poppinsSemibold text-primary-500 underline"
+            className="font-poppinsSemibold text-nepomuceno-dark-blue underline"
             onPress={() => navigate('PasswordRecoverySelection')}
           >
             RECUPERE AQUI

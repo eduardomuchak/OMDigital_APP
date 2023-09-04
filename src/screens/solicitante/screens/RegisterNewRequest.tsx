@@ -52,7 +52,6 @@ export function RegisterNewRequest() {
   const now = new Date().toISOString();
 
   const takeImageHandler = (image: AttachmentProps) => {
-    // console.log("IMAGE URI =>", image.uri);
     setAttachment(image);
   };
 
@@ -63,7 +62,7 @@ export function RegisterNewRequest() {
       location,
     };
 
-    // console.log("DADOS =>", payload);
+    // TODO: Enviar para a API
     setAttachment({} as AttachmentProps);
     reset();
     goBack();

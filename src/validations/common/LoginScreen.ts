@@ -3,12 +3,7 @@ import { z } from 'zod';
 export type LoginFormData = z.infer<typeof loginSchema>;
 
 export const loginSchema = z.object({
-  userCPF: z
-    .string()
-    .min(11, {
-      message: 'O CPF deve conter 11 dígitos',
-    })
-    .nonempty('Campo obrigatório'),
+  user: z.string().nonempty('Campo obrigatório'),
   password: z
     .string()
     .min(3, {

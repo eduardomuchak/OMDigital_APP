@@ -14,7 +14,7 @@ export function FooterModal() {
       <TouchableOpacity
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
-        className="flex h-32 flex-row items-center justify-around bg-primary-500"
+        className="flex h-32 flex-row items-center justify-around bg-nepomuceno-dark-blue"
       >
         {footerInfoMock.map((item, index) => (
           <View
@@ -54,7 +54,7 @@ export function FooterModal() {
               </Text>
             </View>
           </View>
-          <View className="flex flex-1 flex-col justify-center rounded-b-xl bg-primary-500 px-5 py-6">
+          <View className="flex flex-1 flex-col justify-center rounded-b-xl bg-nepomuceno-dark-blue px-5 py-6">
             {footerInfoMock.map((item, index) => (
               <View
                 className="flex flex-row items-center justify-start"

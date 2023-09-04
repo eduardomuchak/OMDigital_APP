@@ -66,7 +66,7 @@ export function QRCodeScannerModal({ onScan }: QRCodeScannerModalProps) {
             getBarCodeScannerPermissions();
           }}
         >
-          <Camera size={30} color="#1D2F99" weight="bold" />
+          <Camera size={30} color="#1F295B" weight="bold" />
         </TouchableOpacity>
       </View>
     );
@@ -84,7 +84,7 @@ export function QRCodeScannerModal({ onScan }: QRCodeScannerModalProps) {
             setIsModalVisible(true);
           }}
         >
-          <Camera size={30} color="#1D2F99" weight="bold" />
+          <Camera size={30} color="#1F295B" weight="bold" />
         </TouchableOpacity>
       </View>
 

@@ -1,44 +1,29 @@
-import { useContext, useEffect } from 'react';
 import { Text, View } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 import { FilterModal } from '../../../components/FilterModal';
 import { Header } from '../../../components/Header';
-import { Loading } from '../../../components/Loading';
 import { StatusLegend } from '../../../components/StatusLegend';
+import { useFilter } from '../../../contexts/OperadorFilter';
 import { useAuth } from '../../../contexts/auth';
-import { useFilter } from '../../../contexts/filter';
-import { OMContext } from '../../../contexts/om-context';
+import { useOperador } from '../../../hooks/useOperador';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
 import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 
 export function Home() {
-  const {
-    fetchOM,
-    handleLegendStageStatus,
-    mappedMaintenanceOrder,
-    statusLegendInfo,
-    handleOperations,
-  } = useContext(OMContext);
-
   const { employee } = useAuth();
-  const { filteredMaintenanceOrders, getFilterDataFromAsyncStorage } =
-    useFilter();
 
-  useEffect(() => {
-    fetchOM();
-    handleOperations();
-    handleLegendStageStatus();
-    getFilterDataFromAsyncStorage();
-  }, []);
+  const {
+    operadorDataState: { filteredMaintenanceOrders, statusOMs },
+  } = useOperador();
+  const { handleConfirmFilter } = useFilter();
 
-  if (
-    !mappedMaintenanceOrder ||
-    mappedMaintenanceOrder.length === 0 ||
-    !statusLegendInfo ||
-    statusLegendInfo.length === 0
-  ) {
-    return <Loading />;
-  }
+  useFocusEffect(
+    useCallback(() => {
+      handleConfirmFilter();
+    }, []),
+  );
 
   return (
     <View className="flex flex-1 flex-col bg-white">
@@ -50,8 +35,7 @@ export function Home() {
         </Text>
         <FilterModal />
       </View>
-      <StatusLegend status={statusLegendInfo} />
-
+      <StatusLegend status={statusOMs} />
       {filteredMaintenanceOrders.length === 0 ? (
         <View className="flex flex-1 items-center justify-center">
           <Text className="text-neutral text-center font-poppinsBold text-lg">
@@ -61,7 +45,6 @@ export function Home() {
       ) : (
         <SwipeableOMCardList maintenanceOrders={filteredMaintenanceOrders} />
       )}
-
       <AddNewMaintenanceOrderButton />
     </View>
   );

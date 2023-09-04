@@ -48,7 +48,7 @@ export function EditSymptomModal({
   return (
     <>
       <TouchableOpacity
-        className="h-full justify-center rounded-br-lg rounded-tr-lg bg-primary-500 p-2"
+        className="h-full justify-center rounded-br-lg rounded-tr-lg bg-nepomuceno-dark-blue p-2"
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >

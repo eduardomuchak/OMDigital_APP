@@ -1,19 +1,19 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
-import { Header } from "../../../components/Header";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { TextArea } from "../../../components/ui/TextArea";
-import { useAuth } from "../../../contexts/auth";
-import { OMContext } from "../../../contexts/om-context";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useContext } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { TextArea } from '../../../components/ui/TextArea';
+import { useAuth } from '../../../contexts/auth';
+import { OMContext } from '../../../contexts/om-context';
 import {
   RegisterNewSymptomFormData,
   registerNewSymptomSchema,
-} from "../../../validations/operador/RegisterNewSymptomScreen";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
+} from '../../../validations/operador/RegisterNewSymptomScreen';
+import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
 
 export function RegisterNewSymptom() {
   const router = useRoute();
@@ -30,7 +30,7 @@ export function RegisterNewSymptom() {
     reset,
   } = useForm<RegisterNewSymptomFormData>({
     defaultValues: {
-      symptom: "",
+      symptom: '',
     },
     resolver: zodResolver(registerNewSymptomSchema),
   });
@@ -76,7 +76,7 @@ export function RegisterNewSymptom() {
     try {
       registerNewSymptom(newSymptom);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
 
     reset();
