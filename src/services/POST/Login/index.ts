@@ -4,16 +4,12 @@ import { api } from '../../api';
 import { PostLogin } from './interface';
 
 export const postLogin = async ({
-  userCPF,
+  user,
   password,
 }: LoginFormData): Promise<PostLogin.Response> => {
   try {
     const payload = new FormData();
-    // const mock = {
-    //   username: '125.477.326-61',
-    //   password: 'teste#EN2023',
-    // };
-    payload.append('username', userCPF);
+    payload.append('username', user);
     payload.append('password', password);
 
     const { data } = await api.post('/user/auth', payload, {

@@ -1,47 +1,40 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import { useMMKVObject } from 'react-native-mmkv';
 import { postLogin } from '../services/POST/Login';
 import { PostLogin } from '../services/POST/Login/interface';
 import { LoginFormData } from '../validations/common/LoginScreen';
 
 interface AuthContextData {
-  user: PostLogin.User | null;
-  employee: PostLogin.Employee | null;
+  user: PostLogin.User | undefined;
+  employee: PostLogin.Employee | undefined;
   isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   signIn(data: LoginFormData): Promise<void>;
   signOut(): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<PostLogin.User | null>(null);
-  const [employee, setEmployee] = useState<PostLogin.Employee | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [user, setUser] = useMMKVObject<PostLogin.User>('user');
+  const [employee, setEmployee] = useMMKVObject<PostLogin.Employee>('employee');
+  const [isLoading, setIsLoading] = useState(false);
 
-  async function signIn({ userCPF, password }: LoginFormData) {
+  async function signIn({ user, password }: LoginFormData) {
     try {
       setIsLoading(true);
       const response = await postLogin({
-        userCPF: userCPF,
+        user: user,
         password: password,
       });
 
       if (response.return) {
-        await AsyncStorage.setItem(
-          '@Auth:user',
-          JSON.stringify(response.return.user),
-        );
-        await AsyncStorage.setItem(
-          '@Auth:employee',
-          JSON.stringify(response.return.employee),
-        );
         setUser(response.return.user);
         setEmployee(response.return.employee);
       }
     } catch (error) {
-      throw error;
+      console.error('Error on signIn: ', error);
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -50,36 +43,19 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   async function signOut() {
-    setIsLoading(true);
-    await AsyncStorage.removeItem('@Auth:user');
-
-    setUser(null);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 100);
-  }
-
-  async function loadStorageData() {
     try {
-      const storagedUser = await AsyncStorage.getItem('@Auth:user');
-      const storagedEmployee = await AsyncStorage.getItem('@Auth:employee');
-
-      if (storagedUser) {
-        setUser(JSON.parse(storagedUser));
-      }
-      if (storagedEmployee) {
-        setEmployee(JSON.parse(storagedEmployee));
-      }
+      setIsLoading(true);
+      setUser(undefined);
+      setEmployee(undefined);
+      // storage.clearAll();
     } catch (error) {
-      console.log('Error loading storage data:', error);
+      console.error('Error signing out: ', error);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 100);
     }
   }
-
-  useEffect(() => {
-    loadStorageData();
-  }, []);
 
   return (
     <AuthContext.Provider
@@ -87,7 +63,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         employee,
         isLoading,
-        setIsLoading,
         signIn,
         signOut,
       }}

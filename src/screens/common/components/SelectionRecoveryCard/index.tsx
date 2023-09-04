@@ -17,7 +17,7 @@ export function SelectionRecoveryCard({ option }: SelectionRecoveryCardProps) {
   return (
     <TouchableOpacity
       activeOpacity={0.7}
-      className="mx-1 h-36 w-36 justify-between rounded-xl bg-primary-500 p-4"
+      className="mx-1 h-36 w-36 justify-between rounded-xl bg-nepomuceno-dark-blue p-4"
       onPress={() => {
         navigate(option.redirect);
       }}

@@ -1,5 +1,5 @@
 import { Text, View } from 'react-native';
-import { useFilter } from '../../contexts/filter';
+import { useFilter } from '../../contexts/OperadorFilter';
 import { MultipleSelect } from '../ui/MultipleSelect';
 
 export function OperationsOptions() {

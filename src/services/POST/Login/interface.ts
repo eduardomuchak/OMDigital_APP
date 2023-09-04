@@ -14,6 +14,7 @@ export namespace PostLogin {
     st: boolean;
     st_user: boolean;
     user_description: string | null;
+    function_name: string;
   }
 
   export interface User {

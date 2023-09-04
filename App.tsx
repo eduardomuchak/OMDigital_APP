@@ -10,6 +10,7 @@ import {
 } from '@expo-google-fonts/poppins';
 import { NavigationContainer } from '@react-navigation/native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import 'expo-dev-client';
 import { useCameraPermissions } from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
@@ -24,7 +25,7 @@ export default function App() {
   const [cameraPermissionInformation, requestPermission] =
     useCameraPermissions();
   async function SetBackgroundColor() {
-    await SystemUI.setBackgroundColorAsync('#FFF');
+    await SystemUI.setBackgroundColorAsync('#1D2F6E');
   }
   const [fontsLoaded] = useFonts({
     Poppins_300Light,

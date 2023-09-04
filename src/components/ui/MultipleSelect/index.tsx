@@ -116,10 +116,10 @@ export function MultipleSelect({
           listMode="MODAL"
           multipleText={`${selected && selected.length} ${
             selected && selected.length === 1
-              ? 'operação selecionada'
-              : 'operações selecionadas'
+              ? 'opção selecionada'
+              : 'opções selecionadas'
           }`}
-          placeholder="Todas as operações estão selecionadas"
+          placeholder="Todas as opções estão selecionadas"
         />
       </View>
     </>

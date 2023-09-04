@@ -1,5 +1,5 @@
 import { Text, TextInput, View } from 'react-native';
-import { useFilter } from '../../contexts/filter';
+import { useFilter } from '../../contexts/OperadorFilter';
 import { QRCodeScannerModal } from '../QRCodeScannerModal';
 
 export function AssetCodeQRCodeScanner() {

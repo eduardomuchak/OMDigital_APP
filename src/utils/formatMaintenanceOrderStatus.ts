@@ -1,33 +1,35 @@
 export function formatStagesStatus(status: number) {
   switch (status) {
     case 1:
-      return "Não iniciada";
+      return 'Não iniciada';
     case 2:
-      return "Iniciada";
+      return 'Iniciada';
     case 3:
-      return "Pausada";
+      return 'Pausada';
     case 4:
-      return "Concluída";
+      return 'Concluída';
   }
 }
 
 export function formatMaintenanceOrderStatus(status: number) {
   switch (status) {
     case 1:
-      return "Não aprovada";
+      return 'Aguardando atendimento';
     case 2:
-      return "Recusada";
+      return 'Recusada';
     case 3:
-      return "Parada futura";
+      return 'Parada futura';
     case 4:
-      return "Aguardando início";
+      return 'Aguardando início';
     case 5:
-      return "Em andamento";
+      return 'Em andamento';
     case 6:
-      return "Atividade concluída";
+      return 'Atividade concluída';
     case 7:
-      return "Finalizada";
+      return 'Finalizada';
     case 8:
-      return "Cancelada";
+      return 'Cancelada';
+    default:
+      return 'Não definido';
   }
 }

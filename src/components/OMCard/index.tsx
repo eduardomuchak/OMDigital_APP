@@ -1,9 +1,10 @@
-import { Pressable, View } from "react-native";
+import { Pressable, View } from 'react-native';
 
-import { CardInfo } from "./CardInfo";
-import { CardTitle } from "./CardTitle";
+import { CardInfo } from './CardInfo';
+import { CardTitle } from './CardTitle';
 
-import clsx from "clsx";
+import clsx from 'clsx';
+import { useOperador } from '../../hooks/useOperador';
 
 interface OMCardProps {
   onPress?: () => void;
@@ -19,24 +20,26 @@ interface OMCardProps {
 }
 
 export function OMCard(props: OMCardProps) {
+  const {
+    operadorDataState: { statusOMs },
+  } = useOperador();
+
+  const foundStatus = statusOMs.find((status) => {
+    return status.description === props.status;
+  });
+
   return (
     <Pressable onPress={props.onPress} className="items-center">
       <View
-        className={clsx(
-          "w-full max-w-lg justify-center rounded-xl bg-status-green p-5",
-          {
-            ["bg-status-red"]: props.status === "Não aprovada",
-            ["bg-red-500"]: props.status === "Recusada",
-            ["bg-cyan-500"]: props.status === "Parada futura",
-            ["bg-status-yellow"]: props.status === "Aguardando início",
-            ["bg-emerald-500"]: props.status === "Em andamento",
-            ["bg-blue-500"]: props.status === "Atividade concluída",
-            ["border-2 border-status-green bg-status-concluido"]:
-              props.status === "Finalizada",
-            ["border-2 border-status-red bg-status-cancelado"]:
-              props.status === "Cancelada",
-          }
-        )}
+        style={{
+          backgroundColor: foundStatus?.property,
+        }}
+        className={clsx(`w-full max-w-lg justify-center rounded-xl p-5`, {
+          ['border-2 border-status-green bg-status-concluido']:
+            props.status === 'Finalizada',
+          ['border-2 border-status-red bg-status-cancelado']:
+            props.status === 'Cancelada',
+        })}
       >
         <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
         <CardInfo

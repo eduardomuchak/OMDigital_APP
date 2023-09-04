@@ -2,7 +2,7 @@ import { Funnel } from 'phosphor-react-native';
 import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useFilter } from '../../contexts/filter';
+import { useFilter } from '../../contexts/OperadorFilter';
 import { CustomButton } from '../ui/CustomButton';
 import { CustomModal } from '../ui/Modal';
 import { AssetCodeQRCodeScanner } from './AssetCodeQRCodeScanner';
@@ -27,7 +27,7 @@ export function FilterModal() {
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >
-        <Funnel size={26} color="#1D2F99" weight="fill" />
+        <Funnel size={26} color="#1F295B" weight="fill" />
       </TouchableOpacity>
 
       {/* Modal */}
