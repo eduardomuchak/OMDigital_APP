@@ -14,6 +14,7 @@ import { OMContextProvider } from '../contexts/om-context';
 import { Home } from '../screens/manutencao/screens/Home';
 import { OpenedRequests } from '../screens/manutencao/screens/OpenedRequests';
 import { RegisteredActivities } from '../screens/manutencao/screens/RegisteredActivities';
+import { textCapitalizer } from '../utils/textCapitalize';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,7 +32,9 @@ const OpenDrawerIcon = ({ navigation }: DrawerHeaderProps) => {
 };
 
 function DrawerNavigator() {
-  const { user } = useAuth();
+  const { employee } = useAuth();
+  if (!employee) return <></>;
+
   return (
     <Drawer.Navigator
       initialRouteName="OpenedRequests"
@@ -41,7 +44,9 @@ function DrawerNavigator() {
             <View className="items- flex h-28 w-full flex-row items-end justify-between bg-nepomuceno-dark-blue px-5 pb-5">
               <View className="flex-row items-end space-x-4">
                 <OpenDrawerIcon {...props} />
-                <Text className="h-6 font-poppinsBold text-lg text-white">{`Olá, ${user?.user}`}</Text>
+                <Text className="h-6 font-poppinsBold text-lg text-white">{`Olá, ${textCapitalizer(
+                  employee?.name,
+                )}`}</Text>
               </View>
               <LogoutModal />
             </View>

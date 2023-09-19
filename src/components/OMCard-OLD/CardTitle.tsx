@@ -5,13 +5,13 @@ import clsx from 'clsx';
 
 interface CardTitleProps {
   children: React.ReactNode;
-  status?: number;
+  status?: string;
 }
 
 export function CardTitle({ children, status }: CardTitleProps) {
   return (
     <View className="mb-2 flex-row items-center justify-center">
-      {status === 7 && (
+      {status === 'Finalizada' && (
         <CheckCircle
           color="#046700"
           weight="bold"
@@ -19,7 +19,7 @@ export function CardTitle({ children, status }: CardTitleProps) {
           style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
-      {status === 8 && (
+      {status === 'Cancelada' && (
         <WarningCircle
           color="#B50202"
           weight="bold"
@@ -27,7 +27,7 @@ export function CardTitle({ children, status }: CardTitleProps) {
           style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
-      {status === 2 && (
+      {status === 'Recusada' && (
         <X
           color="#B50202"
           weight="bold"
@@ -39,7 +39,8 @@ export function CardTitle({ children, status }: CardTitleProps) {
         className={clsx(
           'text-center font-poppinsBold text-lg text-neutral-900',
           {
-            ['mr-4 text-neutral-900']: status === 7 || status === 8,
+            ['mr-4 text-neutral-900']:
+              status === 'Finalizada' || status === 'Cancelada',
           },
         )}
       >

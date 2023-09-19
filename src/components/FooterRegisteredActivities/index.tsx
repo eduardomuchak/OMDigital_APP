@@ -1,10 +1,11 @@
 import { Text, View } from 'react-native';
+import { textCapitalizer } from '../../utils/textCapitalize';
 
 interface FooterRegisteredActivitiesProps {
   controladorInfo: {
     localDeManutencao: string;
     controlador: string;
-    telefone: string;
+    telefone: string | null;
   };
 }
 
@@ -15,10 +16,10 @@ export function FooterRegisteredActivities({
     <View className="bg-nepomuceno-dark-blue px-6 py-5">
       <View className="mb-2">
         <Text className="font-poppinsBold text-lg text-white">
-          {controladorInfo.localDeManutencao}:
+          Local de Manutenção:
         </Text>
         <Text className="font-poppinsMedium text-base text-white">
-          {controladorInfo.localDeManutencao}:
+          {textCapitalizer(controladorInfo.localDeManutencao)}
         </Text>
       </View>
       <View>
@@ -26,7 +27,10 @@ export function FooterRegisteredActivities({
           Controlador:
         </Text>
         <Text className="font-poppinsMedium text-base text-white">
-          {controladorInfo.controlador} - {controladorInfo.telefone}
+          {textCapitalizer(controladorInfo.controlador)}
+          {controladorInfo.telefone !== null
+            ? ` - ${controladorInfo.telefone}`
+            : ''}
         </Text>
       </View>
     </View>

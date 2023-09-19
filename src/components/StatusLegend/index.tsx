@@ -5,7 +5,7 @@ import { Text, View } from 'react-native';
 interface Status {
   id: number;
   description: string;
-  color: string;
+  color?: string;
   property: string;
 }
 interface StatusLegendProps {

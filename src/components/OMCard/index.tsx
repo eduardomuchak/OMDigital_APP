@@ -1,31 +1,28 @@
+import { useQuery } from '@tanstack/react-query';
+import clsx from 'clsx';
 import { Pressable, View } from 'react-native';
-
+import { MaintenanceOrderList } from '../../services/GET/OMs/fetchAllOms/om.interface';
+import { fetchMainOrderStatus } from '../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { CardInfo } from './CardInfo';
 import { CardTitle } from './CardTitle';
 
-import clsx from 'clsx';
-import { useOperador } from '../../hooks/useOperador';
-
 interface OMCardProps {
   onPress?: () => void;
-  id: number;
-  codigoBem: string;
-  ordemManutencao: string;
-  operacao: number;
-  paradaReal: string;
-  prevFim: string;
-  isFinishOrCancel?: boolean;
-  status?: string;
-  tipo: string;
+  maintenanceOrder: MaintenanceOrderList;
 }
 
 export function OMCard(props: OMCardProps) {
-  const {
-    operadorDataState: { statusOMs },
-  } = useOperador();
+  const listMainOrderStatus = useQuery({
+    queryKey: ['listMainOrderStatus'],
+    queryFn: fetchMainOrderStatus,
+  });
 
-  const foundStatus = statusOMs.find((status) => {
-    return status.description === props.status;
+  if (listMainOrderStatus.data === undefined) {
+    return <></>;
+  }
+
+  const foundStatus = listMainOrderStatus.data.find((status) => {
+    return status.id === props.maintenanceOrder.status;
   });
 
   return (
@@ -36,21 +33,15 @@ export function OMCard(props: OMCardProps) {
         }}
         className={clsx(`w-full max-w-lg justify-center rounded-xl p-5`, {
           ['border-2 border-status-green bg-status-concluido']:
-            props.status === 'Finalizada',
+            props.maintenanceOrder.status === 7,
           ['border-2 border-status-red bg-status-cancelado']:
-            props.status === 'Cancelada',
+            props.maintenanceOrder.status === 8,
         })}
       >
-        <CardTitle status={props.status}>{props.codigoBem}</CardTitle>
-        <CardInfo
-          codigoBem={props.codigoBem}
-          ordemManutencao={props.ordemManutencao}
-          operacao={props.operacao}
-          paradaReal={props.paradaReal}
-          prevFim={props.prevFim}
-          tipo={props.tipo}
-          isFinishOrCancel={props.isFinishOrCancel}
-        />
+        <CardTitle status={props.maintenanceOrder.status}>
+          {props.maintenanceOrder.asset_code}
+        </CardTitle>
+        <CardInfo maintenanceOrder={props.maintenanceOrder} />
       </View>
     </Pressable>
   );

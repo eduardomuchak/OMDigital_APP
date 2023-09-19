@@ -1,56 +1,87 @@
 import { Text, View } from 'react-native';
 
+import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
+import { MaintenanceOrderList } from '../../services/GET/OMs/fetchAllOms/om.interface';
+import { fetchOperationsFromAPI } from '../../services/GET/Operations/fetchOperations';
 import { formatISOStringToPTBRDateString } from '../../utils/formatISOStringToPTBRDateString';
+import { operationNameFormatter } from '../../utils/operationNameFormatter';
 
 interface CardInfoProps {
-  isFinishOrCancel?: boolean;
-  codigoBem: string;
-  ordemManutencao: string;
-  operacao: number;
-  paradaReal: string;
-  prevFim: string;
-  tipo: string;
+  maintenanceOrder: MaintenanceOrderList;
 }
 
 export function CardInfo(props: CardInfoProps) {
+  const isFinishOrCancel =
+    props.maintenanceOrder.status === 7 || props.maintenanceOrder.status === 8;
+
+  const listOperation = useQuery({
+    queryKey: ['listOperation'],
+    queryFn: fetchOperationsFromAPI,
+  });
+
+  const foundOperation = listOperation.data?.find((operation) => {
+    return (
+      operation.operationCode === props.maintenanceOrder.asset_operation_code
+    );
+  });
+
+  const paradaReal = formatISOStringToPTBRDateString(
+    props.maintenanceOrder.start_prev_date +
+      'T' +
+      props.maintenanceOrder.start_prev_hr +
+      '.000Z',
+  );
+
+  const prevFim = formatISOStringToPTBRDateString(
+    props.maintenanceOrder.end_prev_date +
+      'T' +
+      props.maintenanceOrder.end_prev_hr +
+      '.000Z',
+  );
+
+  const tipo =
+    props.maintenanceOrder.service_type === 'C' ? 'Corretiva' : 'Preventiva';
+
   return (
     <>
       <Text
         className={clsx('font-poppinsMedium text-base text-neutral-900', {
-          ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+          ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
         })}
       >
-        OM: {props.ordemManutencao}
+        OM: {props.maintenanceOrder.id}
       </Text>
+      {foundOperation && (
+        <Text
+          className={clsx('font-poppinsMedium text-base text-neutral-900', {
+            ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
+          })}
+        >
+          {`Operação: ${operationNameFormatter(foundOperation.operation)}`}
+        </Text>
+      )}
       <Text
         className={clsx('font-poppinsMedium text-base text-neutral-900', {
-          ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+          ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
         })}
       >
-        Operação: {props.operacao}
-      </Text>
-      <Text
-        className={clsx('font-poppinsMedium text-base text-neutral-900', {
-          ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
-        })}
-      >
-        {`Tipo: ${props.tipo.charAt(0).toUpperCase() + props.tipo.slice(1)}`}
+        {`Tipo: ${tipo}`}
       </Text>
       <View className="flex-row justify-between">
         <Text
           className={clsx('font-poppinsMedium text-base text-neutral-900', {
-            ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+            ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
           })}
         >
           Par. Real:{' '}
         </Text>
         <Text
           className={clsx('font-poppinsMedium text-base text-neutral-900', {
-            ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+            ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
           })}
         >
-          {formatISOStringToPTBRDateString(props.paradaReal)}
+          {paradaReal === 'NaN' ? 'Período não informado' : paradaReal}
         </Text>
       </View>
       <View className="flex-row justify-between">
@@ -58,7 +89,7 @@ export function CardInfo(props: CardInfoProps) {
           className={clsx(
             'flex-row font-poppinsMedium text-base text-neutral-900',
             {
-              ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+              ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
             },
           )}
         >
@@ -66,10 +97,10 @@ export function CardInfo(props: CardInfoProps) {
         </Text>
         <Text
           className={clsx('font-poppinsMedium text-base text-neutral-900', {
-            ['font-poppinsMedium text-neutral-900']: props.isFinishOrCancel,
+            ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
           })}
         >
-          {formatISOStringToPTBRDateString(props.prevFim)}
+          {prevFim === 'NaN' ? 'Período não informado' : prevFim}
         </Text>
       </View>
     </>

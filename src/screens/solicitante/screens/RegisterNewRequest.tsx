@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { ScrollView, Text, View } from 'react-native';
@@ -9,7 +10,8 @@ import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
-import { useGetLocation } from '../../../hooks/useGetLocation';
+import { useAuth } from '../../../contexts/auth';
+import { saveRequest } from '../../../services/POST/Solicitations/saveRequest';
 import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringToPTBRDateString';
 import {
   RegisterNewRequestFormData,
@@ -30,7 +32,18 @@ export interface AttachmentProps {
 
 export function RegisterNewRequest() {
   const { goBack } = useNavigation();
-  const { location } = useGetLocation();
+  // const { location } = useGetLocation();
+  const { user } = useAuth();
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: saveRequest,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+    },
+  });
 
   const [attachment, setAttachment] = useState<AttachmentProps>(
     {} as AttachmentProps,
@@ -57,12 +70,16 @@ export function RegisterNewRequest() {
 
   const onSubmit = (data: RegisterNewRequestFormData) => {
     const payload = {
-      ...data,
-      attachment: attachment ? attachment.base64 : null,
-      location,
+      asset_code: data.propertyCode,
+      status: '1',
+      counter: data.counter,
+      report: data.symptom,
+      resp_id: user?.id ? user.id : 0,
+      // attachment: attachment ? attachment.base64 : null,
+      // location,
     };
+    mutation.mutate(payload);
 
-    // TODO: Enviar para a API
     setAttachment({} as AttachmentProps);
     reset();
     goBack();
