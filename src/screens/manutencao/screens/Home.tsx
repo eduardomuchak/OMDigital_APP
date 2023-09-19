@@ -1,145 +1,100 @@
 import { useNavigation } from '@react-navigation/native';
-import { useContext, useState } from 'react';
-import { View } from 'react-native';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
 
 import { CardContainer } from '../../../components/CardContainer';
 import { FooterModal } from '../../../components/FooterModal';
+
+import { useQuery } from '@tanstack/react-query';
+import { Loading } from '../../../components/Loading';
 import { OMCard } from '../../../components/OMCard';
-import { StatusFilter } from '../../../components/StatusFilter';
-
 import { StatusLegend } from '../../../components/StatusLegend';
-import { useAuth } from '../../../contexts/auth';
-import { OMContext } from '../../../contexts/om-context';
-import { FilterModalLogistica } from '../../logistica/components/FilterModalLogistica';
-import { Logistica } from '../../logistica/interfaces';
-
-const operationsMock = [
-  {
-    id: 1,
-    name: 'Operação 1',
-  },
-  {
-    id: 2,
-    name: 'Operação 2',
-  },
-  {
-    id: 3,
-    name: 'Operação 3',
-  },
-];
-
-const statusLegendInfo = [
-  {
-    id: 1,
-    name: 'Aberta',
-    color: 'bg-status-green',
-  },
-  {
-    id: 2,
-    name: 'Aguardando',
-    color: 'bg-status-yellow',
-  },
-  {
-    id: 3,
-    name: 'Atrasada',
-    color: 'bg-status-red',
-  },
-  {
-    id: 4,
-    name: 'Concluída',
-    color: 'Concluída',
-  },
-  {
-    id: 5,
-    name: 'Cancelada',
-    color: 'Cancelada',
-  },
-];
+import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
+import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
+import { ManutencaoFilterModal } from '../components/ManutencaoFilterModal';
 
 export function Home() {
   const { navigate } = useNavigation();
-  const { employee } = useAuth();
-  const { om } = useContext(OMContext);
+  const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
+  const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [status, setStatus] = useState({
-    todas: true,
-    abertas: false,
-    aguardando: false,
-    concluidas: false,
-    canceladas: false,
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
   });
-  const [operations, setOperations] = useState(
-    operationsMock.map((operation) => {
-      return {
-        showAll: true,
-        [operation.name]: false,
-      };
-    }),
-  );
 
-  function handleOpenModal() {
-    setIsModalVisible(true);
-  }
+  const listOperation = useQuery({
+    queryKey: ['listOperation'],
+    queryFn: fetchOperationsFromAPI,
+  });
 
-  function handleCloseModal() {
-    setIsModalVisible(false);
-  }
+  const listMainOrderStatus = useQuery({
+    queryKey: ['listMainOrderStatus'],
+    queryFn: fetchMainOrderStatus,
+  });
 
-  function handleFilterOptionsConfirmation(
-    pickedStatus: Logistica.StatusFilterStateOptions,
-    pickedOperations: Logistica.OperationState[],
+  if (
+    listMaintenanceOrder.isLoading ||
+    listOperation.isLoading ||
+    listMainOrderStatus.isLoading
   ) {
-    setStatus(pickedStatus);
-    setOperations(pickedOperations);
-    setIsModalVisible(false);
+    return <Loading />;
   }
 
-  const filteredOperations = om.filter((item) => {
-    const matchStatus =
-      status.todas ||
-      (item.status === 'Aberta' && status.abertas) ||
-      (item.status === 'Aguardando' && status.aguardando) ||
-      (item.status === 'Concluída' && status.concluidas) ||
-      (item.status === 'Cancelada' && status.canceladas);
-    const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao],
-    );
-
-    return matchStatus && matchOperacao;
-  });
+  if (
+    listMaintenanceOrder.data === undefined ||
+    listOperation.data === undefined ||
+    listMainOrderStatus.data === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      {/* <Header isHomeScreen title={`Olá, ${employee?.name}`} /> */}
-      {isModalVisible && (
-        <FilterModalLogistica
-          onClose={handleCloseModal}
-          onConfirm={handleFilterOptionsConfirmation}
-          isOpen={isModalVisible}
-          allStatus={status}
-          controlador
+      <View className="flex flex-row items-center justify-between px-5 py-4">
+        <View />
+        <Text className="text-neutral text-center font-poppinsBold text-lg">
+          Ordens de Manutenção
+        </Text>
+        <ManutencaoFilterModal
+          status={{
+            selectedStatus,
+            setSelectedStatus,
+          }}
+          operations={{
+            selectedOperations,
+            setSelectedOperations,
+          }}
         />
-      )}
-      <StatusFilter
-        openFilterModal={handleOpenModal}
-        filterTitle="Operação - TODAS"
-      />
-      <StatusLegend status={statusLegendInfo} />
+      </View>
+      <StatusLegend status={listMainOrderStatus.data} />
 
       <CardContainer>
-        {filteredOperations.map((item) => (
-          <OMCard
-            isFinishOrCancel={
-              item.status === 'Cancelada' || item.status === 'Concluída'
-                ? true
-                : false
+        {listMaintenanceOrder.data
+          .filter((item) => {
+            if (selectedStatus.length > 0) {
+              return selectedStatus.includes(item.status);
             }
-            key={item.id}
-            onPress={() => navigate('RegisteredActivities', { id: item.id })}
-            {...item}
-          />
-        ))}
+            return true;
+          })
+          .filter((item) => {
+            if (selectedOperations.length > 0) {
+              return selectedOperations.includes(item.asset_operation_code);
+            }
+            return true;
+          })
+          .map((item) => (
+            <OMCard
+              maintenanceOrder={item}
+              key={item.id}
+              onPress={() => {
+                console.log('CLICOU');
+                console.log('item.id', item.id);
+                navigate('RegisteredActivities', { id: item.id });
+              }}
+            />
+          ))}
       </CardContainer>
       <FooterModal />
     </View>

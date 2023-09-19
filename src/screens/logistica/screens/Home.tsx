@@ -1,141 +1,94 @@
-import { useContext, useState } from 'react';
-import { View } from 'react-native';
-
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Text, View } from 'react-native';
 import { CardContainer } from '../../../components/CardContainer';
 import { FooterModal } from '../../../components/FooterModal';
 import { Header } from '../../../components/Header';
+import { Loading } from '../../../components/Loading';
 import { OMCard } from '../../../components/OMCard';
-import { StatusFilter } from '../../../components/StatusFilter';
-import { FilterModalLogistica } from '../components/FilterModalLogistica';
-
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
-import { OMContext } from '../../../contexts/om-context';
-import { Logistica } from '../interfaces';
-
-const operationsMock = [
-  {
-    id: 1,
-    name: 'Operação 1',
-  },
-  {
-    id: 2,
-    name: 'Operação 2',
-  },
-  {
-    id: 3,
-    name: 'Operação 3',
-  },
-];
-
-const statusLegendInfo = [
-  {
-    id: 1,
-    name: 'Aberta',
-    color: 'bg-status-green',
-  },
-  {
-    id: 2,
-    name: 'Aguardando',
-    color: 'bg-status-yellow',
-  },
-  {
-    id: 3,
-    name: 'Atrasada',
-    color: 'bg-status-red',
-  },
-  {
-    id: 4,
-    name: 'Concluída',
-    color: 'Concluída',
-  },
-  {
-    id: 5,
-    name: 'Cancelada',
-    color: 'Cancelada',
-  },
-];
+import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
+import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
+import { textCapitalizer } from '../../../utils/textCapitalize';
+import { LogisticaFilterModal } from '../components/LogisticaFilterModal';
 
 export function Home() {
-  const { om } = useContext(OMContext);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [status, setStatus] = useState({
-    todas: true,
-    abertas: false,
-    aguardando: false,
-    concluidas: false,
-    canceladas: false,
-  });
-  const [operations, setOperations] = useState(
-    operationsMock.map((operation) => {
-      return {
-        showAll: true,
-        [operation.name]: false,
-      };
-    }),
-  );
   const { employee } = useAuth();
+  if (!employee?.id) return <></>;
 
-  function handleOpenModal() {
-    setIsModalVisible(true);
-  }
+  const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
+  const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
 
-  function handleCloseModal() {
-    setIsModalVisible(false);
-  }
-
-  function handleFilterOptionsConfirmation(
-    pickedStatus: Logistica.StatusFilterStateOptions,
-    pickedOperations: Logistica.OperationState[],
-  ) {
-    setStatus(pickedStatus);
-    setOperations(pickedOperations);
-    setIsModalVisible(false);
-  }
-
-  const filteredOperations = om.filter((item) => {
-    const matchStatus =
-      status.todas ||
-      (item.status === 'Aberta' && status.abertas) ||
-      (item.status === 'Aguardando' && status.aguardando) ||
-      (item.status === 'Concluída' && status.concluidas) ||
-      (item.status === 'Cancelada' && status.canceladas);
-    const matchOperacao = operations.every(
-      (operation) => operation.showAll || operation[item.operacao],
-    );
-
-    return matchStatus && matchOperacao;
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
   });
+
+  const listOperation = useQuery({
+    queryKey: ['listOperation'],
+    queryFn: fetchOperationsFromAPI,
+  });
+
+  const listMainOrderStatus = useQuery({
+    queryKey: ['listMainOrderStatus'],
+    queryFn: fetchMainOrderStatus,
+  });
+
+  if (
+    listMaintenanceOrder.isLoading ||
+    listOperation.isLoading ||
+    listMainOrderStatus.isLoading
+  ) {
+    return <Loading />;
+  }
+
+  if (
+    listMaintenanceOrder.data === undefined ||
+    listOperation.data === undefined ||
+    listMainOrderStatus.data === undefined
+  ) {
+    return <></>;
+  }
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header isHomeScreen title={`Olá, ${employee?.name}`} />
-      {isModalVisible && (
-        <FilterModalLogistica
-          onClose={handleCloseModal}
-          onConfirm={handleFilterOptionsConfirmation}
-          isOpen={isModalVisible}
-          allStatus={status}
-          controlador
+      <Header isHomeScreen title={`Olá, ${textCapitalizer(employee?.name)}`} />
+      <View className="flex flex-row items-center justify-between px-5 py-4">
+        <View />
+        <Text className="text-neutral text-center font-poppinsBold text-lg">
+          Ordens de Manutenção
+        </Text>
+        <LogisticaFilterModal
+          status={{
+            selectedStatus,
+            setSelectedStatus,
+          }}
+          operations={{
+            selectedOperations,
+            setSelectedOperations,
+          }}
         />
-      )}
-      <StatusFilter
-        openFilterModal={handleOpenModal}
-        filterTitle="Operação - TODAS"
-      />
-      <StatusLegend status={statusLegendInfo} />
+      </View>
+      <StatusLegend status={listMainOrderStatus.data} />
       <CardContainer>
-        {filteredOperations.map((item) => (
-          <OMCard
-            isFinishOrCancel={
-              item.status === 'Cancelada' || item.status === 'Concluída'
-                ? true
-                : false
+        {listMaintenanceOrder.data
+          .filter((item) => {
+            if (selectedStatus.length > 0) {
+              return selectedStatus.includes(item.status);
             }
-            key={item.id}
-            {...item}
-          />
-        ))}
+            return true;
+          })
+          .filter((item) => {
+            if (selectedOperations.length > 0) {
+              return selectedOperations.includes(item.asset_operation_code);
+            }
+            return true;
+          })
+          .map((item) => (
+            <OMCard maintenanceOrder={item} key={item.id} />
+          ))}
       </CardContainer>
       <FooterModal />
     </View>

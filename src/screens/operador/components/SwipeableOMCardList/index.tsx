@@ -4,7 +4,7 @@ import React from 'react';
 import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
-import { OMCard } from '../../../../components/OMCard';
+import { OMCardOLD } from '../../../../components/OMCard-OLD';
 import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
 import { OMMockProps } from '../FilterModal/interface';
 import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
@@ -64,7 +64,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
     SwipeableOMCardListProps['maintenanceOrders']
   >): JSX.Element => {
     return (
-      <OMCard
+      <OMCardOLD
         isFinishOrCancel={
           item.status === 'Cancelada' || item.status === 'Finalizada'
             ? true

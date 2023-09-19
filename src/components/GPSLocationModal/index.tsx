@@ -5,8 +5,8 @@ import { CustomButton } from '../ui/CustomButton';
 import { CustomModal } from '../ui/Modal';
 
 interface Location {
-  latitude: string;
-  longitude: string;
+  latitude: string | null;
+  longitude: string | null;
 }
 
 interface LocationModalProps {
@@ -20,6 +20,8 @@ export function GPSLocationModal({ location }: LocationModalProps) {
     const url = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
     Linking.openURL(url);
   };
+
+  if (location.latitude === null || location.longitude === null) return <></>;
 
   return (
     <>
@@ -63,7 +65,7 @@ export function GPSLocationModal({ location }: LocationModalProps) {
             <CustomButton
               variant="primary"
               onPress={() =>
-                openGoogleMaps(location.latitude, location.longitude)
+                openGoogleMaps(location.latitude!, location.longitude!)
               }
             >
               Confirmar

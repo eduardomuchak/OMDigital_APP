@@ -1,41 +1,43 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation } from "@react-navigation/native";
-import { PencilSimple } from "phosphor-react-native";
-import { GPSLocationModal } from "../../../../components/GPSLocationModal";
-import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
-import { formatISOStringToPTBRDateString } from "../../../../utils/formatISOStringToPTBRDateString";
-import { SymptomListModal } from "../../../operador/components/SymptomsCard/SymptomListModal";
+import { useNavigation } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
+import { PencilSimple } from 'phosphor-react-native';
+import { GPSLocationModal } from '../../../../components/GPSLocationModal';
+import { MaintenanceOrderList } from '../../../../services/GET/OMs/fetchAllOms/om.interface';
+import { fetchMainOrderStatus } from '../../../../services/GET/Status/fetchMaintenanceOrdersStatus';
+import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
+import { SymptomListModal } from '../../../operador/components/SymptomsCard/SymptomListModal';
 
 interface OperationInfoCardProps {
-  operationInfo: {
-    codigoBem: string;
-    ordemManutencao: string;
-    operacao: number;
-    paradaReal: string;
-    prevFim: string;
-    latitude: string;
-    longitude: string;
-    contador: number;
-    tipo: string;
-  };
-  operador?: boolean;
-  operationId?: number;
-  symptoms?: Symptom.SymptomList[];
+  maintenanceOrder: MaintenanceOrderList;
+  isOperador?: boolean;
 }
 
 export function OperationInfoCard({
-  operationInfo,
-  operador,
-  operationId,
-  symptoms,
+  maintenanceOrder,
+  isOperador,
 }: OperationInfoCardProps) {
+  const navigation = useNavigation();
   const location = {
-    latitude: operationInfo.latitude,
-    longitude: operationInfo.longitude,
+    latitude: maintenanceOrder.latitude,
+    longitude: maintenanceOrder.longitude,
   };
 
-  const navigation = useNavigation();
+  const listMainOrderStatus = useQuery({
+    queryKey: ['listMainOrderStatus'],
+    queryFn: fetchMainOrderStatus,
+  });
+
+  if (listMainOrderStatus.data === undefined || listMainOrderStatus.isLoading) {
+    return <></>;
+  }
+
+  const foundStatus = listMainOrderStatus.data.find(
+    (status) => status.id === maintenanceOrder.status,
+  );
+
+  if (foundStatus === undefined) return <></>;
 
   return (
     <View className="bg-neutral-100 px-6 py-5">
@@ -43,16 +45,18 @@ export function OperationInfoCard({
         <View>
           <Text className="font-poppinsBold text-lg">Placa:</Text>
           <Text className="font-poppinsMedium text-base ">
-            {operationInfo.codigoBem}
+            {maintenanceOrder.asset_code}
           </Text>
         </View>
-        {!operador ? (
+        {!isOperador ? (
           <GPSLocationModal location={location} />
         ) : (
           <View className="flex-row">
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("EditMaintenanceOrder", { id: operationId })
+                navigation.navigate('EditMaintenanceOrder', {
+                  id: maintenanceOrder.id,
+                })
               }
               className="mr-2"
               activeOpacity={0.7}
@@ -66,37 +70,62 @@ export function OperationInfoCard({
       <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>
         <Text className="font-poppinsMedium text-base">
-          {operationInfo.ordemManutencao}
+          {maintenanceOrder.id}
         </Text>
+      </View>
+      <View className="mb-2 flex">
+        <Text className="font-poppinsBold text-lg">Status da OM:</Text>
+        <View className="flex flex-row items-center space-x-2">
+          <View
+            style={{
+              backgroundColor: foundStatus.property,
+            }}
+            className={`h-2 w-2 rounded-full`}
+          />
+          <Text className="font-poppinsMedium text-base">
+            {foundStatus.description}
+          </Text>
+        </View>
       </View>
       <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Tipo da OM:</Text>
         <Text className="font-poppinsMedium text-base">
-          {operationInfo.tipo.charAt(0).toUpperCase() +
-            operationInfo.tipo.slice(1)}
+          {maintenanceOrder.service_type === 'C' ? 'Corretiva' : 'Preventiva'}
         </Text>
       </View>
       <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Contador (km/hor):</Text>
         <Text className="font-poppinsMedium text-base">
-          {operationInfo.contador}
+          {maintenanceOrder.counter}
         </Text>
       </View>
       <View className="flex flex-row gap-4">
         <View className="flex-1">
           <Text className="font-poppinsBold text-lg">Par. Real:</Text>
           <Text className="font-poppinsMedium text-base">
-            {formatISOStringToPTBRDateString(operationInfo.paradaReal)}
+            {formatISOStringToPTBRDateString(
+              maintenanceOrder.start_prev_date +
+                'T' +
+                maintenanceOrder.start_prev_hr +
+                '.000Z',
+            )}
           </Text>
         </View>
         <View className="flex-1">
           <Text className="font-poppinsBold text-lg">Prev. Fim:</Text>
           <Text className="font-poppinsMedium text-base">
-            {formatISOStringToPTBRDateString(operationInfo.prevFim)}
+            {formatISOStringToPTBRDateString(
+              maintenanceOrder.end_prev_date +
+                'T' +
+                maintenanceOrder.end_prev_hr +
+                '.000Z',
+            )}
           </Text>
         </View>
       </View>
-      {operador && symptoms ? <SymptomListModal symptoms={symptoms!} /> : null}
+      {isOperador && maintenanceOrder.symptoms ? (
+        <SymptomListModal symptoms={maintenanceOrder.symptoms} />
+      ) : null}
     </View>
   );
 }

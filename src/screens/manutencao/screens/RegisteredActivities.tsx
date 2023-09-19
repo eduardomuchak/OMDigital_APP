@@ -1,62 +1,78 @@
-// React and React Native
-import { useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { Text, View } from "react-native";
-
-//components
-import { FooterRegisteredActivities } from "../../../components/FooterRegisteredActivities";
-import { Header } from "../../../components/Header";
-import { ActivityCard } from "../components/ActivityCard";
-import { CardContainer } from "../components/ActivityCard/CardContainer";
-import { OperationInfoCard } from "../components/OperationInfoCard";
-
-import { StatusLegend } from "../../../components/StatusLegend";
-import { OMContext } from "../../../contexts/om-context";
+import { useRoute } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
+import { Text, View } from 'react-native';
+import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
+import { Header } from '../../../components/Header';
+import { Loading } from '../../../components/Loading';
+import { StatusLegend } from '../../../components/StatusLegend';
+import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { fetchStagesStatus } from '../../../services/GET/Status/fetchStagesStatus';
+import { ActivityCard } from '../components/ActivityCard';
+import { CardContainer } from '../components/ActivityCard/CardContainer';
+import { OperationInfoCard } from '../components/OperationInfoCard';
 
 export function RegisteredActivities() {
-  const { statusLegendInfo, mappedMaintenanceOrder } = useContext(OMContext);
-
-  // get ID from route params
   const route = useRoute();
   const { id } = route.params as { id?: number };
 
-  const filteredOM = mappedMaintenanceOrder.filter((om) => om.id === id);
-  const activities = filteredOM[0]?.atividades;
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
+  });
 
-  const operationInfoProps = {
-    codigoBem: filteredOM[0]?.codigoBem,
-    ordemManutencao: filteredOM[0]?.ordemManutencao,
-    operacao: filteredOM[0]?.operacao,
-    paradaReal: filteredOM[0]?.paradaReal,
-    prevFim: filteredOM[0]?.prevFim,
-    latitude: filteredOM[0]?.latitude,
-    longitude: filteredOM[0]?.longitude,
-    contador: filteredOM[0]?.contador,
-    tipo: filteredOM[0]?.tipo,
-  };
+  const listStageStatus = useQuery({
+    queryKey: ['listStageStatus'],
+    queryFn: fetchStagesStatus,
+  });
 
-  const footerInfo = {
-    localDeManutencao: filteredOM[0].localDeManutencao!,
-    controlador: filteredOM[0].controlador!,
-    telefone: filteredOM[0].telefone!,
+  if (
+    listMaintenanceOrder.data === undefined ||
+    listStageStatus.data === undefined
+  ) {
+    return <></>;
+  }
+
+  if (listMaintenanceOrder.isLoading || listStageStatus.isLoading) {
+    return <Loading />;
+  }
+
+  const filteredOM = listMaintenanceOrder.data.filter((om) => om.id === id);
+
+  const controladorInfo = {
+    localDeManutencao: filteredOM[0].branch_obj.name,
+    controlador: filteredOM[0].asset_maintenance_controller,
+    telefone: null, //TODO: add telefone to OM
   };
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title={"Atividades Lançadas"} />
-      <OperationInfoCard operationInfo={operationInfoProps} />
-      <Text className="mb-3 mt-4 px-6 font-poppinsBold text-[18px]">
-        Atividades:
-      </Text>
-      <StatusLegend status={statusLegendInfo} />
+      <Header title={'Etapas Lançadas'} />
+
       <CardContainer
+        headerComponent={
+          <>
+            <OperationInfoCard maintenanceOrder={filteredOM[0]} />
+            <Text className="mb-3 mt-4 px-6 font-poppinsBold text-[18px]">
+              Etapas:
+            </Text>
+            <StatusLegend status={listStageStatus.data} />
+          </>
+        }
         footerComponent={
-          <FooterRegisteredActivities controladorInfo={footerInfo} />
+          <FooterRegisteredActivities controladorInfo={controladorInfo} />
         }
       >
-        {activities.map((activity) => (
-          <ActivityCard activity={activity} key={activity.id} />
-        ))}
+        {filteredOM[0].stages.length > 0
+          ? filteredOM[0].stages.map((activity) => (
+              <ActivityCard activity={activity} key={activity.id} />
+            ))
+          : [
+              <View className="flex min-h-[200px] flex-1 flex-row items-center justify-center">
+                <Text className="text-center font-poppinsBold text-base">
+                  Não há etapas lançadas
+                </Text>
+              </View>,
+            ]}
       </CardContainer>
     </View>
   );
