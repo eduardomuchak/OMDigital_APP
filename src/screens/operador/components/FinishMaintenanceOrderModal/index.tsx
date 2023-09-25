@@ -1,10 +1,12 @@
-import { useNavigation } from "@react-navigation/native";
-import { Square } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Square } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { endMaintenanceOrderAPI } from '../../../../services/GET/Maintenance/getEndMaintenanceOrder';
+import { fetchOMFromAPI } from '../../../../services/GET/OMs/fetchAllOms/fetchOM';
 
 interface FinishMaintenanceOrdemModalProps {
   isSwipeableTrigger?: boolean;
@@ -17,22 +19,40 @@ export function FinishMaintenanceOrderModal({
 }: FinishMaintenanceOrdemModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
-  const { om } = useContext(OMContext);
+
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
+  });
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: endMaintenanceOrderAPI,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    },
+  });
 
   function handleFinishMaintenanceOrder() {
-    const handledOm = om.find((om) => om.id === omId)?.atividades;
+    if (listMaintenanceOrder.data === undefined) return;
+    const handledOm = listMaintenanceOrder.data.find(
+      (om) => om.id === omId,
+    )?.stages;
     const isAllActivitiesFinished = handledOm?.every(
-      (atividade) => atividade.status === "Concluída"
+      (atividade) => atividade.status === 7,
     );
 
     if (isAllActivitiesFinished) {
-      navigation.navigate("CloseMaintenanceOrder", { id: omId });
+      // mutation.mutate(omId);
+      navigation.navigate('CloseMaintenanceOrder', { id: omId });
       setIsModalVisible(false);
     } else {
       setIsModalVisible(false);
       Alert.alert(
-        "Atenção",
-        "Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes."
+        'Atenção',
+        'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
       );
     }
   }

@@ -75,8 +75,12 @@ export function RegisterNewRequest() {
       counter: data.counter,
       report: data.symptom,
       resp_id: user?.id ? user.id : 0,
-      // attachment: attachment ? attachment.base64 : null,
-      // location,
+      images: [
+        {
+          base64: attachment?.base64,
+          fileName: attachment?.uri.split('/').pop(),
+        },
+      ],
     };
     mutation.mutate(payload);
 

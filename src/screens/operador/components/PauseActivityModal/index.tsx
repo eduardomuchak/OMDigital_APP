@@ -1,9 +1,10 @@
-import { Pause } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Pause } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { pauseStage } from '../../../../services/GET/Stages/pauseStage';
 
 interface PauseActivityModalProps {
   omId: number;
@@ -15,10 +16,18 @@ export function PauseActivityModal({
   activityId,
 }: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { pauseMainOrderStage } = useContext(OMContext);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: pauseStage,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    },
+  });
 
   function handlePauseActivity() {
-    pauseMainOrderStage(activityId);
+    mutation.mutate(activityId);
     setIsModalVisible(false);
   }
 

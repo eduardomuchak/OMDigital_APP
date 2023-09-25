@@ -7,16 +7,14 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { ErrorText } from '../../../../components/ui/ErrorText';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { TextArea } from '../../../../components/ui/TextArea';
+import { Symptom } from '../../../../services/POST/Symptoms/symptom.interface';
 import {
   EditMaintenanceOrderFormData,
   EditMaintenanceOrderSchema,
 } from '../../../../validations/operador/EditMaintenanceOrderScreen';
 
 interface EditSymptomModalProps {
-  symptom: {
-    id: number;
-    descricao: string;
-  };
+  symptom: Symptom.SymptomList;
   onEditSymptom: (editedSymptom: { id: number; descricao: string }) => void;
 }
 
@@ -33,7 +31,7 @@ export function EditSymptomModal({
     getValues,
   } = useForm<EditMaintenanceOrderFormData>({
     defaultValues: {
-      symptomDescription: symptom.descricao,
+      symptomDescription: symptom.description,
     },
     resolver: zodResolver(EditMaintenanceOrderSchema),
   });
