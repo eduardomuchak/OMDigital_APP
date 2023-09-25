@@ -9,7 +9,6 @@ import { RegisterNewActivity } from '../screens/operador/screens/RegisterNewActi
 import { RegisterNewMaintenanceOrder } from '../screens/operador/screens/RegisterNewMaintenanceOrder';
 import { RegisterNewSymptom } from '../screens/operador/screens/RegisterNewSymptom';
 import { RegisteredActivities } from '../screens/operador/screens/RegisteredActivities';
-import SyncOperator from '../screens/operador/screens/SyncOperator';
 
 const Stack = createStackNavigator();
 
@@ -21,9 +20,9 @@ export const OperadorRoutes: React.FC = () => (
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName="SyncOperator"
+          initialRouteName="HomeOperador"
         >
-          <Stack.Screen name="SyncOperator" component={SyncOperator} />
+          {/* <Stack.Screen name="SyncOperator" component={SyncOperator} /> */}
           <Stack.Screen name="HomeOperador" component={Home} />
           <Stack.Screen
             name="RegisterNewActivity"

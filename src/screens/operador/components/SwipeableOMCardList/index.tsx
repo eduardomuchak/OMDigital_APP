@@ -4,13 +4,13 @@ import React from 'react';
 import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
-import { OMCardOLD } from '../../../../components/OMCard-OLD';
+import { OMCard } from '../../../../components/OMCard';
+import { MaintenanceOrderList } from '../../../../services/GET/OMs/fetchAllOms/om.interface';
 import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
-import { OMMockProps } from '../FilterModal/interface';
 import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
 
 interface SwipeableOMCardListProps {
-  maintenanceOrders: OMMockProps;
+  maintenanceOrders: MaintenanceOrderList;
 }
 
 export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
@@ -21,7 +21,8 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const HandleStatus = ({ maintenanceOrders }: SwipeableOMCardListProps) => {
     switch (maintenanceOrders.status) {
-      case 'Concluída':
+      case 7:
+        // Finalizada
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -31,7 +32,8 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
             </Text>
           </View>
         );
-      case 'Cancelada':
+      case 8:
+        // Cancelada
         return (
           <View className="items-center justify-center">
             <WarningCircle size={56} color="#B50202" weight="bold" />
@@ -64,19 +66,14 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
     SwipeableOMCardListProps['maintenanceOrders']
   >): JSX.Element => {
     return (
-      <OMCardOLD
-        isFinishOrCancel={
-          item.status === 'Cancelada' || item.status === 'Finalizada'
-            ? true
-            : false
-        }
+      <OMCard
         key={item.id}
         onPress={() =>
           navigate('RegisteredActivitiesOperador', {
             id: item.id,
           })
         }
-        {...item}
+        maintenanceOrder={item}
       />
     );
   };

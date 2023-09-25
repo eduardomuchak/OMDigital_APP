@@ -1,18 +1,27 @@
-import { useNavigation } from "@react-navigation/native";
-import { CheckCircle } from "phosphor-react-native";
-import React, { useContext } from "react";
-import { Dimensions, ListRenderItemInfo, Text, View } from "react-native";
-import { SwipeListView } from "react-native-swipe-list-view";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { ActivityCard } from "../ActivityCard";
-import { FinishActivityModal } from "../FinishActivityModal";
-import { PauseActivityModal } from "../PauseActivityModal";
-import { StartActivityModal } from "../StartActivityModal";
+import { useNavigation } from '@react-navigation/native';
+import { CheckCircle } from 'phosphor-react-native';
+import React from 'react';
+import {
+  Dimensions,
+  ListRenderItemInfo,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { ActivityCard } from '../ActivityCard';
+import { FinishActivityModal } from '../FinishActivityModal';
+import { PauseActivityModal } from '../PauseActivityModal';
+import { StartActivityModal } from '../StartActivityModal';
 
-import { StatusLegend } from "../../../../components/StatusLegend";
-import { OMContext } from "../../../../contexts/om-context";
-import { Stage } from "../../../../services/POST/Stages/stages.interface";
-import { formatStagesStatus } from "../../../../utils/formatMaintenanceOrderStatus";
+import { useQuery } from '@tanstack/react-query';
+import { StatusLegend } from '../../../../components/StatusLegend';
+import { fetchOMFromAPI } from '../../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { fetchStagesStatus } from '../../../../services/GET/Status/fetchStagesStatus';
+import { Stage } from '../../../../services/POST/Stages/stages.interface';
+import { formatStagesStatus } from '../../../../utils/formatMaintenanceOrderStatus';
+import { OperationInfoCard } from '../../../manutencao/components/OperationInfoCard';
 
 interface SwipeableActivityCardListProps {
   activities: Stage.StagesList[];
@@ -25,14 +34,32 @@ export const SwipeableActivityCardList = ({
 }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
 
-  const { statusLegendStageInfo } = useContext(OMContext);
+  const listStageStatus = useQuery({
+    queryKey: ['listStageStatus'],
+    queryFn: fetchStagesStatus,
+  });
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
+  });
 
-  const screenWidth = Dimensions.get("window").width;
+  if (
+    listMaintenanceOrder.isLoading ||
+    listMaintenanceOrder.data === undefined
+  ) {
+    return <></>;
+  }
+
+  if (listStageStatus.isLoading || listStageStatus.data === undefined) {
+    return <></>;
+  }
+
+  const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
   const HandleStatus = ({ stage }: Stage.StagesListProps) => {
     switch (formatStagesStatus(stage.status)) {
-      case "Concluída":
+      case 'Concluída':
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -41,7 +68,7 @@ export const SwipeableActivityCardList = ({
             </Text>
           </View>
         );
-      case "Iniciada":
+      case 'Iniciada':
         return (
           <View className="flex flex-row">
             <PauseActivityModal omId={omId} activityId={stage.id} />
@@ -60,34 +87,42 @@ export const SwipeableActivityCardList = ({
 
   const listHeaderComponent = () => (
     <>
-      <Text className="font-poppinsBold text-lg">Etapas:</Text>
-      <StatusLegend status={statusLegendStageInfo} />
+      <OperationInfoCard
+        maintenanceOrder={
+          listMaintenanceOrder.data.filter((om) => om.id === omId)[0]
+        }
+        isOperador
+      />
+      <View className="mt-2 px-6">
+        <Text className="font-poppinsBold text-lg">Etapas:</Text>
+        <StatusLegend status={listStageStatus.data} />
+      </View>
     </>
   );
 
   const listFooterComponent = () => (
     <>
-      <View className="mb-3 mt-5 space-y-2">
+      <View className="mb-3 mt-5 space-y-2 px-6">
         <CustomButton
           variant="primary"
-          onPress={() => navigate("RegisterNewActivity", { id: omId })}
+          onPress={() => navigate('RegisterNewActivity', { id: omId })}
         >
           Adicionar Etapa
         </CustomButton>
         <CustomButton
           variant="primary"
-          onPress={() => navigate("RegisterNewSymptom", { id: omId })}
+          onPress={() => navigate('RegisterNewSymptom', { id: omId })}
         >
           Adicionar Sintoma
         </CustomButton>
       </View>
       {activities.every(
-        (activity) => formatStagesStatus(activity.status) === "Concluída"
-      ) ? (
-        <View className="mb-10">
+        (activity) => formatStagesStatus(activity.status) === 'Concluída',
+      ) && activities.length > 0 ? (
+        <View className="mb-10 px-6">
           <CustomButton
             variant="finish"
-            onPress={() => navigate("CloseMaintenanceOrder", { id: omId })}
+            onPress={() => navigate('CloseMaintenanceOrder', { id: omId })}
           >
             Finalizar OM
           </CustomButton>
@@ -98,13 +133,17 @@ export const SwipeableActivityCardList = ({
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<Stage.StagesListProps["stage"]>): JSX.Element => {
-    return <ActivityCard stage={item} />;
+  }: ListRenderItemInfo<Stage.StagesListProps['stage']>): JSX.Element => {
+    return (
+      <View className="px-6">
+        <ActivityCard stage={item} />
+      </View>
+    );
   };
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<Stage.StagesListProps["stage"]>): JSX.Element => (
+  }: ListRenderItemInfo<Stage.StagesListProps['stage']>): JSX.Element => (
     <View
       className={`flex-1 items-center justify-center`}
       style={{
@@ -115,12 +154,26 @@ export const SwipeableActivityCardList = ({
     </View>
   );
 
+  if (activities.length === 0)
+    return (
+      <ScrollView
+        className="flex flex-1 flex-col bg-white"
+        showsVerticalScrollIndicator={false}
+      >
+        {listHeaderComponent()}
+        <View className="flex flex-1 items-center justify-center py-10">
+          <Text className="text-neutral text-center font-poppinsBold text-lg">
+            Nenhuma etapa cadastrada
+          </Text>
+        </View>
+        {listFooterComponent()}
+      </ScrollView>
+    );
+
   return (
     <SwipeListView
       style={{
         flex: 1,
-        paddingHorizontal: 24,
-        paddingTop: 12,
         marginBottom: 24,
       }}
       data={activities}

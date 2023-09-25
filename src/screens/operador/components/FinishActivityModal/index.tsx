@@ -1,9 +1,10 @@
-import { Square, Trash } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Square, Trash } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { endStage } from '../../../../services/GET/Stages/endStage';
 
 interface FinishActivityModalProps {
   isSwipeableTrigger?: boolean;
@@ -18,11 +19,19 @@ export function FinishActivityModal({
 }: FinishActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [endDate, setEndDate] = useState<Date>(new Date());
-  const { endMainOrderStage } = useContext(OMContext);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: endStage,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    },
+  });
 
   function handleFinishActivity() {
+    mutation.mutate(activityId);
     setIsModalVisible(false);
-    endMainOrderStage(activityId);
   }
 
   return (

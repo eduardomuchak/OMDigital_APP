@@ -1,28 +1,28 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, View } from 'react-native';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Header } from "../../../components/Header";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { Input } from "../../../components/ui/Input";
-import { TextArea } from "../../../components/ui/TextArea";
-import { useAuth } from "../../../contexts/auth";
-import { OMContext } from "../../../contexts/om-context";
-import {
-  getDateWithoutTime,
-  getHoursAndMinutes,
-} from "../../../utils/formatDates";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Controller, useForm } from 'react-hook-form';
+import { Header } from '../../../components/Header';
+import { Loading } from '../../../components/Loading';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
+import { useAuth } from '../../../contexts/auth';
+import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages';
 import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
-} from "../../../validations/operador/RegisterNewActivityScreen";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
+} from '../../../validations/operador/RegisterNewActivityScreen';
+import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
 
 export function RegisterNewActivity() {
+  const queryClient = useQueryClient();
+
   const {
     control,
     handleSubmit,
@@ -30,8 +30,8 @@ export function RegisterNewActivity() {
     reset,
   } = useForm<RegisterNewActivityFormData>({
     defaultValues: {
-      activity: "",
-      note: "",
+      activity: '',
+      note: '',
       startDate: new Date(),
       endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
     },
@@ -41,54 +41,66 @@ export function RegisterNewActivity() {
   const { user } = useAuth();
 
   const route = useRoute();
-  const omId = route.params as { id: number };
+  const { id } = route.params as { id: number };
 
-  const { createNewStage, mappedMaintenanceOrder } = useContext(OMContext);
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: fetchOMFromAPI,
+  });
+
+  const mutation = useMutation({
+    mutationFn: createNewMaintenanceOrderStage,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    },
+  });
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
-    const payload = {
+    const insertDates = {
       ...data,
       startDate: data.startDate.toISOString(),
       endDate: data.endDate.toISOString(),
     };
 
-    createNewStage({
-      maintenance_order_id: omId.id,
-      description: payload.activity,
-      obs: payload.note || "",
-      start_date: getDateWithoutTime(new Date(payload.startDate)),
-      start_hr: getHoursAndMinutes(new Date(payload.startDate)),
-      end_date: getDateWithoutTime(new Date(payload.endDate)),
-      end_hr: getHoursAndMinutes(new Date(payload.endDate)),
+    const startDay = insertDates.startDate.split('T')[0];
+    const startHour = insertDates.startDate.split('T')[1].split('.')[0];
+
+    const endDay = insertDates.endDate.split('T')[0];
+    const endHour = insertDates.endDate.split('T')[1].split('.')[0];
+
+    const payload = {
+      maintenance_order_id: id,
+      description: insertDates.activity,
+      obs: insertDates.note || '',
+      start_date: startDay,
+      start_hr: startHour,
+      end_date: endDay,
+      end_hr: endHour,
       resp_id: user?.id || 0,
-    });
+    };
+
+    mutation.mutate(payload);
 
     reset();
     goBack();
   };
 
-  const filteredOM = mappedMaintenanceOrder.filter((om) => om.id === omId.id);
-
-  const operationInfoProps = {
-    codigoBem: filteredOM[0]?.codigoBem,
-    ordemManutencao: filteredOM[0]?.ordemManutencao,
-    operacao: filteredOM[0]?.operacao,
-    paradaReal: filteredOM[0]?.paradaReal,
-    prevFim: filteredOM[0]?.prevFim,
-    latitude: filteredOM[0]?.latitude,
-    longitude: filteredOM[0]?.longitude,
-    contador: filteredOM[0]?.contador,
-    tipo: filteredOM[0]?.tipo,
-  };
+  if (
+    listMaintenanceOrder.isLoading ||
+    listMaintenanceOrder.data === undefined
+  ) {
+    return <Loading />;
+  }
 
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header title="Adicionar Nova Etapa" />
       <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1">
         <OperationInfoCard
-          operador={true}
-          operationInfo={operationInfoProps}
-          operationId={omId.id}
+          maintenanceOrder={
+            listMaintenanceOrder.data.filter((om) => om.id === id)[0]
+          }
         />
         <View className="flex flex-1 px-6 py-4">
           <View className="mb-4">

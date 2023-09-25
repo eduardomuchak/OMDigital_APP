@@ -49,7 +49,10 @@ export function OperationInfoCard({
           </Text>
         </View>
         {!isOperador ? (
-          <GPSLocationModal location={location} />
+          location.latitude !== null &&
+          location.longitude !== null && (
+            <GPSLocationModal location={location} />
+          )
         ) : (
           <View className="flex-row">
             <TouchableOpacity
@@ -63,7 +66,9 @@ export function OperationInfoCard({
             >
               <PencilSimple size={24} weight="bold" />
             </TouchableOpacity>
-            <GPSLocationModal location={location} />
+            {location.latitude !== null && location.longitude !== null && (
+              <GPSLocationModal location={location} />
+            )}
           </View>
         )}
       </View>
@@ -123,7 +128,7 @@ export function OperationInfoCard({
           </Text>
         </View>
       </View>
-      {isOperador && maintenanceOrder.symptoms ? (
+      {isOperador && maintenanceOrder.symptoms.length > 0 ? (
         <SymptomListModal symptoms={maintenanceOrder.symptoms} />
       ) : null}
     </View>
