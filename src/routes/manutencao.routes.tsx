@@ -10,7 +10,6 @@ import { List, ListBullets, Wrench } from 'phosphor-react-native';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { LogoutModal } from '../components/LogoutModal';
 import { useAuth } from '../contexts/auth';
-import { OMContextProvider } from '../contexts/om-context';
 import { Home } from '../screens/manutencao/screens/Home';
 import { OpenedRequests } from '../screens/manutencao/screens/OpenedRequests';
 import { RegisteredActivities } from '../screens/manutencao/screens/RegisteredActivities';
@@ -107,19 +106,17 @@ function DrawerNavigator() {
 }
 
 export const ManutencaoRoutes: React.FC = () => (
-  <OMContextProvider>
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Drawer" component={DrawerNavigator} />
-      <Stack.Screen name="HomeManutencao" component={Home} />
-      <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
-      <Stack.Screen
-        name="RegisteredActivities"
-        component={RegisteredActivities}
-      />
-    </Stack.Navigator>
-  </OMContextProvider>
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <Stack.Screen name="Drawer" component={DrawerNavigator} />
+    <Stack.Screen name="HomeManutencao" component={Home} />
+    <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
+    <Stack.Screen
+      name="RegisteredActivities"
+      component={RegisteredActivities}
+    />
+  </Stack.Navigator>
 );

@@ -145,7 +145,10 @@ export function OperadorFilterModal(props: ManutencaoFilterModalProps) {
       props.period.setStartPeriod(smallestDate);
       props.period.setEndPeriod(largestDate);
     }
-    if (storage.getString('savedFilter') !== null) {
+    if (
+      storage.getString('savedFilter') &&
+      storage.getString('savedFilter') !== null
+    ) {
       const savedFilter = JSON.parse(
         storage.getString('savedFilter') as string,
       );
