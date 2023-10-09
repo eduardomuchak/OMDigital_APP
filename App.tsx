@@ -24,11 +24,13 @@ import * as SystemUI from 'expo-system-ui';
 import React, { useEffect } from 'react';
 import { AppState, AppStateStatus, Platform } from 'react-native';
 import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin';
+import Toast from 'react-native-toast-message';
 import { Loading } from './src/components/Loading';
 import { AuthProvider } from './src/contexts/auth';
 import { useGetLocation } from './src/hooks/useGetLocation';
 import { storage } from './src/lib/mmkv/storage';
 import { clientPersister } from './src/lib/tanstack-sync-storage';
+import { toastConfig } from './src/lib/toast/config';
 import Routes from './src/routes';
 
 if (__DEV__) {
@@ -103,6 +105,7 @@ export default function App() {
         <StatusBar style="light" />
         <AuthProvider>
           <Routes />
+          <Toast config={toastConfig} position="bottom" />
         </AuthProvider>
       </NavigationContainer>
     </PersistQueryClientProvider>

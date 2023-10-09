@@ -49,18 +49,26 @@ export function Home() {
         />
       </View>
       <StatusLegend status={listRequestStatus.data} />
-      <CardContainer>
-        {listRequest.data
-          .filter((item) => {
-            if (selectedStatus.length > 0) {
-              return selectedStatus.includes(item.status);
-            }
-            return true;
-          })
-          .map((item) => (
-            <SolicitationCard key={item.id} {...item} />
-          ))}
-      </CardContainer>
+      {listRequest.data.length > 0 ? (
+        <CardContainer>
+          {listRequest.data
+            .filter((item) => {
+              if (selectedStatus.length > 0) {
+                return selectedStatus.includes(item.status);
+              }
+              return true;
+            })
+            .map((item) => (
+              <SolicitationCard key={item.id} {...item} />
+            ))}
+        </CardContainer>
+      ) : (
+        <View className="flex flex-1 flex-row items-center justify-center">
+          <Text className="text-neutral font-poppinsBold text-lg">
+            Nenhuma solicitação encontrada
+          </Text>
+        </View>
+      )}
       <AddNewRequestButton />
     </View>
   );

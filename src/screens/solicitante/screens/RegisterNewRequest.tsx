@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
 import { CustomButton } from '../../../components/ui/CustomButton';
@@ -39,9 +39,18 @@ export function RegisterNewRequest() {
 
   const mutation = useMutation({
     mutationFn: saveRequest,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
     },
   });
 

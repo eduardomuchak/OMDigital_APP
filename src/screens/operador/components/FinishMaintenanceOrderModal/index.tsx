@@ -29,9 +29,18 @@ export function FinishMaintenanceOrderModal({
 
   const mutation = useMutation({
     mutationFn: endMaintenanceOrderAPI,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    onSuccess: (response) => {
+      const isStatusTrue = response.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.return[0]);
+      } else {
+        Alert.alert('Erro', response.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
     },
   });
 

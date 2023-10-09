@@ -1,4 +1,8 @@
 export namespace Solicitations {
+  export interface APIResponse {
+    status: boolean;
+    return: string[];
+  }
   export interface Fetch {
     id: number;
     status: number;

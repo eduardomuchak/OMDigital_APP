@@ -1,9 +1,8 @@
 import { api } from '../../api';
 
-export async function acceptRequestAPI(requestId: number): Promise<string> {
+export async function acceptRequestAPI(requestId: number) {
   try {
-    const { data } = await api.get(`maintenance/acceptRequest/${requestId}`);
-    const response = data.return;
+    const response = await api.get(`maintenance/acceptRequest/${requestId}`);
     return response;
   } catch (error: any) {
     console.error(error.response);

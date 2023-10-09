@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -14,6 +14,7 @@ import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
 import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
 import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages';
+import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
@@ -33,7 +34,7 @@ export function RegisterNewActivity() {
       activity: '',
       note: '',
       startDate: new Date(),
-      endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
+      endDate: new Date(),
     },
     resolver: zodResolver(registerNewActivitySchema),
   });
@@ -50,40 +51,78 @@ export function RegisterNewActivity() {
 
   const mutation = useMutation({
     mutationFn: createNewMaintenanceOrderStage,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
     },
   });
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
-    const insertDates = {
-      ...data,
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
-    };
+    if (data.startDate.toISOString() === data.endDate.toISOString()) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser igual a data de término',
+      );
 
-    const startDay = insertDates.startDate.split('T')[0];
-    const startHour = insertDates.startDate.split('T')[1].split('.')[0];
+      return;
+    } else if (data.startDate > data.endDate) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser maior que a data de término',
+      );
+      return;
+    }
+    // else if (data.startDate < new Date()) {
+    //   Toast.show({
+    //     type: 'error',
+    //     text1: 'Erro',
+    //     text2: 'A data de início não pode ser menor que a data atual',
+    //   });
+    //   return;
+    // }
+    else {
+      const datesWithCorrectTimezone = {
+        startDate: handleTimezone(data.startDate),
+        endDate: handleTimezone(data.endDate),
+      };
 
-    const endDay = insertDates.endDate.split('T')[0];
-    const endHour = insertDates.endDate.split('T')[1].split('.')[0];
+      const insertDates = {
+        ...data,
+        startDate: datesWithCorrectTimezone.startDate.toISOString(),
+        endDate: datesWithCorrectTimezone.endDate.toISOString(),
+      };
 
-    const payload = {
-      maintenance_order_id: id,
-      description: insertDates.activity,
-      obs: insertDates.note || '',
-      start_date: startDay,
-      start_hr: startHour,
-      end_date: endDay,
-      end_hr: endHour,
-      resp_id: user?.id || 0,
-    };
+      const startDay = insertDates.startDate.split('T')[0];
+      const startHour = insertDates.startDate.split('T')[1].split('.')[0];
 
-    mutation.mutate(payload);
+      const endDay = insertDates.endDate.split('T')[0];
+      const endHour = insertDates.endDate.split('T')[1].split('.')[0];
 
-    reset();
-    goBack();
+      const payload = {
+        maintenance_order_id: id,
+        description: insertDates.activity,
+        obs: insertDates.note || '',
+        start_date: startDay,
+        start_hr: startHour,
+        end_date: endDay,
+        end_hr: endHour,
+        resp_id: user?.id || 0,
+      };
+      // console.log('payload', payload);
+
+      mutation.mutate(payload);
+      reset();
+      goBack();
+    }
   };
 
   if (
