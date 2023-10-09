@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { acceptRequestAPI } from '../../../../services/GET/Solicitations/acceptRequest';
@@ -17,17 +17,35 @@ export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
 
   const mutationAcceptRequest = useMutation({
     mutationFn: acceptRequestAPI,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
     },
   });
 
   const mutationDismissRequest = useMutation({
     mutationFn: dismissRequestAPI,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
     },
   });
 

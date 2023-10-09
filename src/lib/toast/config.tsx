@@ -24,7 +24,8 @@ export const toastConfig = {
       {...props}
       style={{
         borderLeftColor: colors.red[500],
-        height: 80,
+        height: 'auto',
+        minHeight: 80,
       }}
       text1Style={{
         fontSize: 18,

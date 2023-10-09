@@ -1,9 +1,8 @@
 import { api } from '../../api';
 
-export async function dismissRequestAPI(requestId: number): Promise<string> {
+export async function dismissRequestAPI(requestId: number) {
   try {
-    const { data } = await api.get(`maintenance/dismissRequest/${requestId}`);
-    const response = data.return;
+    const response = await api.get(`maintenance/dismissRequest/${requestId}`);
     return response;
   } catch (error: any) {
     console.error(error.response);
