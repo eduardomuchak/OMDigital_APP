@@ -1,4 +1,8 @@
 export namespace Solicitations {
+  export interface Image {
+    name: string;
+    path: string;
+  }
   export interface Fetch {
     id: number;
     status: number;
@@ -18,6 +22,6 @@ export namespace Solicitations {
     asset_family_name: string;
     asset_operation_code: number;
     asset_family: string;
-    images: any;
+    images: Image[];
   }
 }

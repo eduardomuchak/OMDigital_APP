@@ -1,10 +1,12 @@
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Header } from '../../../components/Header';
+import { ImagePicker } from '../../../components/ImagePicker';
 import { Loading } from '../../../components/Loading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
@@ -12,7 +14,8 @@ import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { Attachment } from '../../../interfaces/Attachment.interface';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages';
 import { handleTimezone } from '../../../utils/handleTimezone';
 import {
@@ -39,14 +42,17 @@ export function RegisterNewActivity() {
     resolver: zodResolver(registerNewActivitySchema),
   });
   const { goBack } = useNavigation();
-  const { user } = useAuth();
+  const { user, employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const route = useRoute();
   const { id } = route.params as { id: number };
 
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const mutation = useMutation({
@@ -54,9 +60,11 @@ export function RegisterNewActivity() {
     onSuccess: (response) => {
       const isStatusTrue = response.data.status === true;
       if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.data.return[0]);
+        // Invalidate and refetch
+        queryClient.invalidateQueries({
+          queryKey: ['listMaintenanceOrder'],
+        });
       } else {
         Alert.alert('Erro', response.data.return[0]);
       }
@@ -65,6 +73,10 @@ export function RegisterNewActivity() {
       Alert.alert('Erro', JSON.stringify(error));
     },
   });
+
+  const takeImageHandler = (image: Attachment) => {
+    setAttachment(image);
+  };
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
     if (data.startDate.toISOString() === data.endDate.toISOString()) {
@@ -107,19 +119,39 @@ export function RegisterNewActivity() {
       const endDay = insertDates.endDate.split('T')[0];
       const endHour = insertDates.endDate.split('T')[1].split('.')[0];
 
-      const payload = {
-        maintenance_order_id: id,
-        description: insertDates.activity,
-        obs: insertDates.note || '',
-        start_date: startDay,
-        start_hr: startHour,
-        end_date: endDay,
-        end_hr: endHour,
-        resp_id: user?.id || 0,
-      };
-      // console.log('payload', payload);
+      if (!attachment.uri) {
+        const payload = {
+          maintenance_order_id: id,
+          description: insertDates.activity,
+          obs: insertDates.note || '',
+          start_date: startDay,
+          start_hr: startHour,
+          end_date: endDay,
+          end_hr: endHour,
+          resp_id: user?.id || 0,
+        };
+        mutation.mutate(payload);
+      } else {
+        const fileName = attachment.uri.split('/').pop();
 
-      mutation.mutate(payload);
+        const payload = {
+          maintenance_order_id: id,
+          description: insertDates.activity,
+          obs: insertDates.note || '',
+          start_date: startDay,
+          start_hr: startHour,
+          end_date: endDay,
+          end_hr: endHour,
+          resp_id: user?.id || 0,
+          images: {
+            name: [fileName],
+            tmp_name: [fileName],
+            base64: [attachment?.base64],
+          },
+        };
+        mutation.mutate(payload);
+      }
+
       reset();
       goBack();
     }
@@ -211,6 +243,12 @@ export function RegisterNewActivity() {
             {errors.note?.message ? (
               <ErrorText>{errors.note?.message}</ErrorText>
             ) : null}
+          </View>
+          <View className="mb-5">
+            <Text className="mb-1 font-poppinsBold text-sm leading-4 text-neutral-900">
+              ANEXO (OPCIONAL)
+            </Text>
+            <ImagePicker onTakeImage={takeImageHandler} />
           </View>
           <CustomButton variant="primary" onPress={handleSubmit(onSubmit)}>
             Cadastrar

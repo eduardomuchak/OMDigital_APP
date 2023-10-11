@@ -11,24 +11,13 @@ import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
+import { Attachment } from '../../../interfaces/Attachment.interface';
 import { saveRequest } from '../../../services/POST/Solicitations/saveRequest';
 import { formatISOStringToPTBRDateString } from '../../../utils/formatISOStringToPTBRDateString';
 import {
   RegisterNewRequestFormData,
   registerNewRequestSchema,
 } from '../../../validations/solicitante/RegisterNewRequestScreen';
-
-export interface AttachmentProps {
-  assetId?: null;
-  base64: string;
-  duration?: null;
-  exif?: null;
-  height: number;
-  rotation?: null;
-  type: string;
-  uri: string;
-  width: number;
-}
 
 export function RegisterNewRequest() {
   const { goBack } = useNavigation();
@@ -54,9 +43,7 @@ export function RegisterNewRequest() {
     },
   });
 
-  const [attachment, setAttachment] = useState<AttachmentProps>(
-    {} as AttachmentProps,
-  );
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
   const {
     control,
     handleSubmit,
@@ -73,27 +60,38 @@ export function RegisterNewRequest() {
 
   const now = new Date().toISOString();
 
-  const takeImageHandler = (image: AttachmentProps) => {
+  const takeImageHandler = (image: Attachment) => {
     setAttachment(image);
   };
 
   const onSubmit = (data: RegisterNewRequestFormData) => {
-    const payload = {
-      asset_code: data.propertyCode,
-      status: '1',
-      counter: data.counter,
-      report: data.symptom,
-      resp_id: user?.id ? user.id : 0,
-      images: [
-        {
-          base64: attachment?.base64,
-          fileName: attachment?.uri.split('/').pop(),
+    if (attachment.uri) {
+      const fileName = attachment?.uri.split('/').pop();
+      const payload = {
+        asset_code: data.propertyCode,
+        status: '1',
+        counter: data.counter,
+        report: data.symptom,
+        resp_id: user?.id ? user.id : 0,
+        images: {
+          name: [fileName],
+          tmp_name: [fileName],
+          base64: [attachment?.base64],
         },
-      ],
-    };
-    mutation.mutate(payload);
+      };
+      mutation.mutate(payload);
+    } else {
+      const payload = {
+        asset_code: data.propertyCode,
+        status: '1',
+        counter: data.counter,
+        report: data.symptom,
+        resp_id: user?.id ? user.id : 0,
+      };
+      mutation.mutate(payload);
+    }
 
-    setAttachment({} as AttachmentProps);
+    setAttachment({} as Attachment);
     reset();
     goBack();
   };

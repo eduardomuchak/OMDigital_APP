@@ -4,13 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { PencilSimple } from 'phosphor-react-native';
 import { GPSLocationModal } from '../../../../components/GPSLocationModal';
-import { MaintenanceOrderList } from '../../../../services/GET/OMs/fetchAllOms/om.interface';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchMainOrderStatus } from '../../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
-import { SymptomListModal } from '../../../operador/components/SymptomsCard/SymptomListModal';
 
 interface OperationInfoCardProps {
-  maintenanceOrder: MaintenanceOrderList;
+  maintenanceOrder: ListMaintenanceOrder.MaintenanceOrder;
   isOperador?: boolean;
 }
 
@@ -55,7 +54,7 @@ export function OperationInfoCard({
           )
         ) : (
           <View className="flex-row">
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() =>
                 navigation.navigate('EditMaintenanceOrder', {
                   id: maintenanceOrder.id,
@@ -65,7 +64,7 @@ export function OperationInfoCard({
               activeOpacity={0.7}
             >
               <PencilSimple size={24} weight="bold" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {location.latitude !== null && location.longitude !== null && (
               <GPSLocationModal location={location} />
             )}
@@ -128,9 +127,43 @@ export function OperationInfoCard({
           </Text>
         </View>
       </View>
-      {isOperador && maintenanceOrder.symptoms.length > 0 ? (
+      {isOperador && maintenanceOrder.symptoms.length > 0 && (
+        <View className="relative mt-2 flex-1">
+          <View className="flex flex-row items-center justify-between">
+            <Text className="font-poppinsBold text-lg">Sintomas:</Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('EditMaintenanceOrder', {
+                  id: maintenanceOrder.id,
+                })
+              }
+              className="mt-1 rounded-lg bg-nepomuceno-dark-blue p-2"
+              activeOpacity={0.7}
+            >
+              <PencilSimple size={24} weight="bold" color="white" />
+            </TouchableOpacity>
+          </View>
+          {maintenanceOrder.symptoms.map((symptom) => (
+            <View
+              className="flex flex-row items-start space-x-1"
+              key={symptom.id}
+            >
+              <View
+                style={{
+                  backgroundColor: '#000000',
+                }}
+                className="mr-2 mt-2 h-2 w-2 rounded-full"
+              />
+              <Text className="font-poppinsMedium text-base">
+                {symptom.description}
+              </Text>
+            </View>
+          ))}
+        </View>
+      )}
+      {/* {isOperador && maintenanceOrder.symptoms.length > 0 ? (
         <SymptomListModal symptoms={maintenanceOrder.symptoms} />
-      ) : null}
+      ) : null} */}
     </View>
   );
 }

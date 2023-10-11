@@ -8,7 +8,9 @@ export const saveRequest = async (payload: SaveRequest) => {
   formattedPayload.append('report', payload.report.toString());
   formattedPayload.append('resp_id', payload.resp_id.toString());
   formattedPayload.append('status', payload.status.toString());
-  formattedPayload.append('images', JSON.stringify(payload.images[0]));
+  if (payload.images) {
+    formattedPayload.append('images', JSON.stringify(payload.images));
+  }
 
   const response = await api.post(
     '/maintenance/saveRequest',

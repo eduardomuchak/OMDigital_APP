@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import { CheckCircle } from 'phosphor-react-native';
+import { CheckCircle, Warning } from 'phosphor-react-native';
 import React from 'react';
 import {
   Dimensions,
@@ -17,14 +17,16 @@ import { StartActivityModal } from '../StartActivityModal';
 
 import { useQuery } from '@tanstack/react-query';
 import { StatusLegend } from '../../../../components/StatusLegend';
-import { fetchOMFromAPI } from '../../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { useAuth } from '../../../../contexts/auth';
+import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchStagesStatus } from '../../../../services/GET/Status/fetchStagesStatus';
 import { Stage } from '../../../../services/POST/Stages/stages.interface';
 import { formatStagesStatus } from '../../../../utils/formatMaintenanceOrderStatus';
 import { OperationInfoCard } from '../../../manutencao/components/OperationInfoCard';
 
 interface SwipeableActivityCardListProps {
-  activities: Stage.StagesList[];
+  activities: ListMaintenanceOrder.Stages[];
   omId: number;
 }
 
@@ -33,6 +35,8 @@ export const SwipeableActivityCardList = ({
   omId,
 }: SwipeableActivityCardListProps) => {
   const { navigate } = useNavigation();
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const listStageStatus = useQuery({
     queryKey: ['listStageStatus'],
@@ -40,7 +44,7 @@ export const SwipeableActivityCardList = ({
   });
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   if (
@@ -54,6 +58,9 @@ export const SwipeableActivityCardList = ({
     return <></>;
   }
 
+  const maintenanceOrderStatus = listMaintenanceOrder.data.filter(
+    (om) => om.id === omId,
+  )[0].status;
   const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
@@ -71,17 +78,28 @@ export const SwipeableActivityCardList = ({
       case 'Iniciada':
         return (
           <View className="flex flex-row">
-            <PauseActivityModal omId={omId} activityId={stage.id} />
+            <PauseActivityModal
+              omId={omId}
+              activityId={stage.id}
+              maintenanceOrderStatus={maintenanceOrderStatus}
+            />
             <View className="w-4" />
             <FinishActivityModal
               isSwipeableTrigger
               omId={omId}
               activityId={stage.id}
+              maintenanceOrderStatus={maintenanceOrderStatus}
             />
           </View>
         );
       default:
-        return <StartActivityModal omId={omId} activityId={stage.id} />;
+        return (
+          <StartActivityModal
+            omId={omId}
+            activityId={stage.id}
+            maintenanceOrderStatus={maintenanceOrderStatus}
+          />
+        );
     }
   };
 
@@ -102,32 +120,37 @@ export const SwipeableActivityCardList = ({
 
   const listFooterComponent = () => (
     <>
-      <View className="mb-3 mt-5 space-y-2 px-6">
-        <CustomButton
-          variant="primary"
-          onPress={() => navigate('RegisterNewActivity', { id: omId })}
-        >
-          Adicionar Etapa
-        </CustomButton>
-        <CustomButton
-          variant="primary"
-          onPress={() => navigate('RegisterNewSymptom', { id: omId })}
-        >
-          Adicionar Sintoma
-        </CustomButton>
-      </View>
-      {activities.every(
-        (activity) => formatStagesStatus(activity.status) === 'Concluída',
-      ) && activities.length > 0 ? (
-        <View className="mb-10 px-6">
-          <CustomButton
-            variant="finish"
-            onPress={() => navigate('CloseMaintenanceOrder', { id: omId })}
-          >
-            Finalizar OM
-          </CustomButton>
-        </View>
-      ) : null}
+      {listMaintenanceOrder.data.filter((om) => om.id === omId)[0].status !==
+        7 && (
+        <>
+          <View className="mb-3 mt-5 space-y-2 px-6">
+            <CustomButton
+              variant="primary"
+              onPress={() => navigate('RegisterNewActivity', { id: omId })}
+            >
+              Adicionar Etapa
+            </CustomButton>
+            <CustomButton
+              variant="primary"
+              onPress={() => navigate('RegisterNewSymptom', { id: omId })}
+            >
+              Adicionar Sintoma
+            </CustomButton>
+          </View>
+          {activities.every(
+            (activity) => formatStagesStatus(activity.status) === 'Concluída',
+          ) && activities.length > 0 ? (
+            <View className="mb-10 px-6">
+              <CustomButton
+                variant="finish"
+                onPress={() => navigate('CloseMaintenanceOrder', { id: omId })}
+              >
+                Finalizar OM
+              </CustomButton>
+            </View>
+          ) : null}
+        </>
+      )}
     </>
   );
 
@@ -150,7 +173,18 @@ export const SwipeableActivityCardList = ({
         width: halfScreenWidth,
       }}
     >
-      {HandleStatus({ stage: item })}
+      {maintenanceOrderStatus === 1 || maintenanceOrderStatus === 3 ? (
+        <>
+          <View className="items-center justify-center">
+            <Warning size={56} color="#e7aa00" weight="bold" />
+            <Text className="mt-2 px-5 text-center font-poppinsMedium text-sm">
+              O status da OM impede alterações nas etapas
+            </Text>
+          </View>
+        </>
+      ) : (
+        <>{HandleStatus({ stage: item })}</>
+      )}
     </View>
   );
 
