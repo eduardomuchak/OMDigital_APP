@@ -1,4 +1,9 @@
 export namespace Stage {
+  export interface Image {
+    name: (string | undefined)[];
+    tmp_name: (string | undefined)[];
+    base64: string[];
+  }
   export interface StagesList {
     asset_code: string;
     datetime: string;
@@ -35,5 +40,6 @@ export namespace Stage {
     end_date: string;
     end_hr: string;
     resp_id: number;
+    images?: Image;
   }
 }

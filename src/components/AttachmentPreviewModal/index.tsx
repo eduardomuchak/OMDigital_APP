@@ -1,18 +1,20 @@
 import { Image as ImageIcon } from 'phosphor-react-native';
 import { useState } from 'react';
-import { Image } from 'react-native';
 
+import { Image } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Solicitations } from '../../services/GET/Solicitations/index.interface';
+import { formatImageURL } from '../../utils/formatURI';
 import { CustomModal } from '../ui/Modal';
 
 interface AttachmentPreviewModalProps {
-  images: string[];
+  images: Solicitations.Image[];
   iconColor?: string;
 }
 
 export function AttachmentPreviewModal({
   images,
-  iconColor = '#FFFFFF',
+  iconColor = '#000',
 }: AttachmentPreviewModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -33,8 +35,9 @@ export function AttachmentPreviewModal({
         showCloseButton
         defaultPadding={false}
       >
+        <></>
         <Image
-          source={{ uri: images[0] }}
+          source={{ uri: formatImageURL(images[0].path) }}
           className="aspect-square h-96 w-full rounded-lg"
           alt=""
         />

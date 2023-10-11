@@ -6,7 +6,7 @@ import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
@@ -15,6 +15,7 @@ import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 
 export function Home() {
   const { employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
@@ -30,7 +31,7 @@ export function Home() {
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const listOperation = useQuery({
@@ -58,6 +59,8 @@ export function Home() {
   ) {
     return <></>;
   }
+
+  console.log('listMaintenanceOrder.data', listMaintenanceOrder.data);
 
   return (
     <View className="flex flex-1 flex-col bg-white">

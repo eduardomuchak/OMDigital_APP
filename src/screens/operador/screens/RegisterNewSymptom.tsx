@@ -1,15 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
+import { ImagePicker } from '../../../components/ImagePicker';
 import { Loading } from '../../../components/Loading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { Attachment } from '../../../interfaces/Attachment.interface';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { createNewSymptom } from '../../../services/POST/Symptoms';
 import {
   RegisterNewSymptomFormData,
@@ -19,10 +22,11 @@ import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard
 
 export function RegisterNewSymptom() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
   const router = useRoute();
   const { id } = router.params as { id: number };
   const { goBack } = useNavigation();
+  const { user, employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const {
     control,
@@ -36,9 +40,11 @@ export function RegisterNewSymptom() {
     resolver: zodResolver(registerNewSymptomSchema),
   });
 
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const mutation = useMutation({
@@ -58,15 +64,35 @@ export function RegisterNewSymptom() {
     },
   });
 
+  const takeImageHandler = (image: Attachment) => {
+    setAttachment(image);
+  };
+
   function onSubmit(data: RegisterNewSymptomFormData) {
-    const payload = {
-      description: data.symptom,
-      resp_id: user?.id || 0,
-      maintenance_order_id: id,
-    };
+    if (attachment.uri) {
+      const fileName = attachment?.uri.split('/').pop();
 
-    mutation.mutate(payload);
+      const payload = {
+        description: data.symptom,
+        resp_id: user?.id || 0,
+        maintenance_order_id: id,
+        images: {
+          name: [fileName],
+          tmp_name: [fileName],
+          base64: [attachment?.base64],
+        },
+      };
 
+      mutation.mutate(payload);
+    } else {
+      const payload = {
+        description: data.symptom,
+        resp_id: user?.id || 0,
+        maintenance_order_id: id,
+      };
+
+      mutation.mutate(payload);
+    }
     reset();
     goBack();
   }
@@ -106,6 +132,12 @@ export function RegisterNewSymptom() {
             {errors.symptom?.message ? (
               <ErrorText>{errors.symptom?.message}</ErrorText>
             ) : null}
+          </View>
+          <View className="mb-5">
+            <Text className="mb-1 font-poppinsBold text-sm leading-4 text-neutral-900">
+              ANEXO (OPCIONAL)
+            </Text>
+            <ImagePicker onTakeImage={takeImageHandler} />
           </View>
           <CustomButton onPress={handleSubmit(onSubmit)} variant="primary">
             Cadastrar

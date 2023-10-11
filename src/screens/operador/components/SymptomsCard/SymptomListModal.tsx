@@ -1,12 +1,12 @@
-import { DotsThreeVertical } from "phosphor-react-native";
-import { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { StaticSymptomList } from "./StaticSymptomList";
-import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
+import { DotsThreeVertical } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
+import { StaticSymptomList } from './StaticSymptomList';
 
 interface EditSymptomModalProps {
-  symptoms: Symptom.SymptomList[];
+  symptoms: ListMaintenanceOrder.Symptoms[];
 }
 
 export function SymptomListModal({ symptoms }: EditSymptomModalProps) {

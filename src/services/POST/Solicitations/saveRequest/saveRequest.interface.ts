@@ -1,6 +1,7 @@
 interface Image {
-  base64: string;
-  fileName: string | undefined;
+  name: (string | undefined)[];
+  tmp_name: (string | undefined)[];
+  base64: string[];
 }
 
 export interface SaveRequest {
@@ -9,5 +10,5 @@ export interface SaveRequest {
   report: string;
   resp_id: number;
   status: string;
-  images: Image[];
+  images?: Image;
 }

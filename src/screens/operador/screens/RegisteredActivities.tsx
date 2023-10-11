@@ -3,16 +3,20 @@ import { useQuery } from '@tanstack/react-query';
 import { View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { SyncLoading } from '../../../components/SyncLoading';
+import { useAuth } from '../../../contexts/auth';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { SwipeableActivityCardList } from '../components/SwipeableActivityCardList';
 
 export function RegisteredActivities() {
   const route = useRoute();
   const { id } = route.params as { id: number };
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   if (
@@ -23,14 +27,18 @@ export function RegisteredActivities() {
   }
 
   return (
-    <View className="flex flex-1 flex-col bg-white">
-      <Header title={'Etapas Lançadas'} />
-      <SwipeableActivityCardList
-        activities={
-          listMaintenanceOrder.data.filter((om) => om.id === id)[0].stages
-        }
-        omId={id}
-      />
-    </View>
+    <>
+      {listMaintenanceOrder.isRefetching ||
+        (listMaintenanceOrder.isFetching && <SyncLoading />)}
+      <View className="flex flex-1 flex-col bg-white">
+        <Header title={'Etapas Lançadas'} />
+        <SwipeableActivityCardList
+          activities={
+            listMaintenanceOrder.data.filter((om) => om.id === id)[0].stages
+          }
+          omId={id}
+        />
+      </View>
+    </>
   );
 }

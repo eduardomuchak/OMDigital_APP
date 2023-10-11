@@ -4,25 +4,30 @@ import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
+import { useAuth } from '../../../../contexts/auth';
 import { endStage } from '../../../../services/GET/Stages/endStage';
 
 interface FinishActivityModalProps {
   isSwipeableTrigger?: boolean;
   omId: number;
   activityId: number;
+  maintenanceOrderStatus: number;
 }
 
 export function FinishActivityModal({
   isSwipeableTrigger = false,
   omId,
   activityId,
+  maintenanceOrderStatus,
 }: FinishActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   // const [endDate, setEndDate] = useState<Date>(new Date());
   const queryClient = useQueryClient();
+  const { employee } = useAuth();
+  if (!employee?.man_power_id) return <></>;
 
   const mutation = useMutation({
-    mutationFn: endStage,
+    mutationFn: () => endStage(activityId, employee.man_power_id),
     onSuccess: (response) => {
       const isStatusTrue = response.status === true;
       if (isStatusTrue) {
@@ -30,7 +35,7 @@ export function FinishActivityModal({
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.return[0]);
       } else {
-        Alert.alert('Erro', response.return[0]);
+        Alert.alert('Erro', response.return.message);
       }
     },
     onError: (error) => {
@@ -39,7 +44,7 @@ export function FinishActivityModal({
   });
 
   function handleFinishActivity() {
-    mutation.mutate(activityId);
+    mutation.mutate();
     setIsModalVisible(false);
   }
 
@@ -69,30 +74,51 @@ export function FinishActivityModal({
 
       {/* Modal */}
       <CustomModal isOpen={isModalVisible} onClose={setIsModalVisible}>
-        <Text className="mb-8 font-poppinsRegular text-base">
-          Você deseja finalizar esta etapa?
-        </Text>
-        {/* <CustomDateTimePicker
+        {maintenanceOrderStatus === 1 || maintenanceOrderStatus === 3 ? (
+          <>
+            <Text className="font-poppinsBold text-base">
+              Não é possível alterar o andamento das etapas em uma OM que está
+              com o status "Aguardando Atendimento" ou "Parada Futura"
+            </Text>
+            <View className="mt-16 flex flex-row justify-center">
+              <View className="w-[48%]">
+                <CustomButton
+                  variant="cancel"
+                  onPress={() => setIsModalVisible(false)}
+                >
+                  Fechar
+                </CustomButton>
+              </View>
+            </View>
+          </>
+        ) : (
+          <>
+            <Text className="mb-8 font-poppinsRegular text-base">
+              Você deseja finalizar esta etapa?
+            </Text>
+            {/* <CustomDateTimePicker
           value={endDate}
           onDateSelect={setEndDate}
           label="Data e hora de término"
           mode="datetime"
         /> */}
-        <View className="mt-8 flex flex-row justify-between">
-          <View className="w-[48%]">
-            <CustomButton
-              variant="cancel"
-              onPress={() => setIsModalVisible(false)}
-            >
-              Cancelar
-            </CustomButton>
-          </View>
-          <View className="w-[48%]">
-            <CustomButton variant="primary" onPress={handleFinishActivity}>
-              Confirmar
-            </CustomButton>
-          </View>
-        </View>
+            <View className="mt-8 flex flex-row justify-between">
+              <View className="w-[48%]">
+                <CustomButton
+                  variant="cancel"
+                  onPress={() => setIsModalVisible(false)}
+                >
+                  Cancelar
+                </CustomButton>
+              </View>
+              <View className="w-[48%]">
+                <CustomButton variant="primary" onPress={handleFinishActivity}>
+                  Confirmar
+                </CustomButton>
+              </View>
+            </View>
+          </>
+        )}
       </CustomModal>
     </>
   );
