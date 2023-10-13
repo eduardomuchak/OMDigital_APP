@@ -6,7 +6,8 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { MultipleSelect } from '../../../../components/ui/MultipleSelect';
-import { fetchOperationsFromAPI } from '../../../../services/GET/Operations/fetchOperations';
+import { useAuth } from '../../../../contexts/auth';
+import { listOperationEmployee } from '../../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 
 interface MultipleSelectOption {
@@ -30,13 +31,16 @@ interface SolicitanteFilterModalProps {
 }
 
 export function LogisticaFilterModal(props: SolicitanteFilterModalProps) {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const listMainOrderStatus = useQuery({
     queryKey: ['listMainOrderStatus'],
     queryFn: fetchMainOrderStatus,
   });
   const listOperation = useQuery({
     queryKey: ['listOperation'],
-    queryFn: fetchOperationsFromAPI,
+    queryFn: () => listOperationEmployee(employee.id),
   });
 
   const [isModalVisible, setIsModalVisible] = useState(false);

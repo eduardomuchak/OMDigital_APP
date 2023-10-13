@@ -5,21 +5,25 @@ import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
 import { OMCard } from '../../../../components/OMCard';
-import { MaintenanceOrderList } from '../../../../services/GET/OMs/fetchAllOms/om.interface';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
 import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
 
 interface SwipeableOMCardListProps {
-  maintenanceOrders: MaintenanceOrderList;
+  maintenanceOrders: ListMaintenanceOrder.MaintenanceOrder[];
 }
 
-export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
+export const SwipeableOMCardList = ({
+  maintenanceOrders,
+}: SwipeableOMCardListProps) => {
   const { navigate } = useNavigation();
 
   const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
-  const HandleStatus = ({ maintenanceOrders }: SwipeableOMCardListProps) => {
+  const HandleStatus = (
+    maintenanceOrders: ListMaintenanceOrder.MaintenanceOrder,
+  ) => {
     switch (maintenanceOrders.status) {
       case 7:
         // Finalizada
@@ -62,9 +66,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<
-    SwipeableOMCardListProps['maintenanceOrders']
-  >): JSX.Element => {
+  }: ListRenderItemInfo<ListMaintenanceOrder.MaintenanceOrder>): JSX.Element => {
     return (
       <OMCard
         key={item.id}
@@ -80,9 +82,7 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<
-    SwipeableOMCardListProps['maintenanceOrders']
-  >): JSX.Element => {
+  }: ListRenderItemInfo<ListMaintenanceOrder.MaintenanceOrder>): JSX.Element => {
     return (
       <View
         className={`flex-1 items-center justify-center `}
@@ -90,34 +90,44 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
           width: halfScreenWidth,
         }}
       >
-        {HandleStatus({ maintenanceOrders: item })}
+        {HandleStatus(item)}
       </View>
     );
   };
 
   return (
-    <SwipeListView
-      style={{
-        paddingHorizontal: screenWidth > 500 ? 0 : 24,
-        paddingTop: 12,
-        paddingBottom: 96,
-        width: '100%',
-        maxWidth: 500,
-        display: 'flex',
-        alignSelf: 'center',
-      }}
-      data={maintenanceOrders}
-      renderItem={renderItem}
-      renderHiddenItem={renderHiddenItem}
-      leftOpenValue={halfScreenWidth}
-      rightOpenValue={-halfScreenWidth}
-      disableLeftSwipe={true}
-      disableRightSwipe={false}
-      swipeToOpenPercent={30}
-      swipeToClosePercent={30}
-      ListFooterComponent={() => <View className="h-28" />}
-      ItemSeparatorComponent={() => <View className="h-3" />}
-      showsVerticalScrollIndicator={false}
-    />
+    <>
+      {maintenanceOrders.length > 0 ? (
+        <SwipeListView
+          style={{
+            paddingHorizontal: screenWidth > 500 ? 0 : 24,
+            paddingTop: 12,
+            paddingBottom: 96,
+            width: '100%',
+            maxWidth: 500,
+            display: 'flex',
+            alignSelf: 'center',
+          }}
+          data={maintenanceOrders}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          leftOpenValue={halfScreenWidth}
+          rightOpenValue={-halfScreenWidth}
+          disableLeftSwipe={true}
+          disableRightSwipe={false}
+          swipeToOpenPercent={30}
+          swipeToClosePercent={30}
+          ListFooterComponent={() => <View className="h-28" />}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          showsVerticalScrollIndicator={false}
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-neutral px-5 text-center font-poppinsBold text-lg">
+            Nenhuma ordem de manutenção foi encontrada
+          </Text>
+        </View>
+      )}
+    </>
   );
 };

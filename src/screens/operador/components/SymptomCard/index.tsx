@@ -1,9 +1,9 @@
 import { Text, View } from 'react-native';
-import { Symptom } from '../../../../services/POST/Symptoms/symptom.interface';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { EditSymptomModal } from '../SymptomsCard/EditSymptomModal';
 
 interface SymptomCardProps {
-  symptom: Symptom.SymptomList;
+  symptom: ListMaintenanceOrder.Symptoms;
   onEditSymptom: (editedSymptom: { id: number; descricao: string }) => void;
 }
 

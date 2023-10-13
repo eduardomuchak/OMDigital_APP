@@ -5,22 +5,28 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { CustomButton } from '../../../components/ui/CustomButton';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { useAuth } from '../../../contexts/auth';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
+import { ListMaintenanceOrder } from '../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { editMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder';
-import { Symptom } from '../../../services/POST/Symptoms/symptom.interface';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
 import { SymptomCard } from '../components/SymptomCard';
 
 export function EditMaintenanceOrder() {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const { goBack } = useNavigation();
   const route = useRoute();
   const { id: omID } = route.params as { id: number };
 
-  const [omSymptoms, setOmSymptoms] = useState<Symptom.SymptomList[]>([]);
+  const [omSymptoms, setOmSymptoms] = useState<ListMaintenanceOrder.Symptoms[]>(
+    [],
+  );
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   if (

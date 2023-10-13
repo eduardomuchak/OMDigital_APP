@@ -6,6 +6,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
+import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
@@ -108,21 +109,32 @@ export function RegisterNewRequest() {
         </View>
         <View className="p-6">
           <View className="mb-4">
-            <Controller
-              control={control}
-              render={({ field: { onChange, onBlur, value } }) => (
-                <Input
-                  required
-                  onBlur={onBlur}
-                  onChangeText={onChange}
-                  value={value}
-                  label="Codigo do bem"
-                  placeholder="Digite o código do bem"
-                  maxLength={30}
+            <View className="flex flex-row">
+              <View className="flex flex-1">
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <Input
+                      required
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      label="Codigo do bem"
+                      placeholder="Digite o código do bem"
+                      maxLength={30}
+                    />
+                  )}
+                  name="propertyCode"
                 />
-              )}
-              name="propertyCode"
-            />
+              </View>
+              <Controller
+                control={control}
+                render={({ field: { onChange } }) => (
+                  <QRCodeScannerModal onScan={onChange} />
+                )}
+                name="propertyCode"
+              />
+            </View>
             {errors.propertyCode?.message ? (
               <ErrorText>{errors.propertyCode?.message}</ErrorText>
             ) : null}

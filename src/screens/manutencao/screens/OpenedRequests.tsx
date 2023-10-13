@@ -3,13 +3,17 @@ import { FlatList, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { Loading } from '../../../components/Loading';
-import { fetchSolicitations } from '../../../services/GET/Solicitations/fetchSolicitations';
+import { useAuth } from '../../../contexts/auth';
+import { listUserRequestById } from '../../../services/GET/Solicitations/listUserRequest';
 import { OpenedRequestCard } from '../components/OpenedRequestCard';
 
 export function OpenedRequests() {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const listRequest = useQuery({
     queryKey: ['listRequest'],
-    queryFn: fetchSolicitations,
+    queryFn: () => listUserRequestById(employee.id),
   });
 
   if (listRequest.isLoading) {

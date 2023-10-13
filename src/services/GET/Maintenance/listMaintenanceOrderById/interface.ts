@@ -91,7 +91,7 @@ export namespace ListMaintenanceOrder {
     service_type: string;
     service_code?: null;
     mo_status: number;
-    images?: any[] | null;
+    images: Images[];
   }
   export interface BranchObj {
     name: string;

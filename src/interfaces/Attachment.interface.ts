@@ -9,3 +9,8 @@ export interface Attachment {
   uri: string;
   width: number;
 }
+
+export interface FetchImage {
+  name: string;
+  path: string;
+}

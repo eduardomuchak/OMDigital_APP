@@ -54,6 +54,7 @@ function DrawerNavigator() {
         drawerInactiveTintColor: '#fff',
         drawerActiveTintColor: '#1F295B',
         drawerActiveBackgroundColor: '#ffffff',
+        drawerInactiveBackgroundColor: '#1F295B',
         drawerStyle: {
           backgroundColor: '#1F295B',
           width: '90%',
@@ -70,6 +71,8 @@ function DrawerNavigator() {
           borderRadius: 12,
           paddingLeft: 12,
           paddingVertical: 4,
+          borderWidth: 2,
+          borderColor: '#fff',
         },
       }}
     >

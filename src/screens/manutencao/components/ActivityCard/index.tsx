@@ -4,11 +4,11 @@ import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStri
 
 import { useQuery } from '@tanstack/react-query';
 import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchStagesStatus } from '../../../../services/GET/Status/fetchStagesStatus';
-import { Stage } from '../../../../services/POST/Stages/stages.interface';
 
 interface ActivityCardProps {
-  activity: Stage.StagesList;
+  activity: ListMaintenanceOrder.Stages;
 }
 
 export function ActivityCard({ activity }: ActivityCardProps) {

@@ -41,25 +41,6 @@ export function SolicitanteFilterModal(props: SolicitanteFilterModalProps) {
     }));
   }, [listRequestStatus.isLoading, listRequestStatus.data]);
 
-  // const filterMaintenanceOrdersByStatus = (): OM.MaintenanceOrderInfo[] => {
-  //   if (selectedStatus.length === 0) {
-  //     return allOrdersCopy;
-  //   }
-
-  //   const onlyCheckedStatus = allStatusCopy.filter((status) =>
-  //     selectedStatus.includes(status.id),
-  //   );
-
-  //   const filteredOrders = allOrdersCopy.filter((order) => {
-  //     const operation = onlyCheckedStatus.find(
-  //       (status) => status.description === order.status,
-  //     );
-  //     return operation;
-  //   });
-
-  //   return filteredOrders;
-  // };
-
   function onConfirm() {
     setIsModalVisible(false);
   }

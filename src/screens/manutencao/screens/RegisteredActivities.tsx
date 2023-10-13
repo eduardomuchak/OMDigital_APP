@@ -5,19 +5,23 @@ import { FooterRegisteredActivities } from '../../../components/FooterRegistered
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { StatusLegend } from '../../../components/StatusLegend';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { useAuth } from '../../../contexts/auth';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { fetchStagesStatus } from '../../../services/GET/Status/fetchStagesStatus';
 import { ActivityCard } from '../components/ActivityCard';
 import { CardContainer } from '../components/ActivityCard/CardContainer';
 import { OperationInfoCard } from '../components/OperationInfoCard';
 
 export function RegisteredActivities() {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const route = useRoute();
   const { id } = route.params as { id?: number };
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const listStageStatus = useQuery({

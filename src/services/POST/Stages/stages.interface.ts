@@ -4,6 +4,11 @@ export namespace Stage {
     tmp_name: (string | undefined)[];
     base64: string[];
   }
+
+  export interface FetchImage {
+    name: string;
+    path: string;
+  }
   export interface StagesList {
     asset_code: string;
     datetime: string;
@@ -11,7 +16,7 @@ export namespace Stage {
     end_date: string;
     end_hr: string;
     id: number;
-    images: string[];
+    images: FetchImage[];
     maintenance_order_id: number;
     man_power_id: null | number;
     mo_status: number;

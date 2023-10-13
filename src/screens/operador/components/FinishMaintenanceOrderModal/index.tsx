@@ -5,8 +5,9 @@ import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
+import { useAuth } from '../../../../contexts/auth';
 import { endMaintenanceOrderAPI } from '../../../../services/GET/Maintenance/getEndMaintenanceOrder';
-import { fetchOMFromAPI } from '../../../../services/GET/OMs/fetchAllOms/fetchOM';
+import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
 
 interface FinishMaintenanceOrdemModalProps {
   isSwipeableTrigger?: boolean;
@@ -17,12 +18,15 @@ export function FinishMaintenanceOrderModal({
   isSwipeableTrigger = false,
   omId,
 }: FinishMaintenanceOrdemModalProps) {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const queryClient = useQueryClient();

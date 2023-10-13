@@ -2,13 +2,14 @@ import { Text, View } from 'react-native';
 
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
-import { MaintenanceOrderList } from '../../services/GET/OMs/fetchAllOms/om.interface';
+import { ListMaintenanceOrder } from '../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchOperationsFromAPI } from '../../services/GET/Operations/fetchOperations';
 import { formatISOStringToPTBRDateString } from '../../utils/formatISOStringToPTBRDateString';
+import { omIDFormatter } from '../../utils/omIDFormatter';
 import { operationNameFormatter } from '../../utils/operationNameFormatter';
 
 interface CardInfoProps {
-  maintenanceOrder: MaintenanceOrderList;
+  maintenanceOrder: ListMaintenanceOrder.MaintenanceOrder;
 }
 
 export function CardInfo(props: CardInfoProps) {
@@ -16,7 +17,7 @@ export function CardInfo(props: CardInfoProps) {
     props.maintenanceOrder.status === 7 || props.maintenanceOrder.status === 8;
 
   const listOperation = useQuery({
-    queryKey: ['listOperation'],
+    queryKey: ['allOperations'],
     queryFn: fetchOperationsFromAPI,
   });
 
@@ -50,7 +51,7 @@ export function CardInfo(props: CardInfoProps) {
           ['font-poppinsMedium text-neutral-900']: isFinishOrCancel,
         })}
       >
-        OM: {props.maintenanceOrder.id}
+        OM: {omIDFormatter(props.maintenanceOrder.id)}
       </Text>
       {foundOperation && (
         <Text
