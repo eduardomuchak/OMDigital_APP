@@ -9,3 +9,8 @@ export interface Operation {
   datetime: null;
   resp_id: null;
 }
+
+export interface OperationByID {
+  operationCode: number;
+  operation: string;
+}

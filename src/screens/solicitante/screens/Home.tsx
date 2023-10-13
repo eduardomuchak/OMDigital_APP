@@ -8,13 +8,15 @@ import { Loading } from '../../../components/Loading';
 import { SolicitationCard } from '../../../components/SolicitationCard';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
-import { fetchSolicitations } from '../../../services/GET/Solicitations/fetchSolicitations';
+import { listUserRequestById } from '../../../services/GET/Solicitations/listUserRequest';
 import { fetchSolicitationsStatus } from '../../../services/GET/Status/fetchSolicitationsStatus';
 import { AddNewRequestButton } from '../components/AddNewRequestButton';
 import { SolicitanteFilterModal } from '../components/SolicitanteFilterModal';
 
 export function Home() {
   const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
 
   const listRequestStatus = useQuery({
@@ -24,7 +26,7 @@ export function Home() {
 
   const listRequest = useQuery({
     queryKey: ['listRequest'],
-    queryFn: fetchSolicitations,
+    queryFn: () => listUserRequestById(employee.id),
   });
 
   if (listRequestStatus.isLoading || listRequest.isLoading) {

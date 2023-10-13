@@ -3,10 +3,12 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useQuery } from '@tanstack/react-query';
 import { PencilSimple } from 'phosphor-react-native';
+import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
 import { GPSLocationModal } from '../../../../components/GPSLocationModal';
 import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchMainOrderStatus } from '../../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
+import { omIDFormatter } from '../../../../utils/omIDFormatter';
 
 interface OperationInfoCardProps {
   maintenanceOrder: ListMaintenanceOrder.MaintenanceOrder;
@@ -74,7 +76,7 @@ export function OperationInfoCard({
       <View className="mb-2 flex">
         <Text className="font-poppinsBold text-lg">Ordem de Manutenção:</Text>
         <Text className="font-poppinsMedium text-base">
-          {maintenanceOrder.id}
+          {omIDFormatter(maintenanceOrder.id)}
         </Text>
       </View>
       <View className="mb-2 flex">
@@ -143,22 +145,30 @@ export function OperationInfoCard({
               <PencilSimple size={24} weight="bold" color="white" />
             </TouchableOpacity>
           </View>
-          {maintenanceOrder.symptoms.map((symptom) => (
-            <View
-              className="flex flex-row items-start space-x-1"
-              key={symptom.id}
-            >
+          <View className="flex flex-col space-y-4">
+            {maintenanceOrder.symptoms.map((symptom) => (
               <View
-                style={{
-                  backgroundColor: '#000000',
-                }}
-                className="mr-2 mt-2 h-2 w-2 rounded-full"
-              />
-              <Text className="font-poppinsMedium text-base">
-                {symptom.description}
-              </Text>
-            </View>
-          ))}
+                className="flex flex-row items-start space-x-1"
+                key={symptom.id}
+              >
+                <View
+                  style={{
+                    backgroundColor: '#000000',
+                  }}
+                  className="mr-2 mt-2 h-2 w-2 rounded-full"
+                />
+
+                <Text className="font-poppinsMedium text-base">
+                  {symptom.description}
+                </Text>
+                {symptom.images && symptom.images.length > 0 && (
+                  <View className="ml-3">
+                    <AttachmentPreviewModal images={symptom.images} />
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
         </View>
       )}
       {/* {isOperador && maintenanceOrder.symptoms.length > 0 ? (

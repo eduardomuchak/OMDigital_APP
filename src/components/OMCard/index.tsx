@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { Pressable, View } from 'react-native';
-import { MaintenanceOrderList } from '../../services/GET/OMs/fetchAllOms/om.interface';
+import { ListMaintenanceOrder } from '../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchMainOrderStatus } from '../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { CardInfo } from './CardInfo';
 import { CardTitle } from './CardTitle';
 
 interface OMCardProps {
   onPress?: () => void;
-  maintenanceOrder: MaintenanceOrderList;
+  maintenanceOrder: ListMaintenanceOrder.MaintenanceOrder;
 }
 
 export function OMCard(props: OMCardProps) {

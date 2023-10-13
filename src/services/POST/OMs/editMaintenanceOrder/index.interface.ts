@@ -1,6 +1,6 @@
-import { Symptom } from '../../Symptoms/symptom.interface';
+import { ListMaintenanceOrder } from '../../../GET/Maintenance/listMaintenanceOrderById/interface';
 
 export interface EditedMaintenanceOrder {
   id: number | string;
-  symptoms: Symptom.SymptomList[];
+  symptoms: ListMaintenanceOrder.Symptoms[];
 }

@@ -9,9 +9,10 @@ import { CustomDateTimePicker } from '../../../../components/ui/CustomDateTimePi
 import { CustomModal } from '../../../../components/ui/Modal';
 import { MultipleSelect } from '../../../../components/ui/MultipleSelect';
 import { Select } from '../../../../components/ui/Select';
+import { useAuth } from '../../../../contexts/auth';
 import { storage } from '../../../../lib/mmkv/storage';
-import { fetchOMFromAPI } from '../../../../services/GET/OMs/fetchAllOms/fetchOM';
-import { fetchOperationsFromAPI } from '../../../../services/GET/Operations/fetchOperations';
+import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
+import { listOperationEmployee } from '../../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 
 interface MultipleSelectOption {
@@ -56,17 +57,20 @@ interface ManutencaoFilterModalProps {
 }
 
 export function OperadorFilterModal(props: ManutencaoFilterModalProps) {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const listMainOrderStatus = useQuery({
     queryKey: ['listMainOrderStatus'],
     queryFn: fetchMainOrderStatus,
   });
   const listOperation = useQuery({
     queryKey: ['listOperation'],
-    queryFn: fetchOperationsFromAPI,
+    queryFn: () => listOperationEmployee(employee.id),
   });
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   if (

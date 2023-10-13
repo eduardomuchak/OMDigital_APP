@@ -8,8 +8,8 @@ import { Loading } from '../../../components/Loading';
 import { OMCard } from '../../../components/OMCard';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
-import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
+import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { textCapitalizer } from '../../../utils/textCapitalize';
 import { LogisticaFilterModal } from '../components/LogisticaFilterModal';
@@ -23,12 +23,12 @@ export function Home() {
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const listOperation = useQuery({
     queryKey: ['listOperation'],
-    queryFn: fetchOperationsFromAPI,
+    queryFn: () => listOperationEmployee(employee.id),
   });
 
   const listMainOrderStatus = useQuery({

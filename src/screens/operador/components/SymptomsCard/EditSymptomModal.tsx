@@ -7,14 +7,14 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { ErrorText } from '../../../../components/ui/ErrorText';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { TextArea } from '../../../../components/ui/TextArea';
-import { Symptom } from '../../../../services/POST/Symptoms/symptom.interface';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import {
   EditMaintenanceOrderFormData,
   EditMaintenanceOrderSchema,
 } from '../../../../validations/operador/EditMaintenanceOrderScreen';
 
 interface EditSymptomModalProps {
-  symptom: Symptom.SymptomList;
+  symptom: ListMaintenanceOrder.Symptoms;
   onEditSymptom: (editedSymptom: { id: number; descricao: string }) => void;
 }
 

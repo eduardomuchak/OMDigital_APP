@@ -9,24 +9,27 @@ import { useQuery } from '@tanstack/react-query';
 import { Loading } from '../../../components/Loading';
 import { OMCard } from '../../../components/OMCard';
 import { StatusLegend } from '../../../components/StatusLegend';
-import { fetchOMFromAPI } from '../../../services/GET/OMs/fetchAllOms/fetchOM';
-import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
+import { useAuth } from '../../../contexts/auth';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
+import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { ManutencaoFilterModal } from '../components/ManutencaoFilterModal';
 
 export function Home() {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
   const { navigate } = useNavigation();
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
-    queryFn: fetchOMFromAPI,
+    queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
   const listOperation = useQuery({
     queryKey: ['listOperation'],
-    queryFn: fetchOperationsFromAPI,
+    queryFn: () => listOperationEmployee(employee.id),
   });
 
   const listMainOrderStatus = useQuery({
@@ -89,8 +92,6 @@ export function Home() {
               maintenanceOrder={item}
               key={item.id}
               onPress={() => {
-                console.log('CLICOU');
-                console.log('item.id', item.id);
                 navigate('RegisteredActivities', { id: item.id });
               }}
             />

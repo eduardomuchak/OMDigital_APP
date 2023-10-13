@@ -7,7 +7,7 @@ import { Loading } from '../../../components/Loading';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
-import { fetchOperationsFromAPI } from '../../../services/GET/Operations/fetchOperations';
+import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
 import { OperadorFilterModal } from '../components/OperadorFilterModal';
@@ -36,7 +36,7 @@ export function Home() {
 
   const listOperation = useQuery({
     queryKey: ['listOperation'],
-    queryFn: fetchOperationsFromAPI,
+    queryFn: () => listOperationEmployee(employee.id),
   });
 
   const listMainOrderStatus = useQuery({
@@ -60,7 +60,7 @@ export function Home() {
     return <></>;
   }
 
-  console.log('listMaintenanceOrder.data', listMaintenanceOrder.data);
+  console.log('listMaintenanceOrder', listMaintenanceOrder.data);
 
   return (
     <View className="flex flex-1 flex-col bg-white">
@@ -139,6 +139,14 @@ export function Home() {
               return true;
             })
             .filter((item) => {
+              if (
+                item.end_prev_date === null ||
+                item.end_prev_hr === null ||
+                item.start_prev_date === null ||
+                item.start_prev_hr === null
+              ) {
+                return true;
+              }
               if (startPeriod !== undefined && endPeriod !== undefined) {
                 const startDate = new Date(startPeriod);
                 const endDate = new Date(endPeriod);
@@ -154,8 +162,9 @@ export function Home() {
                   omEndDate >= startDate &&
                   omEndDate <= endDate
                 );
+              } else {
+                return true;
               }
-              return true;
             })}
         />
       )}

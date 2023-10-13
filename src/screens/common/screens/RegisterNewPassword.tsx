@@ -37,7 +37,7 @@ export function RegisterNewPassword() {
   });
 
   const onSubmit = (data: NewPasswordFormData) => {
-    console.log(data);
+    // console.log(data);
   };
 
   const togglePasswordVisibility = (event: GestureResponderEvent) => {
