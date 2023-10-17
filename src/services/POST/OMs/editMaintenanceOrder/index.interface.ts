@@ -1,6 +1,18 @@
-import { ListMaintenanceOrder } from '../../../GET/Maintenance/listMaintenanceOrderById/interface';
-
+export interface EditedSymptoms {
+  id: number;
+  st?: number;
+  description?: string;
+}
 export interface EditedMaintenanceOrder {
-  id: number | string;
-  symptoms: ListMaintenanceOrder.Symptoms[];
+  counter: number;
+  end_prev_date: string;
+  end_prev_hr: string;
+  id: number;
+  latitude: string | null;
+  longitude: string | null;
+  obs: string;
+  service_type: string;
+  start_prev_date: string;
+  start_prev_hr: string;
+  symptoms: EditedSymptoms[];
 }
