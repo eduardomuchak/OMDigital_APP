@@ -11,4 +11,5 @@ export const registerNewMaintenanceOrderSchema = z.object({
   endDate: z.date(),
   symptom: z.string().nonempty('Campo obrigatório'),
   type: z.string().nonempty('Campo obrigatório'),
+  obs: z.string(),
 });

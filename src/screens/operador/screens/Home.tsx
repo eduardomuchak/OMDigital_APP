@@ -60,8 +60,6 @@ export function Home() {
     return <></>;
   }
 
-  console.log('listMaintenanceOrder', listMaintenanceOrder.data);
-
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header isHomeScreen title={`Olá, ${employee?.name}`} />

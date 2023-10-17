@@ -3,8 +3,11 @@ import { Alert, ScrollView, View } from 'react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { Text } from 'react-native';
 import { Header } from '../../../components/Header';
+import { ImagePicker } from '../../../components/ImagePicker';
 import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
@@ -14,7 +17,9 @@ import { Select } from '../../../components/ui/Select';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
 import { useGetLocation } from '../../../hooks/useGetLocation';
+import { Attachment } from '../../../interfaces/Attachment.interface';
 import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
+import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
@@ -34,9 +39,9 @@ export function RegisterNewMaintenanceOrder() {
       if (isStatusTrue) {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return[0]);
+        Alert.alert('Sucesso', response.data.return.message);
       } else {
-        Alert.alert('Erro', response.data.return[0]);
+        Alert.alert('Erro', response.data.return.message);
       }
     },
     onError: (error) => {
@@ -54,14 +59,41 @@ export function RegisterNewMaintenanceOrder() {
       propertyCode: '',
       counter: '',
       startDate: new Date(),
-      endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
+      endDate: new Date(),
       symptom: '',
       type: '',
+      obs: '',
     },
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
 
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+
+  const takeImageHandler = (image: Attachment) => {
+    setAttachment(image);
+  };
+
   const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
+    if (data.startDate.toISOString() === data.endDate.toISOString()) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser igual a data de término',
+      );
+
+      return;
+    } else if (data.startDate > data.endDate) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser maior que a data de término',
+      );
+      return;
+    }
+
+    if (data.type === 'Selecione') {
+      Alert.alert('Erro', 'Selecione um tipo de OS');
+      return;
+    }
+
     const payload = {
       ...data,
       startDate: data.startDate.toISOString(),
@@ -69,20 +101,57 @@ export function RegisterNewMaintenanceOrder() {
       location,
     };
 
-    const payloadAPI = {
-      asset_code: payload.propertyCode.toUpperCase(),
-      counter: Number(payload.counter),
-      service_type: payload.type === 'Preventiva' ? 'P' : 'C',
-      status: 5, //TODO: Verificar
-      start_prev_date: payload.startDate.split('T')[0],
-      start_prev_hr: payload.startDate.split('T')[1],
-      end_prev_date: payload.endDate.split('T')[0],
-      end_prev_hr: payload.endDate.split('T')[1],
-      symptom: payload.symptom,
-      resp_id: user ? user.id : 0,
-    };
-
-    mutation.mutate(payloadAPI);
+    if (attachment.uri) {
+      const fileName = attachment?.uri.split('/').pop();
+      const payloadAPI: NewMaintenanceOrder.Payload = {
+        asset_code: payload.propertyCode.toUpperCase(),
+        counter: Number(payload.counter),
+        latitude: payload.location.latitude,
+        longitude: payload.location.longitude,
+        service_type: payload.type === 'Preventiva' ? 'P' : 'C',
+        status: 1,
+        start_prev_date: payload.startDate.split('T')[0],
+        start_prev_hr: payload.startDate.split('T')[1],
+        end_prev_date: payload.endDate.split('T')[0],
+        end_prev_hr: payload.endDate.split('T')[1],
+        obs: payload.obs,
+        resp_id: user ? user.id : 0,
+        symptoms: [
+          {
+            id: null,
+            description: payload.symptom,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          },
+        ],
+      };
+      mutation.mutate(payloadAPI);
+    } else {
+      const payloadAPI: NewMaintenanceOrder.Payload = {
+        asset_code: payload.propertyCode.toUpperCase(),
+        counter: Number(payload.counter),
+        latitude: payload.location.latitude,
+        longitude: payload.location.longitude,
+        service_type: payload.type === 'Preventiva' ? 'P' : 'C',
+        status: 1,
+        start_prev_date: payload.startDate.split('T')[0],
+        start_prev_hr: payload.startDate.split('T')[1],
+        end_prev_date: payload.endDate.split('T')[0],
+        end_prev_hr: payload.endDate.split('T')[1],
+        obs: '',
+        resp_id: user ? user.id : 0,
+        symptoms: [
+          {
+            id: null,
+            description: payload.symptom,
+          },
+        ],
+      };
+      mutation.mutate(payloadAPI);
+    }
 
     reset();
     goBack();
@@ -107,7 +176,7 @@ export function RegisterNewMaintenanceOrder() {
                         required
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={value}
+                        value={value.toLocaleUpperCase()}
                         label="Codigo do bem"
                         placeholder="Digite o código do bem"
                         maxLength={30}
@@ -159,6 +228,7 @@ export function RegisterNewMaintenanceOrder() {
                     onDateSelect={onChange}
                     label="Data e hora da parada informada"
                     mode="datetime"
+                    required
                   />
                 )}
                 name="startDate"
@@ -177,12 +247,32 @@ export function RegisterNewMaintenanceOrder() {
                     onDateSelect={onChange}
                     label="Data e hora da previsão de término"
                     mode="datetime"
+                    required
                   />
                 )}
                 name="endDate"
               />
               {errors.endDate?.message ? (
                 <ErrorText>{errors.endDate?.message}</ErrorText>
+              ) : null}
+            </View>
+
+            <View className="mb-7">
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    required
+                    label="TIPO DA OS (Ordem de Serviço)"
+                    selected={value}
+                    setSelected={onChange}
+                    options={['Selecione', 'Preventiva', 'Corretiva']}
+                  />
+                )}
+                name="type"
+              />
+              {errors.type?.message ? (
+                <ErrorText>{errors.type?.message}</ErrorText>
               ) : null}
             </View>
 
@@ -206,22 +296,29 @@ export function RegisterNewMaintenanceOrder() {
               ) : null}
             </View>
 
-            <View className="mb-7">
+            <View className="mb-5">
+              <Text className="mb-1 font-poppinsBold text-sm leading-4 text-neutral-900">
+                ANEXO (OPCIONAL)
+              </Text>
+              <ImagePicker onTakeImage={takeImageHandler} />
+            </View>
+
+            <View className="mb-4">
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    required
-                    label="TIPO DA OS (Ordem de Serviço)"
-                    selected={value}
-                    setSelected={onChange}
-                    options={['Preventiva', 'Corretiva']}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextArea
+                    onBlur={onBlur}
+                    label="Observações"
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="Digite"
                   />
                 )}
-                name="type"
+                name="obs"
               />
-              {errors.type?.message ? (
-                <ErrorText>{errors.type?.message}</ErrorText>
+              {errors.obs?.message ? (
+                <ErrorText>{errors.obs?.message}</ErrorText>
               ) : null}
             </View>
 
