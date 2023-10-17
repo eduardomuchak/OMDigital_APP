@@ -23,6 +23,10 @@ export function EditMaintenanceOrder() {
   const [omSymptoms, setOmSymptoms] = useState<ListMaintenanceOrder.Symptoms[]>(
     [],
   );
+  const [omDetails, setOmDetails] =
+    useState<ListMaintenanceOrder.MaintenanceOrder>(
+      {} as ListMaintenanceOrder.MaintenanceOrder,
+    );
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
@@ -50,6 +54,18 @@ export function EditMaintenanceOrder() {
     setOmSymptoms(newSymptoms);
   };
 
+  const handleDeleteSymptom = (symptom: ListMaintenanceOrder.Symptoms) => {
+    // Rule: If the symptom was deleted, just set the st field to 0
+    const newSymptoms = omSymptoms.map((omSymptom) => {
+      if (omSymptom.id === symptom.id) {
+        return { ...omSymptom, st: 0 };
+      }
+      return omSymptom;
+    });
+
+    setOmSymptoms(newSymptoms);
+  };
+
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -70,21 +86,45 @@ export function EditMaintenanceOrder() {
   });
 
   function handleEditOM() {
-    mutation.mutate({
+    const payload = {
       id: omID,
-      symptoms: omSymptoms,
-    });
-    // goBack();
+      counter: omDetails.counter,
+      latitude: omDetails.latitude,
+      longitude: omDetails.longitude,
+      service_type: omDetails.service_type,
+      start_prev_date: omDetails.start_prev_date,
+      start_prev_hr: omDetails.start_prev_hr,
+      end_prev_date: omDetails.end_prev_date,
+      end_prev_hr: omDetails.end_prev_hr,
+      obs: omDetails.obs,
+      symptoms: omSymptoms.map((symptom) => {
+        if (symptom.st === 0) {
+          return {
+            id: symptom.id,
+            st: symptom.st,
+          };
+        } else {
+          return {
+            id: symptom.id,
+            description: symptom.description,
+          };
+        }
+      }),
+    };
+
+    mutation.mutate(payload);
+    goBack();
   }
 
-  function findOMSymptoms() {
+  function findOM() {
     if (listMaintenanceOrder.data === undefined) return;
     const foundOM = listMaintenanceOrder.data.filter((om) => om.id === omID);
+    setOmDetails(foundOM[0]);
     setOmSymptoms(foundOM[0].symptoms);
   }
 
   useEffect(() => {
-    findOMSymptoms();
+    findOM();
   }, []);
 
   return (
@@ -98,23 +138,35 @@ export function EditMaintenanceOrder() {
         />
         <View className="flex-1 px-6 py-4">
           <Text className="mb-3 font-poppinsBold text-lg">Sintomas:</Text>
-          {omSymptoms.map((symptom, index) => (
-            <View key={symptom.id}>
-              <SymptomCard
-                symptom={symptom}
-                onEditSymptom={handleEditSymptom}
-              />
-              {index !== omSymptoms.length - 1 ? (
-                <View className="h-3" />
-              ) : null}
-            </View>
-          ))}
+          {omSymptoms.length > 0 &&
+          !omSymptoms.every((symptom) => symptom.st === 0) ? (
+            omSymptoms.map((symptom, index) => (
+              <View key={symptom.id}>
+                {symptom.st === 0 ? null : (
+                  <View>
+                    <SymptomCard
+                      symptom={symptom}
+                      onEditSymptom={handleEditSymptom}
+                      onDeleteSymptom={handleDeleteSymptom}
+                    />
+                    {index !== omSymptoms.length - 1 ? (
+                      <View className="h-3" />
+                    ) : null}
+                  </View>
+                )}
+              </View>
+            ))
+          ) : (
+            <Text className="py-5 text-center font-poppinsMedium text-lg">
+              Não há sintomas cadastrados
+            </Text>
+          )}
           <CustomButton
             variant="primary"
             style={{ marginTop: 20 }}
             onPress={handleEditOM}
           >
-            Editar
+            Finalizar
           </CustomButton>
         </View>
       </ScrollView>
