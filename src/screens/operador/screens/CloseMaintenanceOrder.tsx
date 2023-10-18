@@ -50,6 +50,8 @@ export function CloseMaintenanceOrder() {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.return[0]);
+        reset();
+        navigation.navigate('HomeOperador');
       } else {
         Alert.alert('Erro', response.return[0]);
       }
@@ -60,16 +62,7 @@ export function CloseMaintenanceOrder() {
   });
 
   const onSubmit = (data: CloseMaintenanceOrderFormData) => {
-    const payload = data;
-    // finishOM(
-    //   Number(omId),
-    //   payload.endDate.toISOString(),
-    //   Number(payload.counter),
-    //   payload.comments
-    // );
     mutation.mutate(omId);
-    reset();
-    navigation.navigate('HomeOperador');
   };
 
   //PAYLOAD => {"comments": "sim", "counter": "555", "endDate": 2023-06-14T06:00:00.000Z}

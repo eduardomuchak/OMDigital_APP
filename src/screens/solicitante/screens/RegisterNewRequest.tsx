@@ -22,27 +22,9 @@ import {
 
 export function RegisterNewRequest() {
   const { goBack } = useNavigation();
-  // const { location } = useGetLocation();
   const { user } = useAuth();
 
   const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: saveRequest,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
-        Alert.alert('Sucesso', response.data.return[0]);
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
 
   const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
   const {
@@ -57,6 +39,26 @@ export function RegisterNewRequest() {
       symptom: '',
     },
     resolver: zodResolver(registerNewRequestSchema),
+  });
+
+  const mutation = useMutation({
+    mutationFn: saveRequest,
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+        setAttachment({} as Attachment);
+        reset();
+        goBack();
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
   });
 
   const now = new Date().toISOString();
@@ -91,10 +93,6 @@ export function RegisterNewRequest() {
       };
       mutation.mutate(payload);
     }
-
-    setAttachment({} as Attachment);
-    reset();
-    goBack();
   };
 
   return (

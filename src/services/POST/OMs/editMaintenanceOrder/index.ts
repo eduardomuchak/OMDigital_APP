@@ -16,13 +16,14 @@ export interface Payload {
 }
 export interface Symptoms {
   id: number;
-  st: number;
+  st: number | boolean;
 }
 
 export const editMaintenanceOrder = async (payload: EditedMaintenanceOrder) => {
   const formattedPayload = new FormData();
 
   formattedPayload.append('id', payload.id.toString());
+  formattedPayload.append('asset_code', payload.asset_code);
   formattedPayload.append('counter', payload.counter.toString());
   formattedPayload.append('service_type', payload.service_type);
   formattedPayload.append('start_prev_date', payload.start_prev_date);
@@ -32,7 +33,7 @@ export const editMaintenanceOrder = async (payload: EditedMaintenanceOrder) => {
   formattedPayload.append('obs', payload.obs);
   formattedPayload.append('latitude', payload.latitude || 'null');
   formattedPayload.append('longitude', payload.longitude || 'null');
-  formattedPayload.append('symptom', JSON.stringify(payload.symptoms));
+  formattedPayload.append('symptoms', JSON.stringify(payload.symptoms));
 
   const response = await api.post(
     '/maintenance/saveMaintenanceOrder',

@@ -40,10 +40,10 @@ export namespace Stage {
     maintenance_order_id: number;
     description: string;
     obs: string;
-    start_date: string;
-    start_hr: string;
-    end_date: string;
-    end_hr: string;
+    start_date: string | null;
+    start_hr: string | null;
+    end_date: string | null;
+    end_hr: string | null;
     resp_id: number;
     images?: Image;
   }

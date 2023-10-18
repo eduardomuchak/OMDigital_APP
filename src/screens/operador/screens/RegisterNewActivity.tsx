@@ -55,6 +55,16 @@ export function RegisterNewActivity() {
     queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
+  if (
+    listMaintenanceOrder.isLoading ||
+    listMaintenanceOrder.data === undefined
+  ) {
+    return <Loading />;
+  }
+
+  const foundOM = listMaintenanceOrder.data.filter((om) => om.id === id)[0];
+  const statusToHideDate = foundOM.status !== 2 && foundOM.status < 4;
+
   const mutation = useMutation({
     mutationFn: createNewMaintenanceOrderStage,
     onSuccess: (response) => {
@@ -65,6 +75,8 @@ export function RegisterNewActivity() {
         queryClient.invalidateQueries({
           queryKey: ['listMaintenanceOrder'],
         });
+        reset();
+        goBack();
       } else {
         Alert.alert('Erro', response.data.return[0]);
       }
@@ -79,55 +91,16 @@ export function RegisterNewActivity() {
   };
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
-    if (data.startDate.toISOString() === data.endDate.toISOString()) {
-      Alert.alert(
-        'Erro',
-        'A data de início não pode ser igual a data de término',
-      );
-
-      return;
-    } else if (data.startDate > data.endDate) {
-      Alert.alert(
-        'Erro',
-        'A data de início não pode ser maior que a data de término',
-      );
-      return;
-    }
-    // else if (data.startDate < new Date()) {
-    //   Toast.show({
-    //     type: 'error',
-    //     text1: 'Erro',
-    //     text2: 'A data de início não pode ser menor que a data atual',
-    //   });
-    //   return;
-    // }
-    else {
-      const datesWithCorrectTimezone = {
-        startDate: handleTimezone(data.startDate),
-        endDate: handleTimezone(data.endDate),
-      };
-
-      const insertDates = {
-        ...data,
-        startDate: datesWithCorrectTimezone.startDate.toISOString(),
-        endDate: datesWithCorrectTimezone.endDate.toISOString(),
-      };
-
-      const startDay = insertDates.startDate.split('T')[0];
-      const startHour = insertDates.startDate.split('T')[1].split('.')[0];
-
-      const endDay = insertDates.endDate.split('T')[0];
-      const endHour = insertDates.endDate.split('T')[1].split('.')[0];
-
+    if (statusToHideDate) {
       if (!attachment.uri) {
         const payload = {
           maintenance_order_id: id,
-          description: insertDates.activity,
-          obs: insertDates.note || '',
-          start_date: startDay,
-          start_hr: startHour,
-          end_date: endDay,
-          end_hr: endHour,
+          description: data.activity,
+          obs: data.note || '',
+          start_date: null,
+          start_hr: null,
+          end_date: null,
+          end_hr: null,
           resp_id: user?.id || 0,
         };
         mutation.mutate(payload);
@@ -136,12 +109,12 @@ export function RegisterNewActivity() {
 
         const payload = {
           maintenance_order_id: id,
-          description: insertDates.activity,
-          obs: insertDates.note || '',
-          start_date: startDay,
-          start_hr: startHour,
-          end_date: endDay,
-          end_hr: endHour,
+          description: data.activity,
+          obs: data.note || '',
+          start_date: null,
+          start_hr: null,
+          end_date: null,
+          end_hr: null,
           resp_id: user?.id || 0,
           images: {
             name: [fileName],
@@ -151,28 +124,79 @@ export function RegisterNewActivity() {
         };
         mutation.mutate(payload);
       }
+    } else {
+      if (data.startDate.toISOString() === data.endDate.toISOString()) {
+        Alert.alert(
+          'Erro',
+          'A data de início não pode ser igual a data de término',
+        );
 
-      reset();
-      goBack();
+        return;
+      } else if (data.startDate > data.endDate) {
+        Alert.alert(
+          'Erro',
+          'A data de início não pode ser maior que a data de término',
+        );
+        return;
+      } else {
+        const datesWithCorrectTimezone = {
+          startDate: handleTimezone(data.startDate),
+          endDate: handleTimezone(data.endDate),
+        };
+
+        const insertDates = {
+          ...data,
+          startDate: datesWithCorrectTimezone.startDate.toISOString(),
+          endDate: datesWithCorrectTimezone.endDate.toISOString(),
+        };
+
+        const startDay = insertDates.startDate.split('T')[0];
+        const startHour = insertDates.startDate.split('T')[1].split('.')[0];
+
+        const endDay = insertDates.endDate.split('T')[0];
+        const endHour = insertDates.endDate.split('T')[1].split('.')[0];
+
+        if (!attachment.uri) {
+          const payload = {
+            maintenance_order_id: id,
+            description: insertDates.activity,
+            obs: insertDates.note || '',
+            start_date: startDay,
+            start_hr: startHour,
+            end_date: endDay,
+            end_hr: endHour,
+            resp_id: user?.id || 0,
+          };
+          mutation.mutate(payload);
+        } else {
+          const fileName = attachment.uri.split('/').pop();
+
+          const payload = {
+            maintenance_order_id: id,
+            description: insertDates.activity,
+            obs: insertDates.note || '',
+            start_date: startDay,
+            start_hr: startHour,
+            end_date: endDay,
+            end_hr: endHour,
+            resp_id: user?.id || 0,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          };
+          mutation.mutate(payload);
+        }
+      }
     }
   };
-
-  if (
-    listMaintenanceOrder.isLoading ||
-    listMaintenanceOrder.data === undefined
-  ) {
-    return <Loading />;
-  }
 
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header title="Adicionar Nova Etapa" />
       <ScrollView showsVerticalScrollIndicator={false} className="flex flex-1">
-        <OperationInfoCard
-          maintenanceOrder={
-            listMaintenanceOrder.data.filter((om) => om.id === id)[0]
-          }
-        />
+        <OperationInfoCard maintenanceOrder={foundOM} />
         <View className="flex flex-1 px-6 py-4">
           <View className="mb-4">
             <Controller
@@ -192,40 +216,44 @@ export function RegisterNewActivity() {
               <ErrorText>{errors.activity?.message}</ErrorText>
             ) : null}
           </View>
-          <View className="mb-4">
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <CustomDateTimePicker
-                  value={new Date(value)}
-                  onDateSelect={onChange}
-                  label="Data e hora de início"
-                  mode="datetime"
+          {statusToHideDate ? null : (
+            <>
+              <View className="mb-4">
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CustomDateTimePicker
+                      value={new Date(value)}
+                      onDateSelect={onChange}
+                      label="Data e hora de início"
+                      mode="datetime"
+                    />
+                  )}
+                  name="startDate"
                 />
-              )}
-              name="startDate"
-            />
-            {errors.startDate?.message ? (
-              <ErrorText>{errors.startDate?.message}</ErrorText>
-            ) : null}
-          </View>
-          <View className="mb-4">
-            <Controller
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <CustomDateTimePicker
-                  value={new Date(value)}
-                  onDateSelect={onChange}
-                  label="Data e hora de término"
-                  mode="datetime"
+                {errors.startDate?.message ? (
+                  <ErrorText>{errors.startDate?.message}</ErrorText>
+                ) : null}
+              </View>
+              <View className="mb-4">
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <CustomDateTimePicker
+                      value={new Date(value)}
+                      onDateSelect={onChange}
+                      label="Data e hora de término"
+                      mode="datetime"
+                    />
+                  )}
+                  name="endDate"
                 />
-              )}
-              name="endDate"
-            />
-            {errors.endDate?.message ? (
-              <ErrorText>{errors.endDate?.message}</ErrorText>
-            ) : null}
-          </View>
+                {errors.endDate?.message ? (
+                  <ErrorText>{errors.endDate?.message}</ErrorText>
+                ) : null}
+              </View>
+            </>
+          )}
           <View className="mb-4">
             <Controller
               control={control}
