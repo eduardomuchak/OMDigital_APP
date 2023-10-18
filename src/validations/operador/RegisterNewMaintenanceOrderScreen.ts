@@ -9,7 +9,7 @@ export const registerNewMaintenanceOrderSchema = z.object({
   counter: z.string().nonempty('Campo obrigatório'),
   startDate: z.date(),
   endDate: z.date(),
-  symptom: z.string().nonempty('Campo obrigatório'),
+  symptom: z.string(),
   type: z.string().nonempty('Campo obrigatório'),
   obs: z.string(),
 });

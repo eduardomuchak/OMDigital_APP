@@ -75,9 +75,10 @@ export function EditMaintenanceOrder() {
       if (isStatusTrue) {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return[0]);
+        Alert.alert('Sucesso', response.data.return.message);
+        goBack();
       } else {
-        Alert.alert('Erro', response.data.return[0]);
+        Alert.alert('Erro', response.data.return.message);
       }
     },
     onError: (error) => {
@@ -88,6 +89,7 @@ export function EditMaintenanceOrder() {
   function handleEditOM() {
     const payload = {
       id: omID,
+      asset_code: omDetails.asset_code,
       counter: omDetails.counter,
       latitude: omDetails.latitude,
       longitude: omDetails.longitude,
@@ -113,7 +115,6 @@ export function EditMaintenanceOrder() {
     };
 
     mutation.mutate(payload);
-    goBack();
   }
 
   function findOM() {
@@ -157,7 +158,7 @@ export function EditMaintenanceOrder() {
               </View>
             ))
           ) : (
-            <Text className="py-5 text-center font-poppinsMedium text-lg">
+            <Text className="text-neutral py-6 text-center font-poppinsBold text-lg">
               Não há sintomas cadastrados
             </Text>
           )}

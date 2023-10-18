@@ -20,6 +20,7 @@ import { useGetLocation } from '../../../hooks/useGetLocation';
 import { Attachment } from '../../../interfaces/Attachment.interface';
 import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
 import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
@@ -40,8 +41,10 @@ export function RegisterNewMaintenanceOrder() {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.data.return.message);
+        reset();
+        goBack();
       } else {
-        Alert.alert('Erro', response.data.return.message);
+        Alert.alert('Erro', response.data.return[0]);
       }
     },
     onError: (error) => {
@@ -94,10 +97,15 @@ export function RegisterNewMaintenanceOrder() {
       return;
     }
 
+    const datesWithCorrectTimezone = {
+      startDate: handleTimezone(data.startDate),
+      endDate: handleTimezone(data.endDate),
+    };
+
     const payload = {
       ...data,
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
+      startDate: datesWithCorrectTimezone.startDate.toISOString(),
+      endDate: datesWithCorrectTimezone.endDate.toISOString(),
       location,
     };
 
@@ -152,9 +160,6 @@ export function RegisterNewMaintenanceOrder() {
       };
       mutation.mutate(payloadAPI);
     }
-
-    reset();
-    goBack();
   };
 
   return (
@@ -176,7 +181,7 @@ export function RegisterNewMaintenanceOrder() {
                         required
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        value={value.toLocaleUpperCase()}
+                        value={value}
                         label="Codigo do bem"
                         placeholder="Digite o código do bem"
                         maxLength={30}
@@ -286,7 +291,6 @@ export function RegisterNewMaintenanceOrder() {
                     onChangeText={onChange}
                     value={value}
                     placeholder="Digite"
-                    required
                   />
                 )}
                 name="symptom"

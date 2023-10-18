@@ -55,6 +55,8 @@ export function RegisterNewSymptom() {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.data.return[0]);
+        reset();
+        goBack();
       } else {
         Alert.alert('Erro', response.data.return[0]);
       }
@@ -93,8 +95,6 @@ export function RegisterNewSymptom() {
 
       mutation.mutate(payload);
     }
-    reset();
-    goBack();
   }
 
   if (

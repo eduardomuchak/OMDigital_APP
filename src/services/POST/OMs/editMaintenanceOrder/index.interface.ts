@@ -1,6 +1,6 @@
 export interface EditedSymptoms {
   id: number;
-  st?: number;
+  st?: number | boolean;
   description?: string;
 }
 export interface EditedMaintenanceOrder {
@@ -15,4 +15,5 @@ export interface EditedMaintenanceOrder {
   start_prev_date: string;
   start_prev_hr: string;
   symptoms: EditedSymptoms[];
+  asset_code: string;
 }
