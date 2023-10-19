@@ -2,6 +2,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
+import { RefreshControl } from 'react-native-gesture-handler';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { CustomButton } from '../../../components/ui/CustomButton';
@@ -124,6 +125,13 @@ export function EditMaintenanceOrder() {
     setOmSymptoms(foundOM[0].symptoms);
   }
 
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+  };
+
   useEffect(() => {
     findOM();
   }, []);
@@ -131,7 +139,15 @@ export function EditMaintenanceOrder() {
   return (
     <View className="flex-1 bg-white">
       <Header title={'Editar Ordem de Manutenção'} />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={listMaintenanceOrder.isRefetching}
+            onRefresh={onRefresh}
+          />
+        }
+      >
         <OperationInfoCard
           maintenanceOrder={
             listMaintenanceOrder.data.filter((om) => om.id === omID)[0]

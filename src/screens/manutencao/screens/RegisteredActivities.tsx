@@ -1,5 +1,5 @@
 import { useRoute } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Text, View } from 'react-native';
 import { FooterRegisteredActivities } from '../../../components/FooterRegisteredActivities';
 import { Header } from '../../../components/Header';
@@ -16,6 +16,7 @@ export function RegisteredActivities() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
+  const queryClient = useQueryClient();
   const route = useRoute();
   const { id } = route.params as { id?: number };
 
@@ -28,6 +29,15 @@ export function RegisteredActivities() {
     queryKey: ['listStageStatus'],
     queryFn: fetchStagesStatus,
   });
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+    queryClient.invalidateQueries({ queryKey: ['listMainOrderStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['getPrincipalFooterData'] });
+  };
 
   if (
     listMaintenanceOrder.data === undefined ||
@@ -53,6 +63,10 @@ export function RegisteredActivities() {
       <Header title={'Etapas Lançadas'} />
 
       <CardContainer
+        isRefetching={
+          listMaintenanceOrder.isRefetching || listStageStatus.isRefetching
+        }
+        onRefresh={onRefresh}
         headerComponent={
           <>
             <OperationInfoCard maintenanceOrder={filteredOM[0]} />

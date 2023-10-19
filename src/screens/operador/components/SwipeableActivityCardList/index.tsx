@@ -4,6 +4,7 @@ import React from 'react';
 import {
   Dimensions,
   ListRenderItemInfo,
+  RefreshControl,
   ScrollView,
   Text,
   View,
@@ -15,7 +16,7 @@ import { FinishActivityModal } from '../FinishActivityModal';
 import { PauseActivityModal } from '../PauseActivityModal';
 import { StartActivityModal } from '../StartActivityModal';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { StatusLegend } from '../../../../components/StatusLegend';
 import { useAuth } from '../../../../contexts/auth';
 import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
@@ -38,6 +39,8 @@ export const SwipeableActivityCardList = ({
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
+  const queryClient = useQueryClient();
+
   const listStageStatus = useQuery({
     queryKey: ['listStageStatus'],
     queryFn: fetchStagesStatus,
@@ -46,6 +49,13 @@ export const SwipeableActivityCardList = ({
     queryKey: ['listMaintenanceOrder'],
     queryFn: () => listMaintenanceOrderById(employee.id),
   });
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+  };
 
   if (
     listMaintenanceOrder.isLoading ||
@@ -223,6 +233,14 @@ export const SwipeableActivityCardList = ({
       ListFooterComponent={listFooterComponent}
       ItemSeparatorComponent={() => <View className="h-3" />}
       showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={
+            listMaintenanceOrder.isRefetching || listStageStatus.isRefetching
+          }
+          onRefresh={onRefresh}
+        />
+      }
     />
   );
 };
