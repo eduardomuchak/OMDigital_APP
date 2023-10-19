@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { CardContainer } from '../../../components/CardContainer';
 import { FooterModal } from '../../../components/FooterModal';
 import { Header } from '../../../components/Header';
@@ -17,6 +17,8 @@ import { LogisticaFilterModal } from '../components/LogisticaFilterModal';
 export function Home() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
+
+  const queryClient = useQueryClient();
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
@@ -35,6 +37,12 @@ export function Home() {
     queryKey: ['listMainOrderStatus'],
     queryFn: fetchMainOrderStatus,
   });
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+    queryClient.invalidateQueries({ queryKey: ['listMainOrderStatus'] });
+  };
 
   if (
     listMaintenanceOrder.isLoading ||
@@ -72,24 +80,52 @@ export function Home() {
         />
       </View>
       <StatusLegend status={listMainOrderStatus.data} />
-      <CardContainer>
-        {listMaintenanceOrder.data
-          .filter((item) => {
-            if (selectedStatus.length > 0) {
-              return selectedStatus.includes(item.status);
-            }
-            return true;
-          })
-          .filter((item) => {
-            if (selectedOperations.length > 0) {
-              return selectedOperations.includes(item.asset_operation_code);
-            }
-            return true;
-          })
-          .map((item) => (
-            <OMCard maintenanceOrder={item} key={item.id} />
-          ))}
-      </CardContainer>
+      {listMaintenanceOrder.data.length > 0 ? (
+        <CardContainer
+          isRefetching={
+            listMaintenanceOrder.isRefetching ||
+            listOperation.isRefetching ||
+            listMainOrderStatus.isRefetching
+          }
+        >
+          {listMaintenanceOrder.data
+            .filter((item) => {
+              if (selectedStatus.length > 0) {
+                return selectedStatus.includes(item.status);
+              }
+              return true;
+            })
+            .filter((item) => {
+              if (selectedOperations.length > 0) {
+                return selectedOperations.includes(item.asset_operation_code);
+              }
+              return true;
+            })
+            .map((item) => (
+              <OMCard maintenanceOrder={item} key={item.id} />
+            ))}
+        </CardContainer>
+      ) : (
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                listMaintenanceOrder.isRefetching ||
+                listOperation.isRefetching ||
+                listMainOrderStatus.isRefetching
+              }
+              onRefresh={onRefresh}
+            />
+          }
+        >
+          <View className="my-48 flex flex-1 flex-row items-center justify-center">
+            <Text className="text-neutral text-center font-poppinsBold text-lg">
+              Nenhuma ordem de manutenção encontrada
+            </Text>
+          </View>
+        </ScrollView>
+      )}
+
       <FooterModal />
     </View>
   );

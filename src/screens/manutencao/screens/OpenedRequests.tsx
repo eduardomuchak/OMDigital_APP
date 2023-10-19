@@ -45,6 +45,13 @@ export function OpenedRequests() {
         renderItem={({ item }) => (
           <OpenedRequestCard key={item.id} request={item} />
         )}
+        ListEmptyComponent={() => (
+          <View className="my-48 flex flex-1 flex-row items-center justify-center">
+            <Text className="text-neutral font-poppinsBold text-lg">
+              Nenhuma solicitação encontrada
+            </Text>
+          </View>
+        )}
       />
     </View>
   );

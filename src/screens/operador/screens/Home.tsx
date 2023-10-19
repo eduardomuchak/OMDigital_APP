@@ -1,6 +1,6 @@
-import { Text, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
@@ -16,6 +16,8 @@ import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 export function Home() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
+
+  const queryClient = useQueryClient();
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
@@ -60,6 +62,13 @@ export function Home() {
     return <></>;
   }
 
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+  };
+
   return (
     <View className="flex flex-1 flex-col bg-white">
       <Header isHomeScreen title={`Olá, ${employee?.name}`} />
@@ -96,13 +105,31 @@ export function Home() {
       </View>
       <StatusLegend status={listMainOrderStatus.data} />
       {listMaintenanceOrder.data.length === 0 ? (
-        <View className="flex flex-1 items-center justify-center">
-          <Text className="text-neutral text-center font-poppinsBold text-lg">
-            Nenhuma ordem de manutenção encontrada
-          </Text>
-        </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                listMaintenanceOrder.isRefetching ||
+                listOperation.isRefetching ||
+                listMainOrderStatus.isRefetching
+              }
+              onRefresh={onRefresh}
+            />
+          }
+        >
+          <View className="my-48 flex flex-1 items-center justify-center">
+            <Text className="text-neutral text-center font-poppinsBold text-lg">
+              Nenhuma ordem de manutenção encontrada
+            </Text>
+          </View>
+        </ScrollView>
       ) : (
         <SwipeableOMCardList
+          isRefetching={
+            listMaintenanceOrder.isRefetching ||
+            listOperation.isRefetching ||
+            listMainOrderStatus.isRefetching
+          }
           maintenanceOrders={listMaintenanceOrder.data
             .filter((item) => {
               if (selectedStatus.length > 0) {

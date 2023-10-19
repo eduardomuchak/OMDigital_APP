@@ -144,7 +144,7 @@ export function RegisterNewMaintenanceOrder() {
         latitude: payload.location.latitude,
         longitude: payload.location.longitude,
         service_type: payload.type === 'Preventiva' ? 'P' : 'C',
-        status: 1,
+        status: 4,
         start_prev_date: payload.startDate.split('T')[0],
         start_prev_hr: payload.startDate.split('T')[1],
         end_prev_date: payload.endDate.split('T')[0],

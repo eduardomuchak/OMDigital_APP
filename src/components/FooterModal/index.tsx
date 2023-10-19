@@ -20,7 +20,7 @@ export function FooterModal() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const getPrincipalFooterData = useQuery({
-    queryKey: ['getPrincipalFooterData', employee?.id],
+    queryKey: ['getPrincipalFooterData'],
     queryFn: () => fetchPrincipalFooterData(employee?.id),
   });
 

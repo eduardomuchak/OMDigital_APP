@@ -1,9 +1,16 @@
 import { useNavigation } from '@react-navigation/native';
 import { CheckCircle, WarningCircle } from 'phosphor-react-native';
 import React from 'react';
-import { Dimensions, ListRenderItemInfo, Text, View } from 'react-native';
+import {
+  Dimensions,
+  ListRenderItemInfo,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
 
+import { useQueryClient } from '@tanstack/react-query';
 import { OMCard } from '../../../../components/OMCard';
 import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
@@ -11,12 +18,15 @@ import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
 
 interface SwipeableOMCardListProps {
   maintenanceOrders: ListMaintenanceOrder.MaintenanceOrder[];
+  isRefetching: boolean;
 }
 
 export const SwipeableOMCardList = ({
   maintenanceOrders,
+  isRefetching,
 }: SwipeableOMCardListProps) => {
   const { navigate } = useNavigation();
+  const queryClient = useQueryClient();
 
   const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
@@ -95,6 +105,13 @@ export const SwipeableOMCardList = ({
     );
   };
 
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+  };
+
   return (
     <>
       {maintenanceOrders.length > 0 ? (
@@ -119,7 +136,17 @@ export const SwipeableOMCardList = ({
           swipeToClosePercent={30}
           ListFooterComponent={() => <View className="h-28" />}
           ItemSeparatorComponent={() => <View className="h-3" />}
+          ListEmptyComponent={() => (
+            <View className="my-48 flex flex-1 items-center justify-center">
+              <Text className="text-neutral text-center font-poppinsBold text-lg">
+                Nenhuma ordem de manutenção encontrada
+              </Text>
+            </View>
+          )}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
+          }
         />
       ) : (
         <View className="flex-1 items-center justify-center">

@@ -1,7 +1,8 @@
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { RefreshControl } from 'react-native';
 import { CardContainer } from '../../../components/CardContainer';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
@@ -17,6 +18,7 @@ export function Home() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
+  const queryClient = useQueryClient();
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
 
   const listRequestStatus = useQuery({
@@ -28,6 +30,11 @@ export function Home() {
     queryKey: ['listRequest'],
     queryFn: () => listUserRequestById(employee.id),
   });
+
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+    queryClient.invalidateQueries({ queryKey: ['listRequestStatus'] });
+  };
 
   if (listRequestStatus.isLoading || listRequest.isLoading) {
     return <Loading />;
@@ -52,7 +59,11 @@ export function Home() {
       </View>
       <StatusLegend status={listRequestStatus.data} />
       {listRequest.data.length > 0 ? (
-        <CardContainer>
+        <CardContainer
+          isRefetching={
+            listRequestStatus.isRefetching || listRequest.isRefetching
+          }
+        >
           {listRequest.data
             .filter((item) => {
               if (selectedStatus.length > 0) {
@@ -65,11 +76,22 @@ export function Home() {
             ))}
         </CardContainer>
       ) : (
-        <View className="flex flex-1 flex-row items-center justify-center">
-          <Text className="text-neutral font-poppinsBold text-lg">
-            Nenhuma solicitação encontrada
-          </Text>
-        </View>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={
+                listRequestStatus.isRefetching || listRequest.isRefetching
+              }
+              onRefresh={onRefresh}
+            />
+          }
+        >
+          <View className="my-48 flex flex-1 flex-row items-center justify-center">
+            <Text className="text-neutral font-poppinsBold text-lg">
+              Nenhuma solicitação encontrada
+            </Text>
+          </View>
+        </ScrollView>
       )}
       <AddNewRequestButton />
     </View>
