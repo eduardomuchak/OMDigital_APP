@@ -1,8 +1,12 @@
 import { api } from '../../../api';
 import { NewMaintenanceOrder } from './newMaintenanceOrder.interface';
 
+interface OMIndex {
+  omIndex?: number;
+}
+
 export const createNewMaintenanceOrder = async (
-  payload: NewMaintenanceOrder.Payload,
+  payload: NewMaintenanceOrder.Payload & OMIndex,
 ) => {
   const formattedPayload = new FormData();
   formattedPayload.append('asset_code', payload.asset_code);

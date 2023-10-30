@@ -6,8 +6,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Text } from 'react-native';
+import { useMMKVObject } from 'react-native-mmkv';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
@@ -16,6 +18,7 @@ import { Input } from '../../../components/ui/Input';
 import { Select } from '../../../components/ui/Select';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { useGetLocation } from '../../../hooks/useGetLocation';
 import { Attachment } from '../../../interfaces/Attachment.interface';
 import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
@@ -28,29 +31,16 @@ import {
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();
-  const { goBack } = useNavigation();
+  const { goBack, navigate } = useNavigation();
   const { user } = useAuth();
-
   const queryClient = useQueryClient();
+  const { isConnected } = useCheckInternetConnection();
 
-  const mutation = useMutation({
-    mutationFn: createNewMaintenanceOrder,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return.message);
-        reset();
-        goBack();
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+  const [maintenanceOrdersQueue, setMaintenanceOrdersQueue] = useMMKVObject<
+    NewMaintenanceOrder.Payload[]
+  >('queuedCreateNewMaintenanceOrder');
+  if (maintenanceOrdersQueue === undefined) setMaintenanceOrdersQueue([]);
 
   const {
     control,
@@ -70,10 +60,33 @@ export function RegisterNewMaintenanceOrder() {
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
 
-  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+  const mutation = useMutation({
+    mutationFn: createNewMaintenanceOrder,
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.data.return.message);
+        reset();
+        navigate('HomeOperador');
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
 
   const takeImageHandler = (image: Attachment) => {
     setAttachment(image);
+  };
+
+  const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
+    if (!maintenanceOrdersQueue) return;
+    const newQueue = [...maintenanceOrdersQueue, om];
+    setMaintenanceOrdersQueue(newQueue);
   };
 
   const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
@@ -109,22 +122,26 @@ export function RegisterNewMaintenanceOrder() {
       location,
     };
 
-    if (attachment.uri) {
-      const fileName = attachment?.uri.split('/').pop();
-      const payloadAPI: NewMaintenanceOrder.Payload = {
-        asset_code: payload.propertyCode.toUpperCase(),
-        counter: Number(payload.counter),
-        latitude: payload.location.latitude,
-        longitude: payload.location.longitude,
-        service_type: payload.type === 'Preventiva' ? 'P' : 'C',
-        status: 4,
-        start_prev_date: payload.startDate.split('T')[0],
-        start_prev_hr: payload.startDate.split('T')[1],
-        end_prev_date: payload.endDate.split('T')[0],
-        end_prev_hr: payload.endDate.split('T')[1],
-        obs: payload.obs,
-        resp_id: user ? user.id : 0,
-        symptoms: [
+    const payloadAPI: NewMaintenanceOrder.Payload = {
+      asset_code: payload.propertyCode.toUpperCase(),
+      counter: Number(payload.counter),
+      latitude: payload.location.latitude,
+      longitude: payload.location.longitude,
+      service_type: payload.type === 'Preventiva' ? 'P' : 'C',
+      status: 4,
+      start_prev_date: payload.startDate.split('T')[0],
+      start_prev_hr: payload.startDate.split('T')[1],
+      end_prev_date: payload.endDate.split('T')[0],
+      end_prev_hr: payload.endDate.split('T')[1],
+      obs: payload.obs,
+      resp_id: user ? user.id : 0,
+      symptoms: [],
+    };
+
+    if (isConnected) {
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
+        const symptoms = [
           {
             id: null,
             description: payload.symptom,
@@ -134,31 +151,66 @@ export function RegisterNewMaintenanceOrder() {
               base64: [attachment?.base64],
             },
           },
-        ],
-      };
-      mutation.mutate(payloadAPI);
-    } else {
-      const payloadAPI: NewMaintenanceOrder.Payload = {
-        asset_code: payload.propertyCode.toUpperCase(),
-        counter: Number(payload.counter),
-        latitude: payload.location.latitude,
-        longitude: payload.location.longitude,
-        service_type: payload.type === 'Preventiva' ? 'P' : 'C',
-        status: 4,
-        start_prev_date: payload.startDate.split('T')[0],
-        start_prev_hr: payload.startDate.split('T')[1],
-        end_prev_date: payload.endDate.split('T')[0],
-        end_prev_hr: payload.endDate.split('T')[1],
-        obs: '',
-        resp_id: user ? user.id : 0,
-        symptoms: [
+        ];
+
+        payloadAPI.symptoms = symptoms;
+
+        mutation.mutate(payloadAPI);
+      } else if (!attachment.uri) {
+        const symptoms = [
           {
             id: null,
             description: payload.symptom,
           },
-        ],
-      };
-      mutation.mutate(payloadAPI);
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        mutation.mutate(payloadAPI);
+      }
+    } else if (!isConnected) {
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          },
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        addOMToQueue(payloadAPI);
+
+        Alert.alert(
+          'Sucesso',
+          'Ordem de manutenção salva para envio posterior quando a conexão com a internet for reestabelecida.',
+        );
+
+        reset();
+        goBack();
+      } else {
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+          },
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        addOMToQueue(payloadAPI);
+
+        Alert.alert(
+          'Sucesso',
+          'Ordem de manutenção salva para envio posterior quando a conexão com a internet for reestabelecida.',
+        );
+
+        reset();
+        goBack();
+      }
     }
   };
 
@@ -166,6 +218,7 @@ export function RegisterNewMaintenanceOrder() {
     <>
       <View className="flex flex-1 flex-col bg-white">
         <Header title="Cadastrar Ordem de Manutenção" />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           className="flex flex-1"
@@ -331,6 +384,7 @@ export function RegisterNewMaintenanceOrder() {
             </CustomButton>
           </View>
         </ScrollView>
+        {!isConnected && <NetworkStatus />}
       </View>
     </>
   );
