@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Loading } from '../components/Loading';
 import { useAuth } from '../contexts/auth';
 import { AuthRoutes } from './auth.routes';
 import { LogisticaRoutes } from './logistica.routes';
@@ -9,11 +8,7 @@ import { OperadorRoutes } from './operador.routes';
 import { SolicitanteRoutes } from './solicitante.routes';
 
 const Routes: React.FC = () => {
-  const { isLoading, employee } = useAuth();
-
-  if (isLoading) {
-    return <Loading />;
-  }
+  const { employee } = useAuth();
 
   switch (true) {
     case employee?.function_name.toLowerCase() === 'solicitante':
