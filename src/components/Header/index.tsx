@@ -5,7 +5,7 @@ import { HeaderProps } from './interface';
 
 export function Header({ title, isHomeScreen }: HeaderProps) {
   return (
-    <View className="flex h-28 justify-end bg-primary-500">
+    <View className="flex h-28 justify-end bg-nepomuceno-dark-blue">
       {isHomeScreen ? (
         <View className="flex flex-row items-center justify-between px-5 pb-5">
           <Text className="font-poppinsBold text-lg text-white">{title}</Text>

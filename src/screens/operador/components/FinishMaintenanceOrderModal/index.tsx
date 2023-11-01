@@ -1,10 +1,13 @@
-import { useNavigation } from "@react-navigation/native";
-import { Square } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
+import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Square } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { useAuth } from '../../../../contexts/auth';
+import { endMaintenanceOrderAPI } from '../../../../services/GET/Maintenance/getEndMaintenanceOrder';
+import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
 
 interface FinishMaintenanceOrdemModalProps {
   isSwipeableTrigger?: boolean;
@@ -15,24 +18,54 @@ export function FinishMaintenanceOrderModal({
   isSwipeableTrigger = false,
   omId,
 }: FinishMaintenanceOrdemModalProps) {
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const navigation = useNavigation();
-  const { om } = useContext(OMContext);
+
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: () => listMaintenanceOrderById(employee.id),
+  });
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: endMaintenanceOrderAPI,
+    onSuccess: (response) => {
+      const isStatusTrue = response.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.return[0]);
+      } else {
+        Alert.alert('Erro', response.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
 
   function handleFinishMaintenanceOrder() {
-    const handledOm = om.find((om) => om.id === omId)?.atividades;
+    if (listMaintenanceOrder.data === undefined) return;
+    const handledOm = listMaintenanceOrder.data.find(
+      (om) => om.id === omId,
+    )?.stages;
     const isAllActivitiesFinished = handledOm?.every(
-      (atividade) => atividade.status === "Concluída"
+      (atividade) => atividade.status === 7,
     );
 
     if (isAllActivitiesFinished) {
-      navigation.navigate("CloseMaintenanceOrder", { id: omId });
+      // mutation.mutate(omId);
+      navigation.navigate('CloseMaintenanceOrder', { id: omId });
       setIsModalVisible(false);
     } else {
       setIsModalVisible(false);
       Alert.alert(
-        "Atenção",
-        "Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes."
+        'Atenção',
+        'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
       );
     }
   }

@@ -1,20 +1,39 @@
-import { Prohibit } from "phosphor-react-native";
-import { useContext, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { CustomButton } from "../../../../components/ui/CustomButton";
-import { CustomModal } from "../../../../components/ui/Modal";
-import { OMContext } from "../../../../contexts/om-context";
-import { CancelMaintenanceOrderModalProps } from "./interface";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Prohibit } from 'phosphor-react-native';
+import { useState } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { CustomButton } from '../../../../components/ui/CustomButton';
+import { CustomModal } from '../../../../components/ui/Modal';
+import { deleteMaintenanceOrderAPI } from '../../../../services/DELETE/MaintenanceOrder';
+import { CancelMaintenanceOrderModalProps } from './interface';
 
 export function CancelMaintenanceOrderModal({
   isSwipeableTrigger = false,
   omId,
 }: CancelMaintenanceOrderModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { cancelOM } = useContext(OMContext);
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: deleteMaintenanceOrderAPI,
+    onSuccess: (response) => {
+      const isStatusTrue = response.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.return[0]);
+      } else {
+        Alert.alert('Erro', response.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
 
   function handleCancelOM() {
-    cancelOM(omId);
+    mutation.mutate(omId);
     setIsModalVisible(false);
   }
 

@@ -4,31 +4,11 @@
   },
   "build": {
     "development": {
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleDebug",
-        "buildType": "app-bundle"
-      },
-      "ios": {
-        "buildConfiguration": "Debug"
-      }
+      "developmentClient": true,
+      "distribution": "internal"
     },
-    "preview": {
-      "env": {
-        "ENVIRONMENT": "local",
-        "API_BASE_URL": "https://hom-en-mnt-004.mvxsistemas.com.br/api",
-        "API_USER": "mobile",
-        "API_PASSWORD": "N%+qMpy(zi"
-      }
-    },
-    "production": {
-      "env": {
-        "ENVIRONMENT": "production",
-        "API_BASE_URL": "https://hom-en-mnt-004.mvxsistemas.com.br/api",
-        "API_USER": "mobile",
-        "API_PASSWORD": "N%+qMpy(zi"
-      }
-    }
+    "preview": {},
+    "production": {}
   },
   "submit": {
     "production": {

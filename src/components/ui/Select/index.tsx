@@ -2,7 +2,7 @@ import { Picker } from '@react-native-picker/picker';
 import { Text, View } from 'react-native';
 
 interface SelectProps {
-  label: string;
+  label?: string;
   selected: string;
   setSelected: (value: string) => void;
   options: string[];
@@ -24,7 +24,7 @@ export function Select({
             *
           </Text>
         ) : null}
-        {label.length > 0 ? (
+        {label && label.length > 0 ? (
           <Text className="font-poppinsBold text-sm leading-4 text-neutral-900">
             {label.toLocaleUpperCase()}
           </Text>

@@ -1,17 +1,17 @@
-import { CheckCircle, WarningCircle } from "phosphor-react-native";
-import { Text, View } from "react-native";
+import { CheckCircle, WarningCircle, X } from 'phosphor-react-native';
+import { Text, View } from 'react-native';
 
-import clsx from "clsx";
+import clsx from 'clsx';
 
 interface CardTitleProps {
   children: React.ReactNode;
-  status?: string;
+  status?: number;
 }
 
 export function CardTitle({ children, status }: CardTitleProps) {
   return (
     <View className="mb-2 flex-row items-center justify-center">
-      {status === "Finalizada" && (
+      {status === 7 && (
         <CheckCircle
           color="#046700"
           weight="bold"
@@ -19,7 +19,7 @@ export function CardTitle({ children, status }: CardTitleProps) {
           style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
-      {status === "Cancelada" && (
+      {status === 8 && (
         <WarningCircle
           color="#B50202"
           weight="bold"
@@ -27,13 +27,23 @@ export function CardTitle({ children, status }: CardTitleProps) {
           style={{ marginRight: 8, marginBottom: 4 }}
         />
       )}
+      {status === 2 && (
+        <X
+          color="#B50202"
+          weight="bold"
+          size={18}
+          style={{ marginRight: 8, marginBottom: 4 }}
+        />
+      )}
       <Text
-        className={clsx("text-center font-poppinsBold text-lg text-white", {
-          ["mr-4 text-neutral-900"]:
-            status === "Finalizada" || status === "Cancelada",
-        })}
+        className={clsx(
+          'text-center font-poppinsBold text-lg text-neutral-900',
+          {
+            ['mr-4 text-neutral-900']: status === 7 || status === 8,
+          },
+        )}
       >
-        {children}
+        {children?.toString().toUpperCase()}
       </Text>
     </View>
   );

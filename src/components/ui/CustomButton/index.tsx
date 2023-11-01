@@ -10,8 +10,8 @@ export function CustomButton({ variant, children, ...rest }: Props) {
   return (
     <TouchableOpacity
       className={clsx('flex h-14 items-center justify-center rounded-lg', {
-        ['bg-primary-500']: variant === 'primary',
-        ['border-2 border-primary-500']: variant === 'outline',
+        ['bg-nepomuceno-dark-blue']: variant === 'primary',
+        ['border-2 border-nepomuceno-dark-blue']: variant === 'outline',
         ['bg-transparent']: variant === 'ghost',
         ['bg-status-red']: variant === 'cancel',
         ['bg-status-green']: variant === 'finish',
@@ -27,7 +27,8 @@ export function CustomButton({ variant, children, ...rest }: Props) {
               variant === 'primary' ||
               variant === 'cancel' ||
               variant === 'finish',
-            ['text-primary-500']: variant === 'outline' || variant === 'ghost',
+            ['text-nepomuceno-dark-blue']:
+              variant === 'outline' || variant === 'ghost',
           },
         )}
       >

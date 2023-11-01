@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Loading } from '../components/Loading';
 import { useAuth } from '../contexts/auth';
 import { AuthRoutes } from './auth.routes';
 import { LogisticaRoutes } from './logistica.routes';
@@ -9,20 +8,18 @@ import { OperadorRoutes } from './operador.routes';
 import { SolicitanteRoutes } from './solicitante.routes';
 
 const Routes: React.FC = () => {
-  const { isLoading, user } = useAuth();
-
-  if (isLoading) {
-    return <Loading />;
-  }
+  const { employee } = useAuth();
 
   switch (true) {
-    case user?.user_type_name.toLowerCase() === 'solicitante':
+    case employee?.function_name.toLowerCase() === 'solicitante':
       return <SolicitanteRoutes />;
-    case user?.user_type_name.toLowerCase() === 'logistica':
+    case employee?.function_name.toLowerCase() === 'gestor de logística':
       return <LogisticaRoutes />;
-    case user?.user_type_name.toLowerCase() === 'manutencao':
+    case employee?.function_name.toLowerCase() === 'gestor de frota':
       return <ManutencaoRoutes />;
-    case user?.user_type_name.toLowerCase() === 'utilizador':
+    case employee?.function_name.toLowerCase() === 'operador':
+      return <OperadorRoutes />;
+    case employee?.function_name.toLowerCase() === 'administrador':
       return <OperadorRoutes />;
     default:
       return <AuthRoutes />;

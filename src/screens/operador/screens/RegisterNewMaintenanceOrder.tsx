@@ -1,30 +1,48 @@
-import { ScrollView, View } from "react-native";
+import { Alert, ScrollView, View } from 'react-native';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation } from "@react-navigation/native";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { Header } from "../../../components/Header";
-import { QRCodeScannerModal } from "../../../components/QRCodeScannerModal";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { Input } from "../../../components/ui/Input";
-import { Select } from "../../../components/ui/Select";
-import { TextArea } from "../../../components/ui/TextArea";
-import { useAuth } from "../../../contexts/auth";
-import { OMContext } from "../../../contexts/om-context";
-import { useGetLocation } from "../../../hooks/useGetLocation";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation } from '@react-navigation/native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { Text } from 'react-native';
+import { useMMKVObject } from 'react-native-mmkv';
+import { Header } from '../../../components/Header';
+import { ImagePicker } from '../../../components/ImagePicker';
+import { NetworkStatus } from '../../../components/NetworkStatus';
+import { QRCodeScannerModal } from '../../../components/QRCodeScannerModal';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { Select } from '../../../components/ui/Select';
+import { TextArea } from '../../../components/ui/TextArea';
+import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
+import { useGetLocation } from '../../../hooks/useGetLocation';
+import { Attachment } from '../../../interfaces/Attachment.interface';
+import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
+import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
-} from "../../../validations/operador/RegisterNewMaintenanceOrderScreen";
+} from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();
-  const { goBack } = useNavigation();
-  const { createNewOMAPI } = useContext(OMContext);
+  const { goBack, navigate } = useNavigation();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { isConnected } = useCheckInternetConnection();
+
+  const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
+  const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
+    useMMKVObject<NewMaintenanceOrder.Payload[]>(
+      'queuedCreateNewMaintenanceOrder',
+    );
+  if (queuedCreateNewMaintenanceOrder === undefined)
+    setQueuedCreateNewMaintenanceOrder([]);
 
   const {
     control,
@@ -33,47 +51,176 @@ export function RegisterNewMaintenanceOrder() {
     reset,
   } = useForm<RegisterNewMaintenanceOrderFormData>({
     defaultValues: {
-      propertyCode: "",
-      counter: "",
+      propertyCode: '',
+      counter: '',
       startDate: new Date(),
-      endDate: new Date(new Date().setHours(new Date().getHours() + 1)),
-      symptom: "",
-      type: "",
+      endDate: new Date(),
+      symptom: '',
+      type: '',
+      obs: '',
     },
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
 
+  const mutation = useMutation({
+    mutationFn: createNewMaintenanceOrder,
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.data.return.message);
+        reset();
+        navigate('HomeOperador');
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
+
+  const takeImageHandler = (image: Attachment) => {
+    setAttachment(image);
+  };
+
+  const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
+    if (!queuedCreateNewMaintenanceOrder) return;
+    const newQueue = [...queuedCreateNewMaintenanceOrder, om];
+    setQueuedCreateNewMaintenanceOrder(newQueue);
+  };
+
   const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
+    if (data.startDate.toISOString() === data.endDate.toISOString()) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser igual a data de término',
+      );
+
+      return;
+    } else if (data.startDate > data.endDate) {
+      Alert.alert(
+        'Erro',
+        'A data de início não pode ser maior que a data de término',
+      );
+      return;
+    }
+
+    if (data.type === 'Selecione') {
+      Alert.alert('Erro', 'Selecione um tipo de OS');
+      return;
+    }
+
+    const datesWithCorrectTimezone = {
+      startDate: handleTimezone(data.startDate),
+      endDate: handleTimezone(data.endDate),
+    };
+
     const payload = {
       ...data,
-      startDate: data.startDate.toISOString(),
-      endDate: data.endDate.toISOString(),
+      startDate: datesWithCorrectTimezone.startDate.toISOString(),
+      endDate: datesWithCorrectTimezone.endDate.toISOString(),
       location,
     };
 
-    const payloadAPI = {
+    const payloadAPI: NewMaintenanceOrder.Payload = {
       asset_code: payload.propertyCode.toUpperCase(),
       counter: Number(payload.counter),
-      service_type: payload.type === "Preventiva" ? "P" : "C",
-      status: 5, //TODO: Verificar
-      start_prev_date: payload.startDate.split("T")[0],
-      start_prev_hr: payload.startDate.split("T")[1],
-      end_prev_date: payload.endDate.split("T")[0],
-      end_prev_hr: payload.endDate.split("T")[1],
-      symptom: payload.symptom,
+      latitude: payload.location.latitude,
+      longitude: payload.location.longitude,
+      service_type: payload.type === 'Preventiva' ? 'P' : 'C',
+      status: 4,
+      start_prev_date: payload.startDate.split('T')[0],
+      start_prev_hr: payload.startDate.split('T')[1],
+      end_prev_date: payload.endDate.split('T')[0],
+      end_prev_hr: payload.endDate.split('T')[1],
+      obs: payload.obs,
       resp_id: user ? user.id : 0,
+      symptoms: [],
     };
 
-    createNewOMAPI(payloadAPI);
+    if (isConnected) {
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          },
+        ];
 
-    reset();
-    goBack();
+        payloadAPI.symptoms = symptoms;
+
+        mutation.mutate(payloadAPI);
+      } else if (!attachment.uri) {
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+          },
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        mutation.mutate(payloadAPI);
+      }
+    } else if (!isConnected) {
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          },
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        addOMToQueue(payloadAPI);
+
+        Alert.alert(
+          'Atenção',
+          'Você está offline. A OM será cadastrada assim que você estiver online.',
+        );
+
+        reset();
+        goBack();
+      } else {
+        const symptoms = [
+          {
+            id: null,
+            description: payload.symptom,
+          },
+        ];
+        payloadAPI.symptoms = symptoms;
+
+        addOMToQueue(payloadAPI);
+
+        Alert.alert(
+          'Sucesso',
+          'Ordem de manutenção salva para envio posterior quando a conexão com a internet for reestabelecida.',
+        );
+
+        reset();
+        goBack();
+      }
+    }
   };
 
   return (
     <>
       <View className="flex flex-1 flex-col bg-white">
         <Header title="Cadastrar Ordem de Manutenção" />
+
         <ScrollView
           showsVerticalScrollIndicator={false}
           className="flex flex-1"
@@ -141,6 +288,7 @@ export function RegisterNewMaintenanceOrder() {
                     onDateSelect={onChange}
                     label="Data e hora da parada informada"
                     mode="datetime"
+                    required
                   />
                 )}
                 name="startDate"
@@ -159,12 +307,32 @@ export function RegisterNewMaintenanceOrder() {
                     onDateSelect={onChange}
                     label="Data e hora da previsão de término"
                     mode="datetime"
+                    required
                   />
                 )}
                 name="endDate"
               />
               {errors.endDate?.message ? (
                 <ErrorText>{errors.endDate?.message}</ErrorText>
+              ) : null}
+            </View>
+
+            <View className="mb-7">
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <Select
+                    required
+                    label="TIPO DA OS (Ordem de Serviço)"
+                    selected={value}
+                    setSelected={onChange}
+                    options={['Selecione', 'Preventiva', 'Corretiva']}
+                  />
+                )}
+                name="type"
+              />
+              {errors.type?.message ? (
+                <ErrorText>{errors.type?.message}</ErrorText>
               ) : null}
             </View>
 
@@ -178,7 +346,6 @@ export function RegisterNewMaintenanceOrder() {
                     onChangeText={onChange}
                     value={value}
                     placeholder="Digite"
-                    required
                   />
                 )}
                 name="symptom"
@@ -188,22 +355,29 @@ export function RegisterNewMaintenanceOrder() {
               ) : null}
             </View>
 
-            <View className="mb-7">
+            <View className="mb-5">
+              <Text className="mb-1 font-poppinsBold text-sm leading-4 text-neutral-900">
+                ANEXO (OPCIONAL)
+              </Text>
+              <ImagePicker onTakeImage={takeImageHandler} />
+            </View>
+
+            <View className="mb-4">
               <Controller
                 control={control}
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    required
-                    label="TIPO DA OS (Ordem de Serviço)"
-                    selected={value}
-                    setSelected={onChange}
-                    options={["Preventiva", "Corretiva"]}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextArea
+                    onBlur={onBlur}
+                    label="Observações"
+                    onChangeText={onChange}
+                    value={value}
+                    placeholder="Digite"
                   />
                 )}
-                name="type"
+                name="obs"
               />
-              {errors.type?.message ? (
-                <ErrorText>{errors.type?.message}</ErrorText>
+              {errors.obs?.message ? (
+                <ErrorText>{errors.obs?.message}</ErrorText>
               ) : null}
             </View>
 
@@ -212,6 +386,7 @@ export function RegisterNewMaintenanceOrder() {
             </CustomButton>
           </View>
         </ScrollView>
+        {!isConnected && <NetworkStatus />}
       </View>
     </>
   );

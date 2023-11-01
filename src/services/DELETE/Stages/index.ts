@@ -1,11 +1,11 @@
-import { api } from "../../api";
-import { DeleteStages } from "./inteface";
+import { api } from '../../api';
+import { DeleteStages } from './inteface';
 
 export const apiDeleteStage = async (
-  stageId: string
+  stageId: string | number,
 ): Promise<DeleteStages.Response> => {
   const response = await api.delete(
-    `/maintenance/deleteMainOrderStage/${stageId}`
+    `/maintenance/deleteMainOrderStage/${stageId}`,
   );
   return response.data;
 };

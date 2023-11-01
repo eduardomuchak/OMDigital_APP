@@ -1,10 +1,10 @@
-import { useRoute } from '@react-navigation/native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'phosphor-react-native';
-import { useContext, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
-import { OMContext } from '../../../../contexts/om-context';
+import { apiDeleteStage } from '../../../../services/DELETE/Stages';
 
 interface DeleteActivityModalProps {
   activityId: number;
@@ -12,14 +12,27 @@ interface DeleteActivityModalProps {
 
 export function DeleteActivityModal({ activityId }: DeleteActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { deleteStage } = useContext(OMContext);
+  const queryClient = useQueryClient();
 
-  // id da OM
-  const route = useRoute();
-  const { id: omId } = route.params as { id: number };
+  const mutation = useMutation({
+    mutationFn: apiDeleteStage,
+    onSuccess: (response) => {
+      const isStatusTrue = response.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.return[0]);
+      } else {
+        Alert.alert('Erro', response.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
 
   function handleDeleteActivity() {
-    deleteStage(activityId.toString());
+    mutation.mutate(activityId);
     setIsModalVisible(false);
   }
 

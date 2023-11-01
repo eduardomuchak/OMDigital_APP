@@ -10,10 +10,10 @@ import { List, ListBullets, Wrench } from 'phosphor-react-native';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { LogoutModal } from '../components/LogoutModal';
 import { useAuth } from '../contexts/auth';
-import { OMContextProvider } from '../contexts/om-context';
 import { Home } from '../screens/manutencao/screens/Home';
 import { OpenedRequests } from '../screens/manutencao/screens/OpenedRequests';
 import { RegisteredActivities } from '../screens/manutencao/screens/RegisteredActivities';
+import { textCapitalizer } from '../utils/textCapitalize';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -31,27 +31,32 @@ const OpenDrawerIcon = ({ navigation }: DrawerHeaderProps) => {
 };
 
 function DrawerNavigator() {
-  const { user } = useAuth();
+  const { employee } = useAuth();
+  if (!employee) return <></>;
+
   return (
     <Drawer.Navigator
       initialRouteName="OpenedRequests"
       screenOptions={{
         header(props) {
           return (
-            <View className="items- flex h-28 w-full flex-row items-end justify-between bg-primary-500 px-5 pb-5">
+            <View className="items- flex h-28 w-full flex-row items-end justify-between bg-nepomuceno-dark-blue px-5 pb-5">
               <View className="flex-row items-end space-x-4">
                 <OpenDrawerIcon {...props} />
-                <Text className="h-6 font-poppinsBold text-lg text-white">{`Olá, ${user?.user}`}</Text>
+                <Text className="h-6 font-poppinsBold text-lg text-white">{`Olá, ${textCapitalizer(
+                  employee?.name,
+                )}`}</Text>
               </View>
               <LogoutModal />
             </View>
           );
         },
         drawerInactiveTintColor: '#fff',
-        drawerActiveTintColor: '#1D2F99',
+        drawerActiveTintColor: '#1F295B',
         drawerActiveBackgroundColor: '#ffffff',
+        drawerInactiveBackgroundColor: '#1F295B',
         drawerStyle: {
-          backgroundColor: '#1D2F99',
+          backgroundColor: '#1F295B',
           width: '90%',
           padding: 12,
           paddingTop: 36,
@@ -66,6 +71,8 @@ function DrawerNavigator() {
           borderRadius: 12,
           paddingLeft: 12,
           paddingVertical: 4,
+          borderWidth: 2,
+          borderColor: '#fff',
         },
       }}
     >
@@ -77,7 +84,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused }) => (
             <Wrench
               size={24}
-              color={focused ? '#1D2F99' : '#ffffff'}
+              color={focused ? '#1F295B' : '#ffffff'}
               weight="bold"
             />
           ),
@@ -91,7 +98,7 @@ function DrawerNavigator() {
           drawerIcon: ({ focused }) => (
             <ListBullets
               size={24}
-              color={focused ? '#1D2F99' : '#ffffff'}
+              color={focused ? '#1F295B' : '#ffffff'}
               weight="bold"
             />
           ),
@@ -102,19 +109,17 @@ function DrawerNavigator() {
 }
 
 export const ManutencaoRoutes: React.FC = () => (
-  <OMContextProvider>
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Drawer" component={DrawerNavigator} />
-      <Stack.Screen name="HomeManutencao" component={Home} />
-      <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
-      <Stack.Screen
-        name="RegisteredActivities"
-        component={RegisteredActivities}
-      />
-    </Stack.Navigator>
-  </OMContextProvider>
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false,
+    }}
+  >
+    <Stack.Screen name="Drawer" component={DrawerNavigator} />
+    <Stack.Screen name="HomeManutencao" component={Home} />
+    <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
+    <Stack.Screen
+      name="RegisteredActivities"
+      component={RegisteredActivities}
+    />
+  </Stack.Navigator>
 );

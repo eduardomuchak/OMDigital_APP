@@ -1,8 +1,8 @@
-import { ScrollView, Text, View } from "react-native";
-import { Symptom } from "../../../../services/POST/Symptoms/symptom.interface";
+import { ScrollView, Text, View } from 'react-native';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 
 interface CardProps {
-  symptom: Symptom.SymptomList;
+  symptom: ListMaintenanceOrder.Symptoms;
 }
 
 function Card({ symptom }: CardProps) {
@@ -19,7 +19,7 @@ function Card({ symptom }: CardProps) {
 }
 
 interface StaticSymptomListProps {
-  symptoms: Symptom.SymptomList[];
+  symptoms: ListMaintenanceOrder.Symptoms[];
 }
 
 export function StaticSymptomList({ symptoms }: StaticSymptomListProps) {

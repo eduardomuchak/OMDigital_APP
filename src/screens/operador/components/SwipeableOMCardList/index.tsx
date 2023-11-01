@@ -1,27 +1,42 @@
-import { useNavigation } from "@react-navigation/native";
-import { CheckCircle, WarningCircle } from "phosphor-react-native";
-import React from "react";
-import { Dimensions, ListRenderItemInfo, Text, View } from "react-native";
-import { SwipeListView } from "react-native-swipe-list-view";
+import { useNavigation } from '@react-navigation/native';
+import { CheckCircle, WarningCircle } from 'phosphor-react-native';
+import React from 'react';
+import {
+  Dimensions,
+  ListRenderItemInfo,
+  RefreshControl,
+  Text,
+  View,
+} from 'react-native';
+import { SwipeListView } from 'react-native-swipe-list-view';
 
-import { OMCard } from "../../../../components/OMCard";
-import { CancelMaintenanceOrderModal } from "../CancelMaintenanceOrderModal";
-import { OMMockProps } from "../FilterModal/interface";
-import { FinishMaintenanceOrderModal } from "../FinishMaintenanceOrderModal";
+import { useQueryClient } from '@tanstack/react-query';
+import { OMCard } from '../../../../components/OMCard';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
+import { CancelMaintenanceOrderModal } from '../CancelMaintenanceOrderModal';
+import { FinishMaintenanceOrderModal } from '../FinishMaintenanceOrderModal';
 
 interface SwipeableOMCardListProps {
-  maintenanceOrders: OMMockProps;
+  maintenanceOrders: ListMaintenanceOrder.MaintenanceOrder[];
+  isRefetching: boolean;
 }
 
-export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
+export const SwipeableOMCardList = ({
+  maintenanceOrders,
+  isRefetching,
+}: SwipeableOMCardListProps) => {
   const { navigate } = useNavigation();
+  const queryClient = useQueryClient();
 
-  const screenWidth = Dimensions.get("window").width;
+  const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
 
-  const HandleStatus = ({ maintenanceOrders }: SwipeableOMCardListProps) => {
+  const HandleStatus = (
+    maintenanceOrders: ListMaintenanceOrder.MaintenanceOrder,
+  ) => {
     switch (maintenanceOrders.status) {
-      case "Concluída":
+      case 7:
+        // Finalizada
         return (
           <View className="items-center justify-center">
             <CheckCircle size={56} color="#3a9b15" weight="bold" />
@@ -31,7 +46,8 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
             </Text>
           </View>
         );
-      case "Cancelada":
+      case 8:
+        // Cancelada
         return (
           <View className="items-center justify-center">
             <WarningCircle size={56} color="#B50202" weight="bold" />
@@ -60,32 +76,23 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
 
   const renderItem = ({
     item,
-  }: ListRenderItemInfo<
-    SwipeableOMCardListProps["maintenanceOrders"]
-  >): JSX.Element => {
+  }: ListRenderItemInfo<ListMaintenanceOrder.MaintenanceOrder>): JSX.Element => {
     return (
       <OMCard
-        isFinishOrCancel={
-          item.status === "Cancelada" || item.status === "Finalizada"
-            ? true
-            : false
-        }
         key={item.id}
-        {...item}
         onPress={() =>
-          navigate("RegisteredActivitiesOperador", {
+          navigate('RegisteredActivitiesOperador', {
             id: item.id,
           })
         }
+        maintenanceOrder={item}
       />
     );
   };
 
   const renderHiddenItem = ({
     item,
-  }: ListRenderItemInfo<
-    SwipeableOMCardListProps["maintenanceOrders"]
-  >): JSX.Element => {
+  }: ListRenderItemInfo<ListMaintenanceOrder.MaintenanceOrder>): JSX.Element => {
     return (
       <View
         className={`flex-1 items-center justify-center `}
@@ -93,34 +100,61 @@ export const SwipeableOMCardList = ({ maintenanceOrders }: any) => {
           width: halfScreenWidth,
         }}
       >
-        {HandleStatus({ maintenanceOrders: item })}
+        {HandleStatus(item)}
       </View>
     );
   };
 
+  const onRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+    queryClient.invalidateQueries({ queryKey: ['listStageStatus'] });
+    queryClient.invalidateQueries({ queryKey: ['allOperations'] });
+    queryClient.invalidateQueries({ queryKey: ['listOperation'] });
+  };
+
   return (
-    <SwipeListView
-      style={{
-        paddingHorizontal: screenWidth > 500 ? 0 : 24,
-        paddingTop: 12,
-        paddingBottom: 96,
-        width: "100%",
-        maxWidth: 500,
-        display: "flex",
-        alignSelf: "center",
-      }}
-      data={maintenanceOrders}
-      renderItem={renderItem}
-      renderHiddenItem={renderHiddenItem}
-      leftOpenValue={halfScreenWidth}
-      rightOpenValue={-halfScreenWidth}
-      disableLeftSwipe={true}
-      disableRightSwipe={false}
-      swipeToOpenPercent={30}
-      swipeToClosePercent={30}
-      ListFooterComponent={() => <View className="h-28" />}
-      ItemSeparatorComponent={() => <View className="h-3" />}
-      showsVerticalScrollIndicator={false}
-    />
+    <>
+      {maintenanceOrders.length > 0 ? (
+        <SwipeListView
+          style={{
+            paddingHorizontal: screenWidth > 500 ? 0 : 24,
+            paddingTop: 12,
+            paddingBottom: 96,
+            width: '100%',
+            maxWidth: 500,
+            display: 'flex',
+            alignSelf: 'center',
+          }}
+          data={maintenanceOrders}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          leftOpenValue={halfScreenWidth}
+          rightOpenValue={-halfScreenWidth}
+          disableLeftSwipe={true}
+          disableRightSwipe={false}
+          swipeToOpenPercent={30}
+          swipeToClosePercent={30}
+          ListFooterComponent={() => <View className="h-28" />}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          ListEmptyComponent={() => (
+            <View className="my-48 flex flex-1 items-center justify-center">
+              <Text className="text-neutral text-center font-poppinsBold text-lg">
+                Nenhuma ordem de manutenção encontrada
+              </Text>
+            </View>
+          )}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
+          }
+        />
+      ) : (
+        <View className="flex-1 items-center justify-center">
+          <Text className="text-neutral px-5 text-center font-poppinsBold text-lg">
+            Nenhuma ordem de manutenção foi encontrada
+          </Text>
+        </View>
+      )}
+    </>
   );
 };

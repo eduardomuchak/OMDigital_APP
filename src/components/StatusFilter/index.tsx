@@ -20,7 +20,7 @@ export function StatusFilter({
         {filterTitle}
       </Text>
       <View className="absolute right-8 top-0">
-        <Funnel size={26} color="#1D2F99" weight="fill" />
+        <Funnel size={26} color="#1F295B" weight="fill" />
       </View>
     </TouchableOpacity>
   );

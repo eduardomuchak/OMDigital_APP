@@ -73,7 +73,7 @@ export function ImagePicker({ onTakeImage }: ImagePickerProps) {
           }}
           onPress={takeImageHandler}
         >
-          <CameraIcon size={30} color="#1D2F99" weight="bold" />
+          <CameraIcon size={30} color="#1F295B" weight="bold" />
         </TouchableOpacity>
       ) : (
         <Animated.View entering={FadeInDown} exiting={FadeOutDown}>

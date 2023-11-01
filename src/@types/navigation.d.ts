@@ -1,5 +1,5 @@
-import { RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 declare global {
   namespace ReactNavigation {
@@ -20,6 +20,7 @@ declare global {
       CloseMaintenanceOrder: { id: number };
       Camera: undefined;
       OpenedRequests: undefined;
+      SyncOperator: undefined;
     }
   }
 

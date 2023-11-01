@@ -1,20 +1,20 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useContext } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
-import { Header } from "../../../components/Header";
-import { CustomButton } from "../../../components/ui/CustomButton";
-import { CustomDateTimePicker } from "../../../components/ui/CustomDateTimePicker";
-import { ErrorText } from "../../../components/ui/ErrorText";
-import { Input } from "../../../components/ui/Input";
-import { TextArea } from "../../../components/ui/TextArea";
-import { OMContext } from "../../../contexts/om-context";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, ScrollView, View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { CustomButton } from '../../../components/ui/CustomButton';
+import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
+import { ErrorText } from '../../../components/ui/ErrorText';
+import { Input } from '../../../components/ui/Input';
+import { TextArea } from '../../../components/ui/TextArea';
+import { endMaintenanceOrderAPI } from '../../../services/GET/Maintenance/getEndMaintenanceOrder';
 import {
   CloseMaintenanceOrderFormData,
   CloseMaintenanceOrderSchema,
-} from "../../../validations/operador/CloseMaintenanceOrderScreen";
-import { CloseMaintenanceOrderCardInfo } from "../components/CloseMaintenanceOrderCardInfo";
+} from '../../../validations/operador/CloseMaintenanceOrderScreen';
+import { CloseMaintenanceOrderCardInfo } from '../components/CloseMaintenanceOrderCardInfo';
 
 export function CloseMaintenanceOrder() {
   const {
@@ -24,40 +24,52 @@ export function CloseMaintenanceOrder() {
     reset,
   } = useForm<CloseMaintenanceOrderFormData>({
     defaultValues: {
-      counter: "",
+      counter: '',
       endDate: new Date(
         new Date().getFullYear(),
         new Date().getMonth(),
         new Date().getDate(),
         0,
         0,
-        0
+        0,
       ),
     },
     resolver: zodResolver(CloseMaintenanceOrderSchema),
   });
-  const { finishOM } = useContext(OMContext);
   const route = useRoute();
   const { id: omId } = route.params as { id: string };
   const navigation = useNavigation();
 
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: endMaintenanceOrderAPI,
+    onSuccess: (response) => {
+      const isStatusTrue = response.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+        Alert.alert('Sucesso', response.return.message);
+        reset();
+        navigation.navigate('HomeOperador');
+      } else {
+        Alert.alert('Erro', response.return.message);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
+
   const onSubmit = (data: CloseMaintenanceOrderFormData) => {
-    const payload = data;
-    finishOM(
-      Number(omId),
-      payload.endDate.toISOString(),
-      Number(payload.counter),
-      payload.comments
-    );
-    reset();
-    navigation.navigate("HomeOperador");
+    mutation.mutate(omId);
   };
 
   //PAYLOAD => {"comments": "sim", "counter": "555", "endDate": 2023-06-14T06:00:00.000Z}
 
   return (
     <View className="flex flex-1 flex-col bg-white">
-      <Header title={"Encerrar Ordem de Manutenção"} />
+      <Header title={'Encerrar Ordem de Manutenção'} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <CloseMaintenanceOrderCardInfo />
         <View className="px-6">

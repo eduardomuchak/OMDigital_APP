@@ -1,23 +1,39 @@
 export namespace Stage {
+  export interface Image {
+    name: (string | undefined)[];
+    tmp_name: (string | undefined)[];
+    base64: string[];
+  }
+
+  export interface FetchImage {
+    name: string;
+    path: string;
+  }
   export interface StagesList {
-    id: number;
-    maintenance_order_id: number;
-    status: number;
+    asset_code: string;
+    datetime: string;
     description: string;
-    man_power_id: string;
-    start_date: string;
-    start_hr: string;
     end_date: string;
     end_hr: string;
-    task_protheus: string;
-    stage_protheus: string;
-    datetime: string;
-    resp_id: number;
-    st: number;
-    asset_code: string;
-    service_type: string;
-    service_code: string;
+    id: number;
+    images: FetchImage[];
+    maintenance_order_id: number;
+    man_power_id: null | number;
     mo_status: number;
+    obs: null | string;
+    resp_id: number;
+    service_code: string;
+    service_type: string;
+    st: number;
+    stage_protheus: string;
+    start_date: string;
+    start_hr: string;
+    status: number;
+    task_protheus: string;
+    start_prev_date: string;
+    start_prev_hr: string;
+    end_prev_date: string;
+    end_prev_hr: string;
   }
 
   export interface StagesListProps {
@@ -28,10 +44,11 @@ export namespace Stage {
     maintenance_order_id: number;
     description: string;
     obs: string;
-    start_date: string;
-    start_hr: string;
-    end_date: string;
-    end_hr: string;
+    start_date: string | null;
+    start_hr: string | null;
+    end_date: string | null;
+    end_hr: string | null;
     resp_id: number;
+    images?: Image;
   }
 }

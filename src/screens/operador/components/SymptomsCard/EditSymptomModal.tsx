@@ -7,16 +7,14 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { ErrorText } from '../../../../components/ui/ErrorText';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { TextArea } from '../../../../components/ui/TextArea';
+import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import {
   EditMaintenanceOrderFormData,
   EditMaintenanceOrderSchema,
 } from '../../../../validations/operador/EditMaintenanceOrderScreen';
 
 interface EditSymptomModalProps {
-  symptom: {
-    id: number;
-    descricao: string;
-  };
+  symptom: ListMaintenanceOrder.Symptoms;
   onEditSymptom: (editedSymptom: { id: number; descricao: string }) => void;
 }
 
@@ -33,7 +31,7 @@ export function EditSymptomModal({
     getValues,
   } = useForm<EditMaintenanceOrderFormData>({
     defaultValues: {
-      symptomDescription: symptom.descricao,
+      symptomDescription: symptom.description,
     },
     resolver: zodResolver(EditMaintenanceOrderSchema),
   });
@@ -48,7 +46,7 @@ export function EditSymptomModal({
   return (
     <>
       <TouchableOpacity
-        className="h-full justify-center rounded-br-lg rounded-tr-lg bg-primary-500 p-2"
+        className="h-full justify-center rounded-br-lg rounded-tr-lg bg-nepomuceno-dark-blue p-2"
         onPress={() => setIsModalVisible(true)}
         activeOpacity={0.7}
       >

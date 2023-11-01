@@ -1,53 +1,48 @@
-import { useRoute } from "@react-navigation/native";
-import { useContext, useEffect, useMemo } from "react";
-import { View } from "react-native";
-
-import { Header } from "../../../components/Header";
-
-import { OMContext } from "../../../contexts/om-context";
-import { OperationInfoCard } from "../../manutencao/components/OperationInfoCard";
-import { SwipeableActivityCardList } from "../components/SwipeableActivityCardList";
+import { useRoute } from '@react-navigation/native';
+import { useQuery } from '@tanstack/react-query';
+import { View } from 'react-native';
+import { Header } from '../../../components/Header';
+import { Loading } from '../../../components/Loading';
+import { SyncLoading } from '../../../components/SyncLoading';
+import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
+import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
+import { SwipeableActivityCardList } from '../components/SwipeableActivityCardList';
 
 export function RegisteredActivities() {
-  const { mappedMaintenanceOrder, handleLegendStageStatus } =
-    useContext(OMContext);
   const route = useRoute();
   const { id } = route.params as { id: number };
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
+  const { isConnected } = useCheckInternetConnection();
 
-  const filteredOM = useMemo(() => {
-    return mappedMaintenanceOrder.filter((om) => om.id === id);
-  }, [mappedMaintenanceOrder, id]);
+  const listMaintenanceOrder = useQuery({
+    queryKey: ['listMaintenanceOrder'],
+    queryFn: () => listMaintenanceOrderById(employee.id),
+  });
 
-  const activities = filteredOM[0]?.atividades;
-
-  const operationInfoProps = {
-    codigoBem: filteredOM[0]?.codigoBem,
-    ordemManutencao: filteredOM[0]?.ordemManutencao,
-    operacao: filteredOM[0]?.operacao,
-    paradaReal: filteredOM[0]?.paradaReal,
-    prevFim: filteredOM[0]?.prevFim,
-    latitude: filteredOM[0]?.latitude,
-    longitude: filteredOM[0]?.longitude,
-    contador: filteredOM[0]?.contador,
-    tipo: filteredOM[0]?.tipo,
-  };
-
-  const symptoms = filteredOM[0]?.sintomas;
-
-  useEffect(() => {
-    handleLegendStageStatus();
-  }, []);
+  if (
+    listMaintenanceOrder.isLoading ||
+    listMaintenanceOrder.data === undefined
+  ) {
+    return <Loading />;
+  }
 
   return (
-    <View className="flex flex-1 flex-col bg-white">
-      <Header title={"Etapas Lançadas"} />
-      <OperationInfoCard
-        operador={true}
-        operationInfo={operationInfoProps}
-        operationId={id}
-        symptoms={symptoms}
-      />
-      <SwipeableActivityCardList activities={activities} omId={id} />
-    </View>
+    <>
+      {listMaintenanceOrder.isRefetching ||
+        (listMaintenanceOrder.isFetching && <SyncLoading />)}
+      <View className="flex flex-1 flex-col bg-white">
+        <Header title={'Etapas Lançadas'} />
+        <SwipeableActivityCardList
+          activities={
+            listMaintenanceOrder.data.filter((om) => om.id === id)[0].stages
+          }
+          omId={id}
+        />
+        {isConnected && <RedirectToSyncScreen />}
+      </View>
+    </>
   );
 }

@@ -1,23 +1,54 @@
-import { Text, View } from 'react-native';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Alert, Text, View } from 'react-native';
 import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
 import { CustomButton } from '../../../../components/ui/CustomButton';
+import { acceptRequestAPI } from '../../../../services/GET/Solicitations/acceptRequest';
+import { dismissRequestAPI } from '../../../../services/GET/Solicitations/dismissRequest';
+import { Solicitations } from '../../../../services/GET/Solicitations/solicitations.interface';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
-
-interface Request {
-  id: number;
-  propertyCode: string;
-  images: string[];
-  openedDate: string;
-  requester: string;
-  counter: string;
-  sympton: string;
-}
+import { textCapitalizer } from '../../../../utils/textCapitalize';
 
 interface OpenedRequestCardProps {
-  request: Request;
+  request: Solicitations.Fetch;
 }
 
 export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
+  const queryClient = useQueryClient();
+
+  const mutationAcceptRequest = useMutation({
+    mutationFn: acceptRequestAPI,
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
+
+  const mutationDismissRequest = useMutation({
+    mutationFn: dismissRequestAPI,
+    onSuccess: (response) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
+        Alert.alert('Sucesso', response.data.return[0]);
+      } else {
+        Alert.alert('Erro', response.data.return[0]);
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
+
   return (
     <View className="relative rounded-xl bg-neutral-100 p-4">
       {request.images.length > 0 ? (
@@ -25,20 +56,22 @@ export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
           <AttachmentPreviewModal images={request.images} iconColor="#000000" />
         </View>
       ) : null}
-      <Text className="mb-2 w-[80%] font-poppinsBold text-lg">
-        {request.propertyCode}
+      <Text className="mb-2 w-full text-center font-poppinsBold text-lg">
+        {request.asset_plate}
       </Text>
       <View className="space-y-3">
         <View>
           <Text className="font-poppinsBold text-sm">
             Data de Solicitação:{' '}
             <Text className="font-poppinsMedium">
-              {formatISOStringToPTBRDateString(request.openedDate)}
+              {formatISOStringToPTBRDateString(request.datetime)}
             </Text>
           </Text>
           <Text className="font-poppinsBold text-sm">
             Solicitante:{' '}
-            <Text className="font-poppinsMedium">{request.requester}</Text>
+            <Text className="font-poppinsMedium">
+              {textCapitalizer(request.asset_maintenance_controller)}
+            </Text>
           </Text>
         </View>
 
@@ -49,18 +82,28 @@ export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
 
         <View>
           <Text className="font-poppinsBold text-sm">Sintoma:</Text>
-          <Text className="font-poppinsMedium">{request.sympton}</Text>
+          <Text className="font-poppinsMedium">{request.report}</Text>
         </View>
       </View>
 
       <View className="mt-4 flex flex-row justify-between">
         <View className="w-[48%]">
-          <CustomButton variant="cancel" onPress={() => {}}>
+          <CustomButton
+            variant="cancel"
+            onPress={() => {
+              mutationDismissRequest.mutate(request.id);
+            }}
+          >
             Recusar
           </CustomButton>
         </View>
         <View className="w-[48%]">
-          <CustomButton variant="primary" onPress={() => {}}>
+          <CustomButton
+            variant="primary"
+            onPress={() => {
+              mutationAcceptRequest.mutate(request.id);
+            }}
+          >
             Aceitar
           </CustomButton>
         </View>
