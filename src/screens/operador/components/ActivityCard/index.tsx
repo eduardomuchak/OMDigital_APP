@@ -131,17 +131,17 @@ export function ActivityCard({ stage }: Stage.StagesListProps) {
             Previsão:
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
-            {stage.start_date
+            {stage.start_prev_date
               ? `Início: ${formatDateToPTBR(
-                  stage.start_date,
-                )} - ${removeSecondsFromTime(stage.start_hr)}`
+                  stage.start_prev_date,
+                )} - ${removeSecondsFromTime(stage.start_prev_hr)}`
               : 'Início: Não informado'}
           </Text>
           <Text className="font-poppinsMedium text-sm text-neutral-900">
-            {stage.end_date
+            {stage.end_prev_date
               ? `Fim: ${formatDateToPTBR(
-                  stage.end_date,
-                )} - ${removeSecondsFromTime(stage.end_hr)}`
+                  stage.end_prev_date,
+                )} - ${removeSecondsFromTime(stage.end_prev_hr)}`
               : 'Fim: Não informado'}
           </Text>
         </View>

@@ -1,6 +1,5 @@
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 
-import { useNavigation } from '@react-navigation/native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useMMKVObject } from 'react-native-mmkv';
@@ -8,15 +7,16 @@ import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { NetworkStatus } from '../../../components/NetworkStatus';
 import { StatusLegend } from '../../../components/StatusLegend';
-import { CustomButton } from '../../../components/ui/CustomButton';
 import { useAuth } from '../../../contexts/auth';
 import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
 import { OperadorFilterModal } from '../components/OperadorFilterModal';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 
 export function Home() {
@@ -25,12 +25,16 @@ export function Home() {
 
   const queryClient = useQueryClient();
   const { isConnected } = useCheckInternetConnection();
-  const { navigate } = useNavigation();
 
   const [maintenanceOrdersQueue, setMaintenanceOrdersQueue] = useMMKVObject<
     NewMaintenanceOrder.Payload[]
   >('queuedCreateNewMaintenanceOrder');
   if (maintenanceOrdersQueue === undefined) setMaintenanceOrdersQueue([]);
+
+  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
+    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
+  if (queuedEditMaintenanceOrder === undefined)
+    setQueuedEditMaintenanceOrder([]);
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
@@ -207,22 +211,7 @@ export function Home() {
         />
       )}
       {!isConnected && <NetworkStatus />}
-      {isConnected &&
-        maintenanceOrdersQueue &&
-        maintenanceOrdersQueue.length > 0 && (
-          <View className="flex flex-col space-y-2 bg-nepomuceno-dark-blue px-5 py-2">
-            <Text className="font-poppinsBold text-sm text-white">
-              Quantidade de requisições na fila para sincronizar:{' '}
-              {maintenanceOrdersQueue.length}
-            </Text>
-            <CustomButton
-              variant="finish"
-              onPress={() => navigate('SyncOperator')}
-            >
-              Sincronizar
-            </CustomButton>
-          </View>
-        )}
+      {isConnected && <RedirectToSyncScreen />}
       <AddNewMaintenanceOrderButton />
     </View>
   );

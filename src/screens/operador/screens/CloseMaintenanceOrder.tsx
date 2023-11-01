@@ -49,11 +49,11 @@ export function CloseMaintenanceOrder() {
       if (isStatusTrue) {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
+        Alert.alert('Sucesso', response.return.message);
         reset();
         navigation.navigate('HomeOperador');
       } else {
-        Alert.alert('Erro', response.return[0]);
+        Alert.alert('Erro', response.return.message);
       }
     },
     onError: (error) => {

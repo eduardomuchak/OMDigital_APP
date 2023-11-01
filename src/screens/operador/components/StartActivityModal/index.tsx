@@ -5,7 +5,7 @@ import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { startStage } from '../../../../services/GET/Stages/startStage';
+import { startStage } from '../../../../services/POST/Stages/startStage';
 
 interface StartActivityModalProps {
   omId: number;

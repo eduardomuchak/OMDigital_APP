@@ -30,6 +30,10 @@ export namespace Stage {
     start_hr: string;
     status: number;
     task_protheus: string;
+    start_prev_date: string;
+    start_prev_hr: string;
+    end_prev_date: string;
+    end_prev_hr: string;
   }
 
   export interface StagesListProps {
