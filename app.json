@@ -2,7 +2,7 @@
   "expo": {
     "name": "OM Digital",
     "slug": "mvxsistemas-omdigital",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -33,7 +33,7 @@
         "android.permission.FOREGROUND_SERVICE"
       ],
       "package": "com.mvxsistemas.omdigital",
-      "versionCode": 14
+      "versionCode": 15
     },
     "web": {
       "favicon": "./assets/favicon.png"
