@@ -1,7 +1,7 @@
 import { ActivityIndicator, Text, View } from 'react-native';
 import { ProgressBar } from '../ProgressBar';
 
-export function SyncLoading({ progress }: { progress: number }) {
+export function SyncLoading({ progress }: { progress?: number }) {
   return (
     <View
       style={{
@@ -19,7 +19,7 @@ export function SyncLoading({ progress }: { progress: number }) {
       <Text className="text-center font-poppinsBold text-lg text-white opacity-100">
         Sincronizando dados offline com o servidor
       </Text>
-      <ProgressBar progress={progress} />
+      {progress && <ProgressBar progress={progress} />}
     </View>
   );
 }

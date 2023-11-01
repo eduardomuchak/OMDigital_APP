@@ -5,7 +5,7 @@ import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { pauseStage } from '../../../../services/GET/Stages/pauseStage';
+import { pauseStage } from '../../../../services/POST/Stages/pauseStage';
 
 interface PauseActivityModalProps {
   omId: number;

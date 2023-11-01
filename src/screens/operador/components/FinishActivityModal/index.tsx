@@ -5,7 +5,7 @@ import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { endStage } from '../../../../services/GET/Stages/endStage';
+import { endStage } from '../../../../services/POST/Stages/endStage';
 
 interface FinishActivityModalProps {
   isSwipeableTrigger?: boolean;
@@ -35,7 +35,7 @@ export function FinishActivityModal({
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
         Alert.alert('Sucesso', response.return[0]);
       } else {
-        Alert.alert('Erro', response.return.message);
+        Alert.alert('Erro', response.return[0]);
       }
     },
     onError: (error) => {

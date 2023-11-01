@@ -10,10 +10,11 @@ export const createNewMaintenanceOrderStage = async (
     payload.maintenance_order_id.toString(),
   );
   formattedPayload.append('description', payload.description);
-  formattedPayload.append('start_date', payload.start_date || 'null');
-  formattedPayload.append('start_hr', payload.start_hr || 'null');
-  formattedPayload.append('end_date', payload.end_date || 'null');
-  formattedPayload.append('end_hr', payload.end_hr || 'null');
+  formattedPayload.append('obs', payload.obs);
+  formattedPayload.append('start_prev_date', payload.start_date || 'null');
+  formattedPayload.append('start_prev_hr', payload.start_hr || 'null');
+  formattedPayload.append('end_prev_date', payload.end_date || 'null');
+  formattedPayload.append('end_prev_hr', payload.end_hr || 'null');
   formattedPayload.append('resp_id', payload.resp_id.toString());
   if (payload.images) {
     formattedPayload.append('images', JSON.stringify(payload.images));

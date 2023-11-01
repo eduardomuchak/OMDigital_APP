@@ -1,7 +1,7 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle } from 'phosphor-react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert, Text } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
@@ -9,40 +9,37 @@ import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
 import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { editMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder';
+import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 
 export function SyncOperator() {
   const queryClient = useQueryClient();
   const { navigate } = useNavigation();
 
-  const [isSyncFinished, setIsSyncFinished] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [maintenanceOrdersQueue, setMaintenanceOrdersQueue] = useMMKVObject<
-    NewMaintenanceOrder.Payload[]
-  >('queuedCreateNewMaintenanceOrder');
-  if (maintenanceOrdersQueue === undefined) setMaintenanceOrdersQueue([]);
+  const [isSyncFinished, setIsSyncFinished] = useState({
+    createOM: false,
+    editOM: false,
+  });
 
-  // const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
-  //   if (!maintenanceOrdersQueue) return;
-  //   const newQueue = [...maintenanceOrdersQueue, om];
-  //   setMaintenanceOrdersQueue(newQueue);
-  // };
+  // Create OM Section
+  const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
+    useMMKVObject<NewMaintenanceOrder.Payload[]>(
+      'queuedCreateNewMaintenanceOrder',
+    );
+  if (queuedCreateNewMaintenanceOrder === undefined)
+    setQueuedCreateNewMaintenanceOrder([]);
 
-  const removeOMFromQueue = (omIndex: number | undefined) => {
-    if (!maintenanceOrdersQueue || omIndex === undefined) {
-      console.log(
-        'removeOMFromQueue => !maintenanceOrdersQueue || omIndex === undefined',
-      );
-      return;
-    }
+  const removeOMFromCreateOMQueue = (omIndex: number | undefined) => {
+    if (!queuedCreateNewMaintenanceOrder || omIndex === undefined) return;
 
-    const newQueue = maintenanceOrdersQueue.filter((_, index) => {
+    const newQueue = queuedCreateNewMaintenanceOrder.filter((_, index) => {
       return index !== omIndex;
     });
 
-    setMaintenanceOrdersQueue(newQueue);
+    setQueuedCreateNewMaintenanceOrder(newQueue);
   };
 
-  const mutation = useMutation({
+  const createNewMaintenanceOrderMutation = useMutation({
     mutationFn: createNewMaintenanceOrder,
     onSuccess: (response, request) => {
       // console.log('Request => ', request);
@@ -51,20 +48,9 @@ export function SyncOperator() {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
 
-        // Update progress status
-        const queueLength = maintenanceOrdersQueue!.length;
-        const progress = 100 / queueLength;
-        setProgress((prevProgressStatus) => prevProgressStatus + progress);
-
-        if (request.omIndex === queueLength - 1) {
-          setTimeout(() => {
-            setIsSyncFinished(true);
-          }, 2000);
-        }
-
         // Remove OM from queue
         setTimeout(() => {
-          removeOMFromQueue(request.omIndex);
+          removeOMFromCreateOMQueue(request.omIndex);
         }, 1000);
 
         // Show alert with response message
@@ -92,20 +78,9 @@ export function SyncOperator() {
 
         Alert.alert('Sucesso:', formattedMessage);
       } else {
-        // Update progress status
-        const queueLength = maintenanceOrdersQueue!.length;
-        const progress = 100 / queueLength;
-        setProgress((prevProgressStatus) => prevProgressStatus + progress);
-
-        if (request.omIndex === queueLength - 1) {
-          setTimeout(() => {
-            setIsSyncFinished(true);
-          }, 2000);
-        }
-
         // Remove OM from queue
         setTimeout(() => {
-          removeOMFromQueue(request.omIndex);
+          removeOMFromCreateOMQueue(request.omIndex);
         }, 1000);
 
         // Show alert with response message
@@ -142,37 +117,173 @@ export function SyncOperator() {
     },
   });
 
-  const handleSendQueuedMaintenanceOrders = () => {
-    setIsSyncFinished(false);
-    if (!maintenanceOrdersQueue) {
-      setIsSyncFinished(true);
+  const sendQueuedCreateMaintenanceOrders = () => {
+    setIsSyncFinished((prev) => ({ ...prev, createOM: false }));
+    if (
+      !queuedCreateNewMaintenanceOrder ||
+      queuedCreateNewMaintenanceOrder.length === 0
+    ) {
+      setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
       return;
     }
-    if (maintenanceOrdersQueue.length > 0) {
-      maintenanceOrdersQueue.forEach((om, index) => {
-        // console.log('REQ => ', { om: om.asset_code, index });
+    if (queuedCreateNewMaintenanceOrder.length > 0) {
+      queuedCreateNewMaintenanceOrder.forEach((om, index) => {
         const omWithIndex = { ...om, omIndex: index };
-        mutation.mutate(omWithIndex);
+        createNewMaintenanceOrderMutation.mutate(omWithIndex);
+
+        // When the last OM is sent, set isSyncFinished to true
+        if (index === queuedCreateNewMaintenanceOrder.length - 1) {
+          setTimeout(() => {
+            setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
+          }, 3000);
+        }
       });
     } else {
-      setIsSyncFinished(true);
+      setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
+    }
+  };
+  //
+
+  // Edit OM Section
+  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
+    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
+  if (queuedEditMaintenanceOrder === undefined)
+    setQueuedEditMaintenanceOrder([]);
+
+  const removeFromEditOMQueue = (om: EditedMaintenanceOrder | undefined) => {
+    if (!queuedEditMaintenanceOrder || om === undefined) return;
+
+    const newQueue = queuedEditMaintenanceOrder.filter((queuedOM) => {
+      return queuedOM.id !== om.id;
+    });
+
+    setQueuedEditMaintenanceOrder(newQueue);
+  };
+
+  const editMaintenanceOrderMutation = useMutation({
+    mutationFn: editMaintenanceOrder,
+    onSuccess: (response, request) => {
+      const isStatusTrue = response.data.status === true;
+      if (isStatusTrue) {
+        // Invalidate and refetch
+        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
+
+        // Remove OM from queue
+        setTimeout(() => {
+          removeFromEditOMQueue(request);
+        }, 1000);
+
+        // Show alert with response message
+        const formattedMessage = `
+        Código do Bem:
+        ${request?.asset_code}
+
+        Contador:
+        ${request?.counter}
+
+        ${
+          request.symptoms.length > 0 &&
+          `Sintoma:
+          ${request?.symptoms.map((symptom) => symptom.description).join(', ')}`
+        }
+
+          Mensagem:
+          ${response.data.return.message}`;
+
+        Alert.alert('Sucesso:', formattedMessage);
+      } else {
+        // Remove OM from queue
+        setTimeout(() => {
+          removeFromEditOMQueue(request);
+        }, 1000);
+
+        // Show alert with response message
+        const formattedMessage = `
+        Código do Bem:
+        ${request?.asset_code}
+
+        Contador:
+        ${request?.counter}
+
+        ${
+          request.symptoms[0].description &&
+          `Sintoma:
+          ${request?.symptoms[0].description}`
+        }
+
+        ${
+          request.obs &&
+          `Observação:
+          ${request?.obs}`
+        }
+
+          Motivo do Erro:
+          ${response.data.return[0]}`;
+
+        Alert.alert(
+          'Opa! Algo deu errado ao sincronizar esta requisição:',
+          formattedMessage,
+        );
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Erro', JSON.stringify(error));
+    },
+  });
+
+  const sendQueuedEditMaintenanceOrders = () => {
+    setIsSyncFinished((prev) => ({ ...prev, editOM: false }));
+    if (
+      !queuedEditMaintenanceOrder ||
+      queuedEditMaintenanceOrder.length === 0
+    ) {
+      setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
+      return;
+    }
+    if (queuedEditMaintenanceOrder.length > 0) {
+      queuedEditMaintenanceOrder.forEach((om, index) => {
+        console.log('REQ => ', om);
+        const omWithIndex = { ...om, omIndex: index };
+        editMaintenanceOrderMutation.mutate(omWithIndex);
+
+        // When the last OM is sent, set isSyncFinished to true
+        if (index === queuedEditMaintenanceOrder.length - 1) {
+          setTimeout(() => {
+            setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
+          }, 2000);
+        }
+      });
+    } else {
+      setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
     }
   };
 
-  // console.log('maintenanceOrdersQueue => ', maintenanceOrdersQueue);
-  // console.log('isSyncFinished => ', isSyncFinished);
-  // console.log('progress => ', progress);
+  //
+
+  const handleNavigation = () => {
+    if (Object.values(isSyncFinished).every((value) => value === true)) {
+      setTimeout(() => {
+        navigate('HomeOperador');
+      }, 3000);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
-      handleSendQueuedMaintenanceOrders();
+      sendQueuedCreateMaintenanceOrders();
+      sendQueuedEditMaintenanceOrders();
     }, []),
   );
 
-  if (!maintenanceOrdersQueue) {
+  // console.log('isSyncFinished => ', isSyncFinished);
+
+  useEffect(() => {
+    handleNavigation();
+  }, [isSyncFinished]);
+
+  if (!queuedCreateNewMaintenanceOrder && !queuedEditMaintenanceOrder) {
     setTimeout(() => {
-      setIsSyncFinished(false);
-      setProgress(0);
+      // setIsSyncFinished(false);
       navigate('HomeOperador');
     }, 2000);
     return (
@@ -189,12 +300,7 @@ export function SyncOperator() {
     );
   }
 
-  if (isSyncFinished) {
-    setTimeout(() => {
-      setIsSyncFinished(false);
-      setProgress(0);
-      navigate('HomeOperador');
-    }, 3000);
+  if (Object.values(isSyncFinished).every((value) => value === true)) {
     return (
       <Animated.View
         entering={FadeInDown}
@@ -215,7 +321,7 @@ export function SyncOperator() {
     );
   }
 
-  return <SyncLoading progress={progress} />;
+  return <SyncLoading />;
 }
 
 export default SyncOperator;

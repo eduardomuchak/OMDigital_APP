@@ -3,20 +3,33 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { RefreshControl } from 'react-native-gesture-handler';
+import { useMMKVObject } from 'react-native-mmkv';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { ListMaintenanceOrder } from '../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { editMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder';
+import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SymptomCard } from '../components/SymptomCard';
 
 export function EditMaintenanceOrder() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
+  const queryClient = useQueryClient();
+
+  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
+    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
+  if (queuedEditMaintenanceOrder === undefined)
+    setQueuedEditMaintenanceOrder([]);
+
+  const { isConnected } = useCheckInternetConnection();
   const { goBack } = useNavigation();
   const route = useRoute();
   const { id: omID } = route.params as { id: number };
@@ -67,8 +80,6 @@ export function EditMaintenanceOrder() {
     setOmSymptoms(newSymptoms);
   };
 
-  const queryClient = useQueryClient();
-
   const mutation = useMutation({
     mutationFn: editMaintenanceOrder,
     onSuccess: (response) => {
@@ -79,13 +90,33 @@ export function EditMaintenanceOrder() {
         Alert.alert('Sucesso', response.data.return.message);
         goBack();
       } else {
-        Alert.alert('Erro', response.data.return.message);
+        Alert.alert('Erro', JSON.stringify(response.data.return));
       }
     },
     onError: (error) => {
       Alert.alert('Erro', JSON.stringify(error));
     },
   });
+
+  const addOMToQueue = (om: EditedMaintenanceOrder) => {
+    if (!queuedEditMaintenanceOrder) return;
+    // Find if the OM is already in the queue
+    const omIndex = queuedEditMaintenanceOrder.findIndex(
+      (queuedOM) => queuedOM.id === om.id,
+    );
+    if (omIndex !== -1) {
+      const newQueue = queuedEditMaintenanceOrder.map((queuedOM, index) => {
+        if (index === omIndex) {
+          return om;
+        }
+        return queuedOM;
+      });
+      setQueuedEditMaintenanceOrder(newQueue);
+      return;
+    } else {
+      setQueuedEditMaintenanceOrder([...queuedEditMaintenanceOrder, om]);
+    }
+  };
 
   function handleEditOM() {
     const payload = {
@@ -115,7 +146,16 @@ export function EditMaintenanceOrder() {
       }),
     };
 
-    mutation.mutate(payload);
+    if (isConnected) {
+      mutation.mutate(payload);
+    } else if (!isConnected) {
+      addOMToQueue(payload);
+      Alert.alert(
+        'Atenção',
+        'Você está offline. A OM será editada assim que você estiver online.',
+      );
+      goBack();
+    }
   }
 
   function findOM() {
@@ -148,11 +188,7 @@ export function EditMaintenanceOrder() {
           />
         }
       >
-        <OperationInfoCard
-          maintenanceOrder={
-            listMaintenanceOrder.data.filter((om) => om.id === omID)[0]
-          }
-        />
+        <OperationInfoCard maintenanceOrder={omDetails} />
         <View className="flex-1 px-6 py-4">
           <Text className="mb-3 font-poppinsBold text-lg">Sintomas:</Text>
           {omSymptoms.length > 0 &&
@@ -187,6 +223,8 @@ export function EditMaintenanceOrder() {
           </CustomButton>
         </View>
       </ScrollView>
+      {!isConnected && <NetworkStatus />}
+      {isConnected && <RedirectToSyncScreen />}
     </View>
   );
 }

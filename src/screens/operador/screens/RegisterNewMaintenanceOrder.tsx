@@ -37,10 +37,12 @@ export function RegisterNewMaintenanceOrder() {
   const { isConnected } = useCheckInternetConnection();
 
   const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
-  const [maintenanceOrdersQueue, setMaintenanceOrdersQueue] = useMMKVObject<
-    NewMaintenanceOrder.Payload[]
-  >('queuedCreateNewMaintenanceOrder');
-  if (maintenanceOrdersQueue === undefined) setMaintenanceOrdersQueue([]);
+  const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
+    useMMKVObject<NewMaintenanceOrder.Payload[]>(
+      'queuedCreateNewMaintenanceOrder',
+    );
+  if (queuedCreateNewMaintenanceOrder === undefined)
+    setQueuedCreateNewMaintenanceOrder([]);
 
   const {
     control,
@@ -84,9 +86,9 @@ export function RegisterNewMaintenanceOrder() {
   };
 
   const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
-    if (!maintenanceOrdersQueue) return;
-    const newQueue = [...maintenanceOrdersQueue, om];
-    setMaintenanceOrdersQueue(newQueue);
+    if (!queuedCreateNewMaintenanceOrder) return;
+    const newQueue = [...queuedCreateNewMaintenanceOrder, om];
+    setQueuedCreateNewMaintenanceOrder(newQueue);
   };
 
   const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
@@ -186,8 +188,8 @@ export function RegisterNewMaintenanceOrder() {
         addOMToQueue(payloadAPI);
 
         Alert.alert(
-          'Sucesso',
-          'Ordem de manutenção salva para envio posterior quando a conexão com a internet for reestabelecida.',
+          'Atenção',
+          'Você está offline. A OM será cadastrada assim que você estiver online.',
         );
 
         reset();

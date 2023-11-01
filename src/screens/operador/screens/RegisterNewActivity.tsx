@@ -16,7 +16,7 @@ import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
 import { Attachment } from '../../../interfaces/Attachment.interface';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
-import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages';
+import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages/createStage';
 import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewActivityFormData,
@@ -225,7 +225,7 @@ export function RegisterNewActivity() {
                     <CustomDateTimePicker
                       value={new Date(value)}
                       onDateSelect={onChange}
-                      label="Data e hora de início"
+                      label="Data e hora de início previsto"
                       mode="datetime"
                     />
                   )}
@@ -242,7 +242,7 @@ export function RegisterNewActivity() {
                     <CustomDateTimePicker
                       value={new Date(value)}
                       onDateSelect={onChange}
-                      label="Data e hora de término"
+                      label="Data e hora de término previsto"
                       mode="datetime"
                     />
                   )}

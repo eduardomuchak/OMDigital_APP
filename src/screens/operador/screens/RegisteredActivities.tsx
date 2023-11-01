@@ -5,7 +5,9 @@ import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SwipeableActivityCardList } from '../components/SwipeableActivityCardList';
 
 export function RegisteredActivities() {
@@ -13,6 +15,7 @@ export function RegisteredActivities() {
   const { id } = route.params as { id: number };
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
+  const { isConnected } = useCheckInternetConnection();
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
@@ -38,6 +41,7 @@ export function RegisteredActivities() {
           }
           omId={id}
         />
+        {isConnected && <RedirectToSyncScreen />}
       </View>
     </>
   );
