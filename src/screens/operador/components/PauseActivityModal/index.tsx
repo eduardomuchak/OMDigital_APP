@@ -2,15 +2,22 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Pause } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { useMMKVObject } from 'react-native-mmkv';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
 import { pauseStage } from '../../../../services/POST/Stages/pauseStage';
 
 interface PauseActivityModalProps {
   omId: number;
   activityId: number;
   maintenanceOrderStatus: number;
+}
+
+interface PauseQueue {
+  activityId: number;
+  manPowerId: string | null;
 }
 
 export function PauseActivityModal({
@@ -21,7 +28,31 @@ export function PauseActivityModal({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const queryClient = useQueryClient();
   const { employee } = useAuth();
+  const { isConnected } = useCheckInternetConnection();
   if (!employee?.man_power_id) return <></>;
+
+  const [queuedPauseActivity, setQueuedPauseActivity] = useMMKVObject<
+    PauseQueue[]
+  >('queuedPauseActivity');
+  if (queuedPauseActivity === undefined) setQueuedPauseActivity([]);
+
+  const addActivityToPauseQueue = () => {
+    if (!queuedPauseActivity) return;
+    // Check if activity is already in queue
+    const isActivityInQueue = queuedPauseActivity.find(
+      (activity) => activity.activityId === activityId,
+    );
+
+    if (isActivityInQueue) return;
+
+    setQueuedPauseActivity([
+      ...queuedPauseActivity,
+      {
+        activityId,
+        manPowerId: employee.man_power_id,
+      },
+    ]);
+  };
 
   const mutation = useMutation({
     mutationFn: () => pauseStage(activityId, employee.man_power_id),
@@ -48,8 +79,17 @@ export function PauseActivityModal({
         'Não é possível pausar uma atividade de uma OM que está em andamento ou finalizada',
       );
     } else {
-      mutation.mutate();
-      setIsModalVisible(false);
+      if (isConnected) {
+        setIsModalVisible(false);
+        mutation.mutate();
+      } else {
+        addActivityToPauseQueue();
+        Alert.alert(
+          'Sucesso',
+          'A atividade foi adicionada à fila de sincronização e será pausada assim que o dispositivo estiver conectado à internet',
+        );
+        setIsModalVisible(false);
+      }
     }
   }
 

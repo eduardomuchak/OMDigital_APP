@@ -2,11 +2,9 @@ import { Alert, ScrollView, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Text } from 'react-native';
-import { useMMKVObject } from 'react-native-mmkv';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
 import { NetworkStatus } from '../../../components/NetworkStatus';
@@ -21,28 +19,23 @@ import { useAuth } from '../../../contexts/auth';
 import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { useGetLocation } from '../../../hooks/useGetLocation';
 import { Attachment } from '../../../interfaces/Attachment.interface';
-import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
 import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
 } from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
+import useRegisterMaintenanceOrder from '../hooks/useRegisterMaintenanceOrder.hook';
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();
-  const { goBack, navigate } = useNavigation();
+  const { goBack } = useNavigation();
   const { user } = useAuth();
-  const queryClient = useQueryClient();
   const { isConnected } = useCheckInternetConnection();
+  const { addOMToQueue, createNewMaintenanceOrderMutation } =
+    useRegisterMaintenanceOrder();
 
   const [attachment, setAttachment] = useState<Attachment>({} as Attachment);
-  const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
-    useMMKVObject<NewMaintenanceOrder.Payload[]>(
-      'queuedCreateNewMaintenanceOrder',
-    );
-  if (queuedCreateNewMaintenanceOrder === undefined)
-    setQueuedCreateNewMaintenanceOrder([]);
 
   const {
     control,
@@ -62,33 +55,8 @@ export function RegisterNewMaintenanceOrder() {
     resolver: zodResolver(registerNewMaintenanceOrderSchema),
   });
 
-  const mutation = useMutation({
-    mutationFn: createNewMaintenanceOrder,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return.message);
-        reset();
-        navigate('HomeOperador');
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
   const takeImageHandler = (image: Attachment) => {
     setAttachment(image);
-  };
-
-  const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
-    if (!queuedCreateNewMaintenanceOrder) return;
-    const newQueue = [...queuedCreateNewMaintenanceOrder, om];
-    setQueuedCreateNewMaintenanceOrder(newQueue);
   };
 
   const onSubmit = (data: RegisterNewMaintenanceOrderFormData) => {
@@ -117,25 +85,21 @@ export function RegisterNewMaintenanceOrder() {
       endDate: handleTimezone(data.endDate),
     };
 
-    const payload = {
-      ...data,
-      startDate: datesWithCorrectTimezone.startDate.toISOString(),
-      endDate: datesWithCorrectTimezone.endDate.toISOString(),
-      location,
-    };
+    const startDate = datesWithCorrectTimezone.startDate.toISOString();
+    const endDate = datesWithCorrectTimezone.endDate.toISOString();
 
-    const payloadAPI: NewMaintenanceOrder.Payload = {
-      asset_code: payload.propertyCode.toUpperCase(),
-      counter: Number(payload.counter),
-      latitude: payload.location.latitude,
-      longitude: payload.location.longitude,
-      service_type: payload.type === 'Preventiva' ? 'P' : 'C',
+    let payload: NewMaintenanceOrder.Payload = {
+      asset_code: data.propertyCode.toUpperCase(),
+      counter: Number(data.counter),
+      latitude: location.latitude,
+      longitude: location.longitude,
+      service_type: data.type === 'Preventiva' ? 'P' : 'C',
       status: 4,
-      start_prev_date: payload.startDate.split('T')[0],
-      start_prev_hr: payload.startDate.split('T')[1],
-      end_prev_date: payload.endDate.split('T')[0],
-      end_prev_hr: payload.endDate.split('T')[1],
-      obs: payload.obs,
+      start_prev_date: startDate.split('T')[0],
+      start_prev_hr: startDate.split('T')[1],
+      end_prev_date: endDate.split('T')[0],
+      end_prev_hr: endDate.split('T')[1],
+      obs: data.obs,
       resp_id: user ? user.id : 0,
       symptoms: [],
     };
@@ -146,7 +110,7 @@ export function RegisterNewMaintenanceOrder() {
         const symptoms = [
           {
             id: null,
-            description: payload.symptom,
+            description: data.symptom,
             images: {
               name: [fileName],
               tmp_name: [fileName],
@@ -155,19 +119,19 @@ export function RegisterNewMaintenanceOrder() {
           },
         ];
 
-        payloadAPI.symptoms = symptoms;
+        payload.symptoms = symptoms;
 
-        mutation.mutate(payloadAPI);
+        createNewMaintenanceOrderMutation.mutate(payload);
       } else if (!attachment.uri) {
         const symptoms = [
           {
             id: null,
-            description: payload.symptom,
+            description: data.symptom,
           },
         ];
-        payloadAPI.symptoms = symptoms;
+        payload.symptoms = symptoms;
 
-        mutation.mutate(payloadAPI);
+        createNewMaintenanceOrderMutation.mutate(payload);
       }
     } else if (!isConnected) {
       if (attachment.uri) {
@@ -175,7 +139,7 @@ export function RegisterNewMaintenanceOrder() {
         const symptoms = [
           {
             id: null,
-            description: payload.symptom,
+            description: data.symptom,
             images: {
               name: [fileName],
               tmp_name: [fileName],
@@ -183,9 +147,9 @@ export function RegisterNewMaintenanceOrder() {
             },
           },
         ];
-        payloadAPI.symptoms = symptoms;
+        payload.symptoms = symptoms;
 
-        addOMToQueue(payloadAPI);
+        addOMToQueue(payload);
 
         Alert.alert(
           'Atenção',
@@ -198,12 +162,13 @@ export function RegisterNewMaintenanceOrder() {
         const symptoms = [
           {
             id: null,
-            description: payload.symptom,
+            description: data.symptom,
           },
         ];
-        payloadAPI.symptoms = symptoms;
 
-        addOMToQueue(payloadAPI);
+        payload.symptoms = symptoms;
+
+        addOMToQueue(payload);
 
         Alert.alert(
           'Sucesso',

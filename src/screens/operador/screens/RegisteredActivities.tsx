@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { useAuth } from '../../../contexts/auth';
 import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
@@ -41,6 +42,7 @@ export function RegisteredActivities() {
           }
           omId={id}
         />
+        {!isConnected && <NetworkStatus />}
         {isConnected && <RedirectToSyncScreen />}
       </View>
     </>
