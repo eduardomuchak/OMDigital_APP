@@ -7,7 +7,7 @@ interface HookParams {
   manPowerId: string | null;
 }
 
-const usePauseStageMutation = ({ activityId, manPowerId }: HookParams) => {
+const usePauseStage = ({ activityId, manPowerId }: HookParams) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -31,4 +31,4 @@ const usePauseStageMutation = ({ activityId, manPowerId }: HookParams) => {
   return { pauseStageMutation: mutation };
 };
 
-export default usePauseStageMutation;
+export default usePauseStage;

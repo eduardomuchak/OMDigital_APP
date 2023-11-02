@@ -25,7 +25,7 @@ import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
 } from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
-import useRegisterMaintenanceOrder from '../hooks/useRegisterMaintenanceOrder.hook';
+import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
 
 export function RegisterNewMaintenanceOrder() {
   const { location } = useGetLocation();

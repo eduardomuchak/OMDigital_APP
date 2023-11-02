@@ -3,9 +3,8 @@ import { AxiosResponse } from 'axios';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
-import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
-import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
-import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
+import { createNewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts';
+import { NewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 
 interface OMIndex {
   omIndex?: number;
@@ -13,20 +12,15 @@ interface OMIndex {
 
 const useRegisterMaintenanceOrder = () => {
   const queryClient = useQueryClient();
-  const { isConnected } = useCheckInternetConnection();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
   const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
     useMMKVObject<NewMaintenanceOrder.Payload[]>(
       'queuedCreateNewMaintenanceOrder',
     );
+
   if (queuedCreateNewMaintenanceOrder === undefined)
     setQueuedCreateNewMaintenanceOrder([]);
-
-  console.log(
-    'queuedCreateNewMaintenanceOrder',
-    queuedCreateNewMaintenanceOrder,
-  );
 
   const addOMToQueue = (om: NewMaintenanceOrder.Payload) => {
     if (!queuedCreateNewMaintenanceOrder) return;
@@ -91,32 +85,13 @@ const useRegisterMaintenanceOrder = () => {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
 
-        if (isConnected) {
-          // Remove OM from queue
-          removeOMFromCreateOMQueue(request.omIndex);
-
-          // Show alert with response message
-          Alert.alert(
-            'Sucesso:',
-            formatReturnMessage(response, request, isStatusTrue),
-          );
-        } else {
-          // Remove OM from queue
-          removeOMFromCreateOMQueue(request.omIndex);
-
-          // Show alert with response message
-          Alert.alert(
-            'Sucesso:',
-            formatReturnMessage(response, request, isStatusTrue),
-          );
-        }
+        removeOMFromCreateOMQueue(request.omIndex);
+        Alert.alert(
+          'Sucesso:',
+          formatReturnMessage(response, request, isStatusTrue),
+        );
       } else {
-        // Remove OM from queue
-        setTimeout(() => {
-          removeOMFromCreateOMQueue(request.omIndex);
-        }, 1000);
-
-        // Show alert with response message
+        removeOMFromCreateOMQueue(request.omIndex);
         Alert.alert(
           'Opa! Algo deu errado ao sincronizar esta requisição:',
           formatReturnMessage(response, request, isStatusTrue),
