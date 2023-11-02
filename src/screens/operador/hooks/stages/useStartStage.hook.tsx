@@ -2,34 +2,34 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Alert } from 'react-native';
 import { useMMKVObject } from 'react-native-mmkv';
-import { pauseStage } from '../../../../services/POST/Stages/pauseStage';
+import { startStage } from '../../../../services/POST/Stages/startStage';
 
-interface PauseQueue {
+interface StartQueue {
   activityId: number;
   manPowerId: string | null | undefined;
 }
 
-const usePauseStage = () => {
+const useStartStage = () => {
   const queryClient = useQueryClient();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
-  const [queuedPauseActivity, setQueuedPauseActivity] = useMMKVObject<
-    PauseQueue[]
-  >('queuedPauseActivity');
+  const [queuedStartActivity, setQueuedStartActivity] = useMMKVObject<
+    StartQueue[]
+  >('queuedStartActivity');
 
-  if (queuedPauseActivity === undefined) setQueuedPauseActivity([]);
+  if (queuedStartActivity === undefined) setQueuedStartActivity([]);
 
-  const addActivityToPauseQueue = ({ activityId, manPowerId }: PauseQueue) => {
-    if (!queuedPauseActivity) return;
+  const addActivityToStartQueue = ({ activityId, manPowerId }: StartQueue) => {
+    if (!queuedStartActivity) return;
     // Check if activity is already in queue
-    const isActivityInQueue = queuedPauseActivity.find(
+    const isActivityInQueue = queuedStartActivity.find(
       (activity) => activity.activityId === activityId,
     );
 
     if (isActivityInQueue) return;
 
-    setQueuedPauseActivity([
-      ...queuedPauseActivity,
+    setQueuedStartActivity([
+      ...queuedStartActivity,
       {
         activityId,
         manPowerId,
@@ -37,27 +37,27 @@ const usePauseStage = () => {
     ]);
   };
 
-  const removeActivityFromPauseQueue = (stageId: number) => {
-    if (!queuedPauseActivity) return;
+  const removeActivityFromStartQueue = (stageId: number) => {
+    if (!queuedStartActivity) return;
 
-    const newQueue = queuedPauseActivity.filter((stage) => {
+    const newQueue = queuedStartActivity.filter((stage) => {
       return stage.activityId !== stageId;
     });
 
-    setQueuedPauseActivity(newQueue);
+    setQueuedStartActivity(newQueue);
   };
 
-  const pauseStageMutation = useMutation({
-    mutationFn: pauseStage,
+  const startStageMutation = useMutation({
+    mutationFn: startStage,
     onSuccess: (response, request) => {
       const isStatusTrue = response.status === true;
       if (isStatusTrue) {
         // Invalidate and refetch
         queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        removeActivityFromPauseQueue(request.stageId);
+        removeActivityFromStartQueue(request.stageId);
         Alert.alert('Sucesso', response.return[0]);
       } else {
-        removeActivityFromPauseQueue(request.stageId);
+        removeActivityFromStartQueue(request.stageId);
         Alert.alert('Erro', response.return.message);
       }
     },
@@ -66,21 +66,21 @@ const usePauseStage = () => {
     },
   });
 
-  const sendQueuedPauseActivities = () => {
+  const sendQueuedStartActivities = () => {
     setIsSyncFinished(false);
-    if (!queuedPauseActivity) return;
-    if (queuedPauseActivity.length === 0) {
+    if (!queuedStartActivity) return;
+    if (queuedStartActivity.length === 0) {
       setIsSyncFinished(true);
       return;
     } else {
-      queuedPauseActivity.forEach((activity, index) => {
+      queuedStartActivity.forEach((activity, index) => {
         const payload = {
           stageId: activity.activityId,
           manPowerId: activity.manPowerId,
         };
-        pauseStageMutation.mutate(payload);
+        startStageMutation.mutate(payload);
 
-        const isTheLastActivity = index === queuedPauseActivity.length - 1;
+        const isTheLastActivity = index === queuedStartActivity.length - 1;
         if (isTheLastActivity) {
           setTimeout(() => {
             setIsSyncFinished(true);
@@ -92,10 +92,10 @@ const usePauseStage = () => {
 
   return {
     isSyncFinished,
-    pauseStageMutation,
-    addActivityToPauseQueue,
-    sendQueuedPauseActivities,
+    startStageMutation,
+    addActivityToStartQueue,
+    sendQueuedStartActivities,
   };
 };
 
-export default usePauseStage;
+export default useStartStage;

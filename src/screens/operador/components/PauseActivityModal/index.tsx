@@ -1,23 +1,16 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Pause } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
-import { useMMKVObject } from 'react-native-mmkv';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
 import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
-import { pauseStage } from '../../../../services/POST/Stages/pauseStage';
+import usePauseStage from '../../hooks/stages/usePauseStage.hook';
 
 interface PauseActivityModalProps {
   omId: number;
   activityId: number;
   maintenanceOrderStatus: number;
-}
-
-interface PauseQueue {
-  activityId: number;
-  manPowerId: string | null;
 }
 
 export function PauseActivityModal({
@@ -26,51 +19,10 @@ export function PauseActivityModal({
   maintenanceOrderStatus,
 }: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const queryClient = useQueryClient();
   const { employee } = useAuth();
-  const { isConnected } = useCheckInternetConnection();
   if (!employee?.man_power_id) return <></>;
-
-  const [queuedPauseActivity, setQueuedPauseActivity] = useMMKVObject<
-    PauseQueue[]
-  >('queuedPauseActivity');
-  if (queuedPauseActivity === undefined) setQueuedPauseActivity([]);
-
-  const addActivityToPauseQueue = () => {
-    if (!queuedPauseActivity) return;
-    // Check if activity is already in queue
-    const isActivityInQueue = queuedPauseActivity.find(
-      (activity) => activity.activityId === activityId,
-    );
-
-    if (isActivityInQueue) return;
-
-    setQueuedPauseActivity([
-      ...queuedPauseActivity,
-      {
-        activityId,
-        manPowerId: employee.man_power_id,
-      },
-    ]);
-  };
-
-  const mutation = useMutation({
-    mutationFn: () => pauseStage(activityId, employee.man_power_id),
-
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return.message);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { isConnected } = useCheckInternetConnection();
+  const { addActivityToPauseQueue, pauseStageMutation } = usePauseStage();
 
   function handlePauseActivity() {
     if (maintenanceOrderStatus === 1 || maintenanceOrderStatus === 3) {
@@ -81,9 +33,15 @@ export function PauseActivityModal({
     } else {
       if (isConnected) {
         setIsModalVisible(false);
-        mutation.mutate();
+        pauseStageMutation.mutate({
+          manPowerId: employee?.man_power_id,
+          stageId: activityId,
+        });
       } else {
-        addActivityToPauseQueue();
+        addActivityToPauseQueue({
+          manPowerId: employee?.man_power_id,
+          activityId,
+        });
         Alert.alert(
           'Sucesso',
           'A atividade foi adicionada à fila de sincronização e será pausada assim que o dispositivo estiver conectado à internet',

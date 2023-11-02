@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Play } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { startStage } from '../../../../services/POST/Stages/startStage';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
+import useStartStage from '../../hooks/stages/useStartStage.hook';
 
 interface StartActivityModalProps {
   omId: number;
@@ -21,29 +21,27 @@ export function StartActivityModal({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { employee } = useAuth();
   if (!employee?.man_power_id) return <></>;
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: () => startStage(activityId, employee.man_power_id),
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return.message);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { addActivityToStartQueue, startStageMutation } = useStartStage();
+  const { isConnected } = useCheckInternetConnection();
 
   function handleStartActivity() {
-    mutation.mutate();
-    setIsModalVisible(false);
+    if (isConnected) {
+      startStageMutation.mutate({
+        manPowerId: employee?.man_power_id,
+        stageId: activityId,
+      });
+      setIsModalVisible(false);
+    } else {
+      addActivityToStartQueue({
+        manPowerId: employee?.man_power_id,
+        activityId,
+      });
+      Alert.alert(
+        'Sucesso',
+        'A atividade foi adicionada à fila de sincronização e será iniciada assim que o dispositivo estiver conectado à internet',
+      );
+      setIsModalVisible(false);
+    }
   }
 
   return (

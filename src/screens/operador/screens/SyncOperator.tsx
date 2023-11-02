@@ -6,6 +6,8 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
+import usePauseStage from '../hooks/stages/usePauseStage.hook';
+import useStartStage from '../hooks/stages/useStartStage.hook';
 import useEditSymptoms from '../hooks/symptoms/useEditSymptoms.hook';
 
 export function SyncOperator() {
@@ -19,6 +21,14 @@ export function SyncOperator() {
     sendQueuedEditMaintenanceOrders,
     isSyncFinished: isEditOMSyncFinished,
   } = useEditSymptoms();
+  const {
+    sendQueuedPauseActivities,
+    isSyncFinished: isPausedActivitiesSyncFinished,
+  } = usePauseStage();
+  const {
+    sendQueuedStartActivities,
+    isSyncFinished: isStartedActivitiesSyncFinished,
+  } = useStartStage();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
 
@@ -35,6 +45,8 @@ export function SyncOperator() {
     useCallback(() => {
       sendQueuedCreateMaintenanceOrders();
       sendQueuedEditMaintenanceOrders();
+      sendQueuedPauseActivities();
+      sendQueuedStartActivities();
     }, []),
   );
 
@@ -42,17 +54,23 @@ export function SyncOperator() {
     handleNavigation();
   }, [isSyncFinished]);
 
-  // console.log('isCreateOMSyncFinished', isCreateOMSyncFinished);
-  // console.log('isEditOMSyncFinished', isEditOMSyncFinished);
-  // console.log('isSyncFinished', isSyncFinished);
-
   useEffect(() => {
-    if (isCreateOMSyncFinished && isEditOMSyncFinished) {
+    if (
+      isCreateOMSyncFinished &&
+      isEditOMSyncFinished &&
+      isPausedActivitiesSyncFinished &&
+      isStartedActivitiesSyncFinished
+    ) {
       setIsSyncFinished(true);
     } else {
       setIsSyncFinished(false);
     }
-  }, [isCreateOMSyncFinished, isEditOMSyncFinished]);
+  }, [
+    isCreateOMSyncFinished,
+    isEditOMSyncFinished,
+    isPausedActivitiesSyncFinished,
+    isStartedActivitiesSyncFinished,
+  ]);
 
   if (isSyncFinished) {
     return (

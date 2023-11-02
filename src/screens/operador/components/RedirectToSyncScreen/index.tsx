@@ -5,6 +5,11 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { NewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import { EditedMaintenanceOrder } from '../../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 
+interface StageQueue {
+  activityId: number;
+  manPowerId: string | null | undefined;
+}
+
 export function RedirectToSyncScreen() {
   const { navigate } = useNavigation();
 
@@ -20,13 +25,34 @@ export function RedirectToSyncScreen() {
   if (queuedEditMaintenanceOrder === undefined)
     setQueuedEditMaintenanceOrder([]);
 
+  const [queuedPauseActivity, setQueuedPauseActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedPauseActivity');
+  if (queuedPauseActivity === undefined) setQueuedPauseActivity([]);
+
+  const [queuedStartActivity, setQueuedStartActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedStartActivity');
+  if (queuedStartActivity === undefined) setQueuedStartActivity([]);
+
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
     queuedCreateNewMaintenanceOrder.length > 0;
+
   const isEditOMQueueValid =
     queuedEditMaintenanceOrder && queuedEditMaintenanceOrder.length > 0;
 
-  const isQueueValid = isCreateOMQueueValid || isEditOMQueueValid;
+  const isPauseActivityQueueValid =
+    queuedPauseActivity && queuedPauseActivity.length > 0;
+
+  const isStartActivityQueueValid =
+    queuedStartActivity && queuedStartActivity.length > 0;
+
+  const isQueueValid =
+    isCreateOMQueueValid ||
+    isEditOMQueueValid ||
+    isPauseActivityQueueValid ||
+    isStartActivityQueueValid;
 
   return (
     <>
@@ -35,7 +61,9 @@ export function RedirectToSyncScreen() {
           <Text className="font-poppinsBold text-sm text-white">
             Quantidade de requisições na fila para sincronizar:{' '}
             {queuedCreateNewMaintenanceOrder!.length +
-              queuedEditMaintenanceOrder!.length}
+              queuedEditMaintenanceOrder!.length +
+              queuedPauseActivity!.length +
+              queuedStartActivity!.length}
           </Text>
           <CustomButton
             variant="finish"
