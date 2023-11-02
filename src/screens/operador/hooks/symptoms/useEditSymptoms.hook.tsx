@@ -118,20 +118,19 @@ const useEditSymptoms = () => {
     ) {
       setIsSyncFinished(true);
       return;
-    }
-    if (queuedEditMaintenanceOrder.length > 0) {
+    } else {
       queuedEditMaintenanceOrder.forEach((om, index) => {
         const omWithIndex = { ...om, omIndex: index };
         editMaintenanceOrderMutation.mutate(omWithIndex);
+        const isTheLastOM = index === queuedEditMaintenanceOrder.length - 1;
+
         // When the last OM is sent, set isSyncFinished to true
-        if (index === queuedEditMaintenanceOrder.length - 1) {
+        if (isTheLastOM) {
           setTimeout(() => {
-            setIsSyncFinished(false);
+            setIsSyncFinished(true);
           }, 3000);
         }
       });
-    } else {
-      setIsSyncFinished(true);
     }
   };
 

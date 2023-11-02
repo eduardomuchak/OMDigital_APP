@@ -111,21 +111,21 @@ const useRegisterMaintenanceOrder = () => {
     ) {
       setIsSyncFinished(true);
       return;
-    }
-    if (queuedCreateNewMaintenanceOrder.length > 0) {
+    } else {
       queuedCreateNewMaintenanceOrder.forEach((om, index) => {
         const omWithIndex = { ...om, omIndex: index };
         createNewMaintenanceOrderMutation.mutate(omWithIndex);
 
+        const isTheLastOM =
+          index === queuedCreateNewMaintenanceOrder.length - 1;
+
         // When the last OM is sent, set isSyncFinished to true
-        if (index === queuedCreateNewMaintenanceOrder.length - 1) {
+        if (isTheLastOM) {
           setTimeout(() => {
             setIsSyncFinished(true);
           }, 3000);
         }
       });
-    } else {
-      setIsSyncFinished(false);
     }
   };
 

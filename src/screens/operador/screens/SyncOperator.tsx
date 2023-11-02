@@ -42,9 +42,9 @@ export function SyncOperator() {
     handleNavigation();
   }, [isSyncFinished]);
 
-  console.log('isCreateOMSyncFinished', isCreateOMSyncFinished);
-  console.log('isEditOMSyncFinished', isEditOMSyncFinished);
-  console.log('isSyncFinished', isSyncFinished);
+  // console.log('isCreateOMSyncFinished', isCreateOMSyncFinished);
+  // console.log('isEditOMSyncFinished', isEditOMSyncFinished);
+  // console.log('isSyncFinished', isSyncFinished);
 
   useEffect(() => {
     if (isCreateOMSyncFinished && isEditOMSyncFinished) {
