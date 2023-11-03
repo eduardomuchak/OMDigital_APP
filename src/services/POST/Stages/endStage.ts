@@ -1,9 +1,12 @@
 import { api } from '../../api';
 
-export const endStage = async (
-  stageId: number,
-  manPowerId: string | null | undefined,
-) => {
+export const endStage = async ({
+  stageId,
+  manPowerId,
+}: {
+  stageId: number;
+  manPowerId: string | null | undefined;
+}) => {
   const now = new Date();
 
   const day = now.getDate().toString().padStart(2, '0');

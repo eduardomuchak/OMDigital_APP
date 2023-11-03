@@ -38,8 +38,11 @@ export function RedirectToSyncScreen() {
   const [queuedResumeActivity, setQueuedResumeActivity] = useMMKVObject<
     StageQueue[]
   >('queuedResumeActivity');
-
   if (queuedResumeActivity === undefined) setQueuedResumeActivity([]);
+
+  const [queuedEndActivity, setQueuedEndActivity] =
+    useMMKVObject<StageQueue[]>('queuedEndActivity');
+  if (queuedEndActivity === undefined) setQueuedEndActivity([]);
 
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
@@ -57,19 +60,24 @@ export function RedirectToSyncScreen() {
   const isResumeActivityQueueValid =
     queuedResumeActivity && queuedResumeActivity.length > 0;
 
+  const isEndActivityQueueValid =
+    queuedEndActivity && queuedEndActivity.length > 0;
+
   const isQueueValid =
     isCreateOMQueueValid ||
     isEditOMQueueValid ||
     isPauseActivityQueueValid ||
     isStartActivityQueueValid ||
-    isResumeActivityQueueValid;
+    isResumeActivityQueueValid ||
+    isEndActivityQueueValid;
 
   const queueLength =
     queuedCreateNewMaintenanceOrder!.length +
     queuedEditMaintenanceOrder!.length +
     queuedPauseActivity!.length +
     queuedStartActivity!.length +
-    queuedResumeActivity!.length;
+    queuedResumeActivity!.length +
+    queuedEndActivity!.length;
 
   return (
     <>
