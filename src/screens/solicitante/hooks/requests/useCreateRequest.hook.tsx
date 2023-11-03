@@ -67,7 +67,6 @@ const useCreateRequest = () => {
   const createRequestMutation = useMutation({
     mutationFn: saveRequest,
     onSuccess: (response, request) => {
-      console.log('response', response);
       const isStatusTrue = response.data.status === true;
       if (isStatusTrue) {
         // Invalidate and refetch
@@ -91,15 +90,12 @@ const useCreateRequest = () => {
   });
 
   const sendQueuedCreateRequests = () => {
-    console.log('sendQueuedCreateRequests');
     setIsSyncFinished(false);
     if (!queuedCreateRequest || queuedCreateRequest.length === 0) {
       setIsSyncFinished(true);
       return;
     } else {
       queuedCreateRequest.forEach((om, index) => {
-        console.log('forEach');
-
         const omWithIndex = { ...om, requestIndex: index };
         createRequestMutation.mutate(omWithIndex);
 
