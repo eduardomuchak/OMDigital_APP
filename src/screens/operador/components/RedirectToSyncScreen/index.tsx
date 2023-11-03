@@ -4,6 +4,7 @@ import { useMMKVObject } from 'react-native-mmkv';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { NewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import { EditedMaintenanceOrder } from '../../../../services/POST/OMs/editMaintenanceOrder/index.interface';
+import { Stage } from '../../../../services/POST/Stages/stages.interface';
 
 interface StageQueue {
   activityId: number;
@@ -47,8 +48,12 @@ export function RedirectToSyncScreen() {
   const [queuedDeleteActivity, setQueuedDeleteActivity] = useMMKVObject<
     number[]
   >('queuedDeleteActivity');
-
   if (queuedDeleteActivity === undefined) setQueuedDeleteActivity([]);
+
+  const [queuedCreateActivity, setQueuedCreateActivity] = useMMKVObject<
+    Stage.CreateStage[]
+  >('queuedCreateActivity');
+  if (queuedCreateActivity === undefined) setQueuedCreateActivity([]);
 
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
@@ -72,6 +77,9 @@ export function RedirectToSyncScreen() {
   const isDeleteActivityQueueValid =
     queuedDeleteActivity && queuedDeleteActivity.length > 0;
 
+  const isCreateActivityQueueValid =
+    queuedCreateActivity && queuedCreateActivity.length > 0;
+
   const isQueueValid =
     isCreateOMQueueValid ||
     isEditOMQueueValid ||
@@ -79,7 +87,8 @@ export function RedirectToSyncScreen() {
     isStartActivityQueueValid ||
     isResumeActivityQueueValid ||
     isEndActivityQueueValid ||
-    isDeleteActivityQueueValid;
+    isDeleteActivityQueueValid ||
+    isCreateActivityQueueValid;
 
   const queueLength =
     queuedCreateNewMaintenanceOrder!.length +
@@ -88,7 +97,8 @@ export function RedirectToSyncScreen() {
     queuedStartActivity!.length +
     queuedResumeActivity!.length +
     queuedEndActivity!.length +
-    queuedDeleteActivity!.length;
+    queuedDeleteActivity!.length +
+    queuedCreateActivity!.length;
 
   return (
     <>

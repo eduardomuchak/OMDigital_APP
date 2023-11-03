@@ -25,6 +25,7 @@ import {
   RegisterNewMaintenanceOrderFormData,
   registerNewMaintenanceOrderSchema,
 } from '../../../validations/operador/RegisterNewMaintenanceOrderScreen';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
 
 export function RegisterNewMaintenanceOrder() {
@@ -352,6 +353,7 @@ export function RegisterNewMaintenanceOrder() {
           </View>
         </ScrollView>
         {!isConnected && <NetworkStatus />}
+        {isConnected && <RedirectToSyncScreen />}
       </View>
     </>
   );
