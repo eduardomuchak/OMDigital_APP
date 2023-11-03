@@ -36,7 +36,7 @@ function DrawerNavigator() {
 
   return (
     <Drawer.Navigator
-      initialRouteName="OpenedRequests"
+      initialRouteName="HomeManutencao"
       screenOptions={{
         header(props) {
           return (
