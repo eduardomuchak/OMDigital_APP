@@ -35,6 +35,12 @@ export function RedirectToSyncScreen() {
   >('queuedStartActivity');
   if (queuedStartActivity === undefined) setQueuedStartActivity([]);
 
+  const [queuedResumeActivity, setQueuedResumeActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedResumeActivity');
+
+  if (queuedResumeActivity === undefined) setQueuedResumeActivity([]);
+
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
     queuedCreateNewMaintenanceOrder.length > 0;
@@ -48,22 +54,29 @@ export function RedirectToSyncScreen() {
   const isStartActivityQueueValid =
     queuedStartActivity && queuedStartActivity.length > 0;
 
+  const isResumeActivityQueueValid =
+    queuedResumeActivity && queuedResumeActivity.length > 0;
+
   const isQueueValid =
     isCreateOMQueueValid ||
     isEditOMQueueValid ||
     isPauseActivityQueueValid ||
-    isStartActivityQueueValid;
+    isStartActivityQueueValid ||
+    isResumeActivityQueueValid;
+
+  const queueLength =
+    queuedCreateNewMaintenanceOrder!.length +
+    queuedEditMaintenanceOrder!.length +
+    queuedPauseActivity!.length +
+    queuedStartActivity!.length +
+    queuedResumeActivity!.length;
 
   return (
     <>
       {isQueueValid && (
         <View className="flex flex-col space-y-2 bg-nepomuceno-dark-blue px-5 py-2">
           <Text className="font-poppinsBold text-sm text-white">
-            Quantidade de requisições na fila para sincronizar:{' '}
-            {queuedCreateNewMaintenanceOrder!.length +
-              queuedEditMaintenanceOrder!.length +
-              queuedPauseActivity!.length +
-              queuedStartActivity!.length}
+            Quantidade de requisições na fila para sincronizar: {queueLength}
           </Text>
           <CustomButton
             variant="finish"

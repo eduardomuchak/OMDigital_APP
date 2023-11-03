@@ -25,6 +25,7 @@ import { fetchStagesStatus } from '../../../../services/GET/Status/fetchStagesSt
 import { Stage } from '../../../../services/POST/Stages/stages.interface';
 import { formatStagesStatus } from '../../../../utils/formatMaintenanceOrderStatus';
 import { OperationInfoCard } from '../../../manutencao/components/OperationInfoCard';
+import { ResumeActivityModal } from '../ResumeActivityModal';
 
 interface SwipeableActivityCardListProps {
   activities: ListMaintenanceOrder.Stages[];
@@ -104,11 +105,21 @@ export const SwipeableActivityCardList = ({
         );
       default:
         return (
-          <StartActivityModal
-            omId={omId}
-            activityId={stage.id}
-            maintenanceOrderStatus={maintenanceOrderStatus}
-          />
+          <>
+            {stage.start_pause_datetime !== null ? (
+              <ResumeActivityModal
+                omId={omId}
+                activityId={stage.id}
+                maintenanceOrderStatus={maintenanceOrderStatus}
+              />
+            ) : (
+              <StartActivityModal
+                omId={omId}
+                activityId={stage.id}
+                maintenanceOrderStatus={maintenanceOrderStatus}
+              />
+            )}
+          </>
         );
     }
   };

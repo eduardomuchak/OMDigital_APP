@@ -7,6 +7,7 @@ import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
 import usePauseStage from '../hooks/stages/usePauseStage.hook';
+import useResumeStage from '../hooks/stages/useResumeStage.hook';
 import useStartStage from '../hooks/stages/useStartStage.hook';
 import useEditSymptoms from '../hooks/symptoms/useEditSymptoms.hook';
 
@@ -29,6 +30,10 @@ export function SyncOperator() {
     sendQueuedStartActivities,
     isSyncFinished: isStartedActivitiesSyncFinished,
   } = useStartStage();
+  const {
+    sendQueuedResumeActivities,
+    isSyncFinished: isResumedActivitiesSyncFinished,
+  } = useResumeStage();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
 
@@ -47,6 +52,7 @@ export function SyncOperator() {
       sendQueuedEditMaintenanceOrders();
       sendQueuedPauseActivities();
       sendQueuedStartActivities();
+      sendQueuedResumeActivities();
     }, []),
   );
 
@@ -59,7 +65,8 @@ export function SyncOperator() {
       isCreateOMSyncFinished &&
       isEditOMSyncFinished &&
       isPausedActivitiesSyncFinished &&
-      isStartedActivitiesSyncFinished
+      isStartedActivitiesSyncFinished &&
+      isResumedActivitiesSyncFinished
     ) {
       setIsSyncFinished(true);
     } else {
@@ -70,6 +77,7 @@ export function SyncOperator() {
     isEditOMSyncFinished,
     isPausedActivitiesSyncFinished,
     isStartedActivitiesSyncFinished,
+    isResumedActivitiesSyncFinished,
   ]);
 
   if (isSyncFinished) {
