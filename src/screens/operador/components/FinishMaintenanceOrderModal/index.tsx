@@ -1,13 +1,13 @@
-import { useNavigation } from '@react-navigation/native';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { Square } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { endMaintenanceOrderAPI } from '../../../../services/GET/Maintenance/getEndMaintenanceOrder';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
+import useFinishMaintenanceOrder from '../../hooks/maintenanceOrders/useFinishMaintenanceOrder.hook';
 
 interface FinishMaintenanceOrdemModalProps {
   isSwipeableTrigger?: boolean;
@@ -21,31 +21,15 @@ export function FinishMaintenanceOrderModal({
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
+  const { isConnected } = useCheckInternetConnection();
+  const { addFinishOMToQueue, finishMaintenanceOrderMutation } =
+    useFinishMaintenanceOrder();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const navigation = useNavigation();
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],
     queryFn: () => listMaintenanceOrderById(employee.id),
-  });
-
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: endMaintenanceOrderAPI,
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
   });
 
   function handleFinishMaintenanceOrder() {
@@ -54,19 +38,35 @@ export function FinishMaintenanceOrderModal({
       (om) => om.id === omId,
     )?.stages;
     const isAllActivitiesFinished = handledOm?.every(
-      (atividade) => atividade.status === 7,
+      (atividade) => atividade.status === 4,
     );
 
-    if (isAllActivitiesFinished) {
-      // mutation.mutate(omId);
-      navigation.navigate('CloseMaintenanceOrder', { id: omId });
-      setIsModalVisible(false);
+    if (isConnected) {
+      if (isAllActivitiesFinished) {
+        finishMaintenanceOrderMutation.mutate(omId);
+        setIsModalVisible(false);
+      } else {
+        setIsModalVisible(false);
+        Alert.alert(
+          'Atenção',
+          'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
+        );
+      }
     } else {
-      setIsModalVisible(false);
-      Alert.alert(
-        'Atenção',
-        'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
-      );
+      if (isAllActivitiesFinished) {
+        addFinishOMToQueue(omId);
+        setIsModalVisible(false);
+        Alert.alert(
+          'Sucesso',
+          'A ordem de manutenção foi adicionada à fila de sincronização e será finalizada assim que o dispositivo estiver conectado à internet',
+        );
+      } else {
+        setIsModalVisible(false);
+        Alert.alert(
+          'Atenção',
+          'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
+        );
+      }
     }
   }
 
@@ -86,9 +86,14 @@ export function FinishMaintenanceOrderModal({
           <Text className="font-poppinsMedium text-sm">Finalizar</Text>
         </View>
       ) : (
-        <CustomButton variant="finish" onPress={() => setIsModalVisible(true)}>
-          Finalizar
-        </CustomButton>
+        <View className="mb-10 px-6">
+          <CustomButton
+            variant="finish"
+            onPress={() => setIsModalVisible(true)}
+          >
+            Finalizar OM
+          </CustomButton>
+        </View>
       )}
 
       {/* Modal */}

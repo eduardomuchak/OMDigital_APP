@@ -2,6 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 import { CheckCircle, Warning } from 'phosphor-react-native';
 import React from 'react';
 import {
+  Alert,
   Dimensions,
   ListRenderItemInfo,
   RefreshControl,
@@ -19,12 +20,14 @@ import { StartActivityModal } from '../StartActivityModal';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { StatusLegend } from '../../../../components/StatusLegend';
 import { useAuth } from '../../../../contexts/auth';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { ListMaintenanceOrder } from '../../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
 import { fetchStagesStatus } from '../../../../services/GET/Status/fetchStagesStatus';
 import { Stage } from '../../../../services/POST/Stages/stages.interface';
 import { formatStagesStatus } from '../../../../utils/formatMaintenanceOrderStatus';
 import { OperationInfoCard } from '../../../manutencao/components/OperationInfoCard';
+import useFinishMaintenanceOrder from '../../hooks/maintenanceOrders/useFinishMaintenanceOrder.hook';
 import { ResumeActivityModal } from '../ResumeActivityModal';
 
 interface SwipeableActivityCardListProps {
@@ -36,11 +39,14 @@ export const SwipeableActivityCardList = ({
   activities,
   omId,
 }: SwipeableActivityCardListProps) => {
-  const { navigate } = useNavigation();
+  const { navigate, goBack } = useNavigation();
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
-
+  const { isConnected } = useCheckInternetConnection();
   const queryClient = useQueryClient();
+
+  const { addFinishOMToQueue, finishMaintenanceOrderMutation } =
+    useFinishMaintenanceOrder();
 
   const listStageStatus = useQuery({
     queryKey: ['listStageStatus'],
@@ -74,6 +80,40 @@ export const SwipeableActivityCardList = ({
   )[0].status;
   const screenWidth = Dimensions.get('window').width;
   const halfScreenWidth = Number((screenWidth / 2).toFixed(0));
+
+  function handleFinishMaintenanceOrder() {
+    if (listMaintenanceOrder.data === undefined) return;
+    const handledOm = listMaintenanceOrder.data.find(
+      (om) => om.id === omId,
+    )?.stages;
+    const isAllActivitiesFinished = handledOm?.every(
+      (atividade) => atividade.status === 4,
+    );
+
+    if (isConnected) {
+      if (isAllActivitiesFinished) {
+        finishMaintenanceOrderMutation.mutate(omId);
+      } else {
+        Alert.alert(
+          'Atenção',
+          'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
+        );
+      }
+    } else {
+      if (isAllActivitiesFinished) {
+        addFinishOMToQueue(omId);
+        Alert.alert(
+          'Sucesso',
+          'A ordem de manutenção foi adicionada à fila de sincronização e será finalizada assim que o dispositivo estiver conectado à internet',
+        );
+      } else {
+        Alert.alert(
+          'Atenção',
+          'Todas as etapas devem estar concluídas para finalizar uma OM. Verifique as etapas pendentes.',
+        );
+      }
+    }
+  }
 
   const HandleStatus = ({ stage }: Stage.StagesListProps) => {
     switch (formatStagesStatus(stage.status)) {
@@ -164,12 +204,18 @@ export const SwipeableActivityCardList = ({
             <View className="mb-10 px-6">
               <CustomButton
                 variant="finish"
-                onPress={() => navigate('CloseMaintenanceOrder', { id: omId })}
+                onPress={() => {
+                  handleFinishMaintenanceOrder();
+                  goBack();
+                }}
               >
                 Finalizar OM
               </CustomButton>
             </View>
-          ) : null}
+          ) : // <>
+          //   <FinishMaintenanceOrderModal omId={omId} />
+          // </>
+          null}
         </>
       )}
     </>

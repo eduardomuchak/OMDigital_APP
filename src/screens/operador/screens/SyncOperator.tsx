@@ -6,6 +6,7 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import useCancelMaintenanceOrder from '../hooks/maintenanceOrders/useCancelMaintenanceOrder.hook';
+import useFinishMaintenanceOrder from '../hooks/maintenanceOrders/useFinishMaintenanceOrder.hook';
 import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
 import useCreateStage from '../hooks/stages/useCreateStage.hook';
 import useDeleteStage from '../hooks/stages/useDeleteStage.hook';
@@ -59,6 +60,10 @@ export function SyncOperator() {
     sendCancelMaintenanceOrdersQueue,
     isSyncFinished: isCanceledMaintenanceOrdersSyncFinished,
   } = useCancelMaintenanceOrder();
+  const {
+    sendFinishMaintenanceOrdersQueue,
+    isSyncFinished: isFinishedMaintenanceOrdersSyncFinished,
+  } = useFinishMaintenanceOrder();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
 
@@ -83,6 +88,7 @@ export function SyncOperator() {
       sendQueuedCreateActivities();
       sendCreatedSymptomsQueue();
       sendCancelMaintenanceOrdersQueue();
+      sendFinishMaintenanceOrdersQueue();
     }, []),
   );
 
@@ -101,7 +107,8 @@ export function SyncOperator() {
       isDeletedActivitiesSyncFinished &&
       isCreatedActivitiesSyncFinished &&
       isCreatedSymptomsSyncFinished &&
-      isCanceledMaintenanceOrdersSyncFinished
+      isCanceledMaintenanceOrdersSyncFinished &&
+      isFinishedMaintenanceOrdersSyncFinished
     ) {
       setIsSyncFinished(true);
     } else {
@@ -118,6 +125,7 @@ export function SyncOperator() {
     isCreatedActivitiesSyncFinished,
     isCreatedSymptomsSyncFinished,
     isCanceledMaintenanceOrdersSyncFinished,
+    isFinishedMaintenanceOrdersSyncFinished,
   ]);
 
   if (isSyncFinished) {
