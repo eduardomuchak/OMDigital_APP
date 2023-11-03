@@ -61,6 +61,11 @@ export function RedirectToSyncScreen() {
   >('queuedCreateSymptom');
   if (queuedCreateSymptom === undefined) setQueuedCreateSymptom([]);
 
+  const [queuedCancelMaintenanceOrder, setQueuedCancelMaintenanceOrder] =
+    useMMKVObject<number[]>('queuedCancelMaintenanceOrder');
+  if (queuedCancelMaintenanceOrder === undefined)
+    setQueuedCancelMaintenanceOrder([]);
+
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
     queuedCreateNewMaintenanceOrder.length > 0;
@@ -89,6 +94,9 @@ export function RedirectToSyncScreen() {
   const isCreateSymptomQueueValid =
     queuedCreateSymptom && queuedCreateSymptom.length > 0;
 
+  const isCancelOMQueueValid =
+    queuedCancelMaintenanceOrder && queuedCancelMaintenanceOrder.length > 0;
+
   const isQueueValid =
     isCreateOMQueueValid ||
     isEditOMQueueValid ||
@@ -98,7 +106,8 @@ export function RedirectToSyncScreen() {
     isEndActivityQueueValid ||
     isDeleteActivityQueueValid ||
     isCreateActivityQueueValid ||
-    isCreateSymptomQueueValid;
+    isCreateSymptomQueueValid ||
+    isCancelOMQueueValid;
 
   const queueLength =
     queuedCreateNewMaintenanceOrder!.length +
@@ -109,7 +118,8 @@ export function RedirectToSyncScreen() {
     queuedEndActivity!.length +
     queuedDeleteActivity!.length +
     queuedCreateActivity!.length +
-    queuedCreateSymptom!.length;
+    queuedCreateSymptom!.length +
+    queuedCancelMaintenanceOrder!.length;
 
   return (
     <>

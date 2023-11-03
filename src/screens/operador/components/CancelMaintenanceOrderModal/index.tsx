@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Prohibit } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
-import { deleteMaintenanceOrderAPI } from '../../../../services/DELETE/MaintenanceOrder';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
+import useCancelMaintenanceOrder from '../../hooks/maintenanceOrders/useCancelMaintenanceOrder.hook';
 import { CancelMaintenanceOrderModalProps } from './interface';
 
 export function CancelMaintenanceOrderModal({
@@ -12,29 +12,23 @@ export function CancelMaintenanceOrderModal({
   omId,
 }: CancelMaintenanceOrderModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { isConnected } = useCheckInternetConnection();
 
-  const queryClient = useQueryClient();
-
-  const mutation = useMutation({
-    mutationFn: deleteMaintenanceOrderAPI,
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { cancelMaintenanceOrderMutation, addCancelOMToQueue } =
+    useCancelMaintenanceOrder();
 
   function handleCancelOM() {
-    mutation.mutate(omId);
-    setIsModalVisible(false);
+    if (isConnected) {
+      cancelMaintenanceOrderMutation.mutate(omId);
+      setIsModalVisible(false);
+    } else {
+      addCancelOMToQueue(omId);
+      Alert.alert(
+        'Sucesso',
+        'A Ordem de Manutenção foi adicionada à fila de sincronização e será cancelada assim que o dispositivo estiver conectado à internet',
+      );
+      setIsModalVisible(false);
+    }
   }
 
   return (
