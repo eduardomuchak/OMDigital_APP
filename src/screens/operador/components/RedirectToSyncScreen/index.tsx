@@ -5,6 +5,7 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { NewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import { EditedMaintenanceOrder } from '../../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 import { Stage } from '../../../../services/POST/Stages/stages.interface';
+import { Symptom } from '../../../../services/POST/Symptoms/symptom.interface';
 
 interface StageQueue {
   activityId: number;
@@ -55,6 +56,11 @@ export function RedirectToSyncScreen() {
   >('queuedCreateActivity');
   if (queuedCreateActivity === undefined) setQueuedCreateActivity([]);
 
+  const [queuedCreateSymptom, setQueuedCreateSymptom] = useMMKVObject<
+    Symptom.CreateNewSymptom[]
+  >('queuedCreateSymptom');
+  if (queuedCreateSymptom === undefined) setQueuedCreateSymptom([]);
+
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
     queuedCreateNewMaintenanceOrder.length > 0;
@@ -80,6 +86,9 @@ export function RedirectToSyncScreen() {
   const isCreateActivityQueueValid =
     queuedCreateActivity && queuedCreateActivity.length > 0;
 
+  const isCreateSymptomQueueValid =
+    queuedCreateSymptom && queuedCreateSymptom.length > 0;
+
   const isQueueValid =
     isCreateOMQueueValid ||
     isEditOMQueueValid ||
@@ -88,7 +97,8 @@ export function RedirectToSyncScreen() {
     isResumeActivityQueueValid ||
     isEndActivityQueueValid ||
     isDeleteActivityQueueValid ||
-    isCreateActivityQueueValid;
+    isCreateActivityQueueValid ||
+    isCreateSymptomQueueValid;
 
   const queueLength =
     queuedCreateNewMaintenanceOrder!.length +
@@ -98,7 +108,8 @@ export function RedirectToSyncScreen() {
     queuedResumeActivity!.length +
     queuedEndActivity!.length +
     queuedDeleteActivity!.length +
-    queuedCreateActivity!.length;
+    queuedCreateActivity!.length +
+    queuedCreateSymptom!.length;
 
   return (
     <>

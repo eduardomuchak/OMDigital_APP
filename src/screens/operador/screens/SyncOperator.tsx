@@ -12,6 +12,7 @@ import useEndStage from '../hooks/stages/useEndStage.hook';
 import usePauseStage from '../hooks/stages/usePauseStage.hook';
 import useResumeStage from '../hooks/stages/useResumeStage.hook';
 import useStartStage from '../hooks/stages/useStartStage.hook';
+import useCreateSymptoms from '../hooks/symptoms/useCreateSymptom.hook';
 import useEditSymptoms from '../hooks/symptoms/useEditSymptoms.hook';
 
 export function SyncOperator() {
@@ -49,6 +50,10 @@ export function SyncOperator() {
     sendQueuedCreateActivities,
     isSyncFinished: isCreatedActivitiesSyncFinished,
   } = useCreateStage();
+  const {
+    sendCreatedSymptomsQueue,
+    isSyncFinished: isCreatedSymptomsSyncFinished,
+  } = useCreateSymptoms();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
 
@@ -71,6 +76,7 @@ export function SyncOperator() {
       sendQueuedEndActivities();
       sendQueuedDeleteActivities();
       sendQueuedCreateActivities();
+      sendCreatedSymptomsQueue();
     }, []),
   );
 
@@ -87,7 +93,8 @@ export function SyncOperator() {
       isResumedActivitiesSyncFinished &&
       isEndedActivitiesSyncFinished &&
       isDeletedActivitiesSyncFinished &&
-      isCreatedActivitiesSyncFinished
+      isCreatedActivitiesSyncFinished &&
+      isCreatedSymptomsSyncFinished
     ) {
       setIsSyncFinished(true);
     } else {
@@ -102,6 +109,7 @@ export function SyncOperator() {
     isEndedActivitiesSyncFinished,
     isDeletedActivitiesSyncFinished,
     isCreatedActivitiesSyncFinished,
+    isCreatedSymptomsSyncFinished,
   ]);
 
   if (isSyncFinished) {
