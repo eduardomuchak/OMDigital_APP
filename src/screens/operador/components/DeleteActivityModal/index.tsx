@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Trash } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
-import { apiDeleteStage } from '../../../../services/DELETE/Stages';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
+import useDeleteStage from '../../hooks/stages/useDeleteStage.hook';
 
 interface DeleteActivityModalProps {
   activityId: number;
@@ -12,28 +12,22 @@ interface DeleteActivityModalProps {
 
 export function DeleteActivityModal({ activityId }: DeleteActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: apiDeleteStage,
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { isConnected } = useCheckInternetConnection();
+  const { deleteStageMutation, addActivityToDeleteQueue } = useDeleteStage();
 
   function handleDeleteActivity() {
-    mutation.mutate(activityId);
-    setIsModalVisible(false);
+    if (isConnected) {
+      deleteStageMutation.mutate(activityId);
+      setIsModalVisible(false);
+    } else {
+      addActivityToDeleteQueue(activityId);
+      Alert.alert(
+        'Sucesso',
+        'A atividade foi adicionada à fila de sincronização e será excluída assim que o dispositivo estiver conectado à internet',
+      );
+      setIsModalVisible(false);
+    }
   }
 
   return (

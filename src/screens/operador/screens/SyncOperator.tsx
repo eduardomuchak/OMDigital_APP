@@ -6,6 +6,7 @@ import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
+import useDeleteStage from '../hooks/stages/useDeleteStage.hook';
 import useEndStage from '../hooks/stages/useEndStage.hook';
 import usePauseStage from '../hooks/stages/usePauseStage.hook';
 import useResumeStage from '../hooks/stages/useResumeStage.hook';
@@ -39,6 +40,10 @@ export function SyncOperator() {
     sendQueuedEndActivities,
     isSyncFinished: isEndedActivitiesSyncFinished,
   } = useEndStage();
+  const {
+    sendQueuedDeleteActivities,
+    isSyncFinished: isDeletedActivitiesSyncFinished,
+  } = useDeleteStage();
 
   const [isSyncFinished, setIsSyncFinished] = useState(false);
 
@@ -59,6 +64,7 @@ export function SyncOperator() {
       sendQueuedStartActivities();
       sendQueuedResumeActivities();
       sendQueuedEndActivities();
+      sendQueuedDeleteActivities();
     }, []),
   );
 
@@ -73,7 +79,8 @@ export function SyncOperator() {
       isPausedActivitiesSyncFinished &&
       isStartedActivitiesSyncFinished &&
       isResumedActivitiesSyncFinished &&
-      isEndedActivitiesSyncFinished
+      isEndedActivitiesSyncFinished &&
+      isDeletedActivitiesSyncFinished
     ) {
       setIsSyncFinished(true);
     } else {
@@ -86,6 +93,7 @@ export function SyncOperator() {
     isStartedActivitiesSyncFinished,
     isResumedActivitiesSyncFinished,
     isEndedActivitiesSyncFinished,
+    isDeletedActivitiesSyncFinished,
   ]);
 
   if (isSyncFinished) {
