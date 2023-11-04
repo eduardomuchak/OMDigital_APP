@@ -13,6 +13,7 @@ import { useAuth } from '../contexts/auth';
 import { Home } from '../screens/manutencao/screens/Home';
 import { OpenedRequests } from '../screens/manutencao/screens/OpenedRequests';
 import { RegisteredActivities } from '../screens/manutencao/screens/RegisteredActivities';
+import SyncManutencao from '../screens/manutencao/screens/SyncManutencao';
 import { textCapitalizer } from '../utils/textCapitalize';
 
 const Stack = createStackNavigator();
@@ -113,8 +114,10 @@ export const ManutencaoRoutes: React.FC = () => (
     screenOptions={{
       headerShown: false,
     }}
+    initialRouteName="Drawer"
   >
     <Stack.Screen name="Drawer" component={DrawerNavigator} />
+    <Stack.Screen name="SyncManutencao" component={SyncManutencao} />
     <Stack.Screen name="HomeManutencao" component={Home} />
     <Stack.Screen name="OpenedRequests" component={OpenedRequests} />
     <Stack.Screen
