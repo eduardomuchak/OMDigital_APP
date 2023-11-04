@@ -1,267 +1,75 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { CheckCircle } from 'phosphor-react-native';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, Text } from 'react-native';
-import { useMMKVObject } from 'react-native-mmkv';
+import { Text } from 'react-native';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { SyncLoading } from '../../../components/SyncLoading';
 import { CustomButton } from '../../../components/ui/CustomButton';
-import { createNewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts';
-import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
-import { editMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder';
-import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
+import useCancelMaintenanceOrder from '../hooks/maintenanceOrders/useCancelMaintenanceOrder.hook';
+import useFinishMaintenanceOrder from '../hooks/maintenanceOrders/useFinishMaintenanceOrder.hook';
+import useRegisterMaintenanceOrder from '../hooks/maintenanceOrders/useRegisterMaintenanceOrder.hook';
+import useCreateStage from '../hooks/stages/useCreateStage.hook';
+import useDeleteStage from '../hooks/stages/useDeleteStage.hook';
+import useEndStage from '../hooks/stages/useEndStage.hook';
+import usePauseStage from '../hooks/stages/usePauseStage.hook';
+import useResumeStage from '../hooks/stages/useResumeStage.hook';
+import useStartStage from '../hooks/stages/useStartStage.hook';
+import useCreateSymptoms from '../hooks/symptoms/useCreateSymptom.hook';
+import useEditSymptoms from '../hooks/symptoms/useEditSymptoms.hook';
 
 export function SyncOperator() {
-  const queryClient = useQueryClient();
   const { navigate } = useNavigation();
 
-  const [isSyncFinished, setIsSyncFinished] = useState({
-    createOM: false,
-    editOM: false,
-  });
+  const {
+    sendQueuedCreateMaintenanceOrders,
+    isSyncFinished: isCreateOMSyncFinished,
+  } = useRegisterMaintenanceOrder();
+  const {
+    sendQueuedEditMaintenanceOrders,
+    isSyncFinished: isEditOMSyncFinished,
+  } = useEditSymptoms();
+  const {
+    sendQueuedPauseActivities,
+    isSyncFinished: isPausedActivitiesSyncFinished,
+  } = usePauseStage();
+  const {
+    sendQueuedStartActivities,
+    isSyncFinished: isStartedActivitiesSyncFinished,
+  } = useStartStage();
+  const {
+    sendQueuedResumeActivities,
+    isSyncFinished: isResumedActivitiesSyncFinished,
+  } = useResumeStage();
+  const {
+    sendQueuedEndActivities,
+    isSyncFinished: isEndedActivitiesSyncFinished,
+  } = useEndStage();
+  const {
+    sendQueuedDeleteActivities,
+    isSyncFinished: isDeletedActivitiesSyncFinished,
+  } = useDeleteStage();
+  const {
+    sendQueuedCreateActivities,
+    isSyncFinished: isCreatedActivitiesSyncFinished,
+  } = useCreateStage();
+  const {
+    sendCreatedSymptomsQueue,
+    isSyncFinished: isCreatedSymptomsSyncFinished,
+  } = useCreateSymptoms();
+  const {
+    sendCancelMaintenanceOrdersQueue,
+    isSyncFinished: isCanceledMaintenanceOrdersSyncFinished,
+  } = useCancelMaintenanceOrder();
+  const {
+    sendFinishMaintenanceOrdersQueue,
+    isSyncFinished: isFinishedMaintenanceOrdersSyncFinished,
+  } = useFinishMaintenanceOrder();
 
-  // Create OM Section
-  const [queuedCreateNewMaintenanceOrder, setQueuedCreateNewMaintenanceOrder] =
-    useMMKVObject<NewMaintenanceOrder.Payload[]>(
-      'queuedCreateNewMaintenanceOrder',
-    );
-  if (queuedCreateNewMaintenanceOrder === undefined)
-    setQueuedCreateNewMaintenanceOrder([]);
-
-  const removeOMFromCreateOMQueue = (omIndex: number | undefined) => {
-    if (!queuedCreateNewMaintenanceOrder || omIndex === undefined) return;
-
-    const newQueue = queuedCreateNewMaintenanceOrder.filter((_, index) => {
-      return index !== omIndex;
-    });
-
-    setQueuedCreateNewMaintenanceOrder(newQueue);
-  };
-
-  const createNewMaintenanceOrderMutation = useMutation({
-    mutationFn: createNewMaintenanceOrder,
-    onSuccess: (response, request) => {
-      // console.log('Request => ', request);
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-
-        // Remove OM from queue
-        setTimeout(() => {
-          removeOMFromCreateOMQueue(request.omIndex);
-        }, 1000);
-
-        // Show alert with response message
-        const formattedMessage = `
-        Código do Bem: 
-        ${request?.asset_code}
-        
-        Contador: 
-        ${request?.counter}
-        
-        ${
-          request.symptoms[0].description &&
-          `Sintoma: 
-          ${request?.symptoms[0].description}`
-        } 
-        
-        ${
-          request.obs &&
-          `Observação: 
-          ${request?.obs}`
-        }
-        
-          Mensagem:
-          ${response.data.return.message}`;
-
-        Alert.alert('Sucesso:', formattedMessage);
-      } else {
-        // Remove OM from queue
-        setTimeout(() => {
-          removeOMFromCreateOMQueue(request.omIndex);
-        }, 1000);
-
-        // Show alert with response message
-        const formattedMessage = `
-        Código do Bem: 
-        ${request?.asset_code}
-        
-        Contador: 
-        ${request?.counter}
-        
-        ${
-          request.symptoms[0].description &&
-          `Sintoma: 
-          ${request?.symptoms[0].description}`
-        } 
-        
-        ${
-          request.obs &&
-          `Observação: 
-          ${request?.obs}`
-        } 
-
-          Motivo do Erro:
-          ${response.data.return[0]}`;
-
-        Alert.alert(
-          'Opa! Algo deu errado ao sincronizar esta requisição:',
-          formattedMessage,
-        );
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
-  const sendQueuedCreateMaintenanceOrders = () => {
-    setIsSyncFinished((prev) => ({ ...prev, createOM: false }));
-    if (
-      !queuedCreateNewMaintenanceOrder ||
-      queuedCreateNewMaintenanceOrder.length === 0
-    ) {
-      setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
-      return;
-    }
-    if (queuedCreateNewMaintenanceOrder.length > 0) {
-      queuedCreateNewMaintenanceOrder.forEach((om, index) => {
-        const omWithIndex = { ...om, omIndex: index };
-        createNewMaintenanceOrderMutation.mutate(omWithIndex);
-
-        // When the last OM is sent, set isSyncFinished to true
-        if (index === queuedCreateNewMaintenanceOrder.length - 1) {
-          setTimeout(() => {
-            setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
-          }, 3000);
-        }
-      });
-    } else {
-      setIsSyncFinished((prev) => ({ ...prev, createOM: true }));
-    }
-  };
-  //
-
-  // Edit OM Section
-  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
-    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
-  if (queuedEditMaintenanceOrder === undefined)
-    setQueuedEditMaintenanceOrder([]);
-
-  const removeFromEditOMQueue = (om: EditedMaintenanceOrder | undefined) => {
-    if (!queuedEditMaintenanceOrder || om === undefined) return;
-
-    const newQueue = queuedEditMaintenanceOrder.filter((queuedOM) => {
-      return queuedOM.id !== om.id;
-    });
-
-    setQueuedEditMaintenanceOrder(newQueue);
-  };
-
-  const editMaintenanceOrderMutation = useMutation({
-    mutationFn: editMaintenanceOrder,
-    onSuccess: (response, request) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-
-        // Remove OM from queue
-        setTimeout(() => {
-          removeFromEditOMQueue(request);
-        }, 1000);
-
-        // Show alert with response message
-        const formattedMessage = `
-        Código do Bem:
-        ${request?.asset_code}
-
-        Contador:
-        ${request?.counter}
-
-        ${
-          request.symptoms.length > 0 &&
-          `Sintoma:
-          ${request?.symptoms.map((symptom) => symptom.description).join(', ')}`
-        }
-
-          Mensagem:
-          ${response.data.return.message}`;
-
-        Alert.alert('Sucesso:', formattedMessage);
-      } else {
-        // Remove OM from queue
-        setTimeout(() => {
-          removeFromEditOMQueue(request);
-        }, 1000);
-
-        // Show alert with response message
-        const formattedMessage = `
-        Código do Bem:
-        ${request?.asset_code}
-
-        Contador:
-        ${request?.counter}
-
-        ${
-          request.symptoms[0].description &&
-          `Sintoma:
-          ${request?.symptoms[0].description}`
-        }
-
-        ${
-          request.obs &&
-          `Observação:
-          ${request?.obs}`
-        }
-
-          Motivo do Erro:
-          ${response.data.return[0]}`;
-
-        Alert.alert(
-          'Opa! Algo deu errado ao sincronizar esta requisição:',
-          formattedMessage,
-        );
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
-  const sendQueuedEditMaintenanceOrders = () => {
-    setIsSyncFinished((prev) => ({ ...prev, editOM: false }));
-    if (
-      !queuedEditMaintenanceOrder ||
-      queuedEditMaintenanceOrder.length === 0
-    ) {
-      setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
-      return;
-    }
-    if (queuedEditMaintenanceOrder.length > 0) {
-      queuedEditMaintenanceOrder.forEach((om, index) => {
-        console.log('REQ => ', om);
-        const omWithIndex = { ...om, omIndex: index };
-        editMaintenanceOrderMutation.mutate(omWithIndex);
-
-        // When the last OM is sent, set isSyncFinished to true
-        if (index === queuedEditMaintenanceOrder.length - 1) {
-          setTimeout(() => {
-            setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
-          }, 2000);
-        }
-      });
-    } else {
-      setIsSyncFinished((prev) => ({ ...prev, editOM: true }));
-    }
-  };
-
-  //
+  const [isSyncFinished, setIsSyncFinished] = useState(false);
 
   const handleNavigation = () => {
-    if (Object.values(isSyncFinished).every((value) => value === true)) {
+    if (isSyncFinished) {
+      setIsSyncFinished(false);
       setTimeout(() => {
         navigate('HomeOperador');
       }, 3000);
@@ -272,35 +80,55 @@ export function SyncOperator() {
     useCallback(() => {
       sendQueuedCreateMaintenanceOrders();
       sendQueuedEditMaintenanceOrders();
+      sendQueuedPauseActivities();
+      sendQueuedStartActivities();
+      sendQueuedResumeActivities();
+      sendQueuedEndActivities();
+      sendQueuedDeleteActivities();
+      sendQueuedCreateActivities();
+      sendCreatedSymptomsQueue();
+      sendCancelMaintenanceOrdersQueue();
+      sendFinishMaintenanceOrdersQueue();
     }, []),
   );
-
-  // console.log('isSyncFinished => ', isSyncFinished);
 
   useEffect(() => {
     handleNavigation();
   }, [isSyncFinished]);
 
-  if (!queuedCreateNewMaintenanceOrder && !queuedEditMaintenanceOrder) {
-    setTimeout(() => {
-      // setIsSyncFinished(false);
-      navigate('HomeOperador');
-    }, 2000);
-    return (
-      <Animated.View
-        entering={FadeInDown}
-        exiting={FadeOutDown}
-        className="flex h-screen flex-1 flex-col items-center justify-center gap-5 px-5"
-      >
-        <CheckCircle color="#046700" weight="bold" size={64} />
-        <Text className="font-poppinsBold text-xl text-zinc-900">
-          Iniciando o aplicativo...
-        </Text>
-      </Animated.View>
-    );
-  }
+  useEffect(() => {
+    if (
+      isCreateOMSyncFinished &&
+      isEditOMSyncFinished &&
+      isPausedActivitiesSyncFinished &&
+      isStartedActivitiesSyncFinished &&
+      isResumedActivitiesSyncFinished &&
+      isEndedActivitiesSyncFinished &&
+      isDeletedActivitiesSyncFinished &&
+      isCreatedActivitiesSyncFinished &&
+      isCreatedSymptomsSyncFinished &&
+      isCanceledMaintenanceOrdersSyncFinished &&
+      isFinishedMaintenanceOrdersSyncFinished
+    ) {
+      setIsSyncFinished(true);
+    } else {
+      setIsSyncFinished(false);
+    }
+  }, [
+    isCreateOMSyncFinished,
+    isEditOMSyncFinished,
+    isPausedActivitiesSyncFinished,
+    isStartedActivitiesSyncFinished,
+    isResumedActivitiesSyncFinished,
+    isEndedActivitiesSyncFinished,
+    isDeletedActivitiesSyncFinished,
+    isCreatedActivitiesSyncFinished,
+    isCreatedSymptomsSyncFinished,
+    isCanceledMaintenanceOrdersSyncFinished,
+    isFinishedMaintenanceOrdersSyncFinished,
+  ]);
 
-  if (Object.values(isSyncFinished).every((value) => value === true)) {
+  if (isSyncFinished) {
     return (
       <Animated.View
         entering={FadeInDown}

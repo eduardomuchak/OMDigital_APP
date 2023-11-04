@@ -5,40 +5,40 @@ import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
 import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
-import useStartStage from '../../hooks/stages/useStartStage.hook';
+import useResumeStage from '../../hooks/stages/useResumeStage.hook';
 
-interface StartActivityModalProps {
+interface ResumeActivityModalProps {
   omId: number;
   activityId: number;
   maintenanceOrderStatus: number;
 }
 
-export function StartActivityModal({
+export function ResumeActivityModal({
   omId,
   activityId,
   maintenanceOrderStatus,
-}: StartActivityModalProps) {
+}: ResumeActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { employee } = useAuth();
   if (!employee?.man_power_id) return <></>;
-  const { addActivityToStartQueue, startStageMutation } = useStartStage();
+  const { addActivityToResumeQueue, resumeStageMutation } = useResumeStage();
   const { isConnected } = useCheckInternetConnection();
 
   function handleStartActivity() {
     if (isConnected) {
-      startStageMutation.mutate({
+      resumeStageMutation.mutate({
         manPowerId: employee?.man_power_id,
         stageId: activityId,
       });
       setIsModalVisible(false);
     } else {
-      addActivityToStartQueue({
+      addActivityToResumeQueue({
         manPowerId: employee?.man_power_id,
         activityId,
       });
       Alert.alert(
         'Sucesso',
-        'A atividade foi adicionada à fila de sincronização e será iniciada assim que o dispositivo estiver conectado à internet',
+        'A atividade foi adicionada à fila de sincronização e será retomada assim que o dispositivo estiver conectado à internet',
       );
       setIsModalVisible(false);
     }
@@ -57,7 +57,7 @@ export function StartActivityModal({
             <Play size={30} color="#FFFFFF" weight="bold" />
           </View>
         </TouchableOpacity>
-        <Text className="font-poppinsMedium text-sm">Iniciar</Text>
+        <Text className="font-poppinsMedium text-sm">Retomar</Text>
       </View>
 
       {/* Modal */}
@@ -82,7 +82,7 @@ export function StartActivityModal({
         ) : (
           <>
             <Text className="font-poppinsRegular text-base">
-              Você deseja iniciar a atividade?
+              Você deseja retomar a atividade?
             </Text>
             <View className="mt-16 flex flex-row justify-between">
               <View className="w-[48%]">

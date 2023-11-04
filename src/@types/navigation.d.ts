@@ -21,6 +21,7 @@ declare global {
       Camera: undefined;
       OpenedRequests: undefined;
       SyncOperator: undefined;
+      SyncSolicitante: undefined;
     }
   }
 

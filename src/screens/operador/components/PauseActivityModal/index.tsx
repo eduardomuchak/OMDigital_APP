@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Pause } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { pauseStage } from '../../../../services/POST/Stages/pauseStage';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
+import usePauseStage from '../../hooks/stages/usePauseStage.hook';
 
 interface PauseActivityModalProps {
   omId: number;
@@ -19,27 +19,10 @@ export function PauseActivityModal({
   maintenanceOrderStatus,
 }: PauseActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const queryClient = useQueryClient();
   const { employee } = useAuth();
   if (!employee?.man_power_id) return <></>;
-
-  const mutation = useMutation({
-    mutationFn: () => pauseStage(activityId, employee.man_power_id),
-
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return.message);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { isConnected } = useCheckInternetConnection();
+  const { addActivityToPauseQueue, pauseStageMutation } = usePauseStage();
 
   function handlePauseActivity() {
     if (maintenanceOrderStatus === 1 || maintenanceOrderStatus === 3) {
@@ -48,8 +31,23 @@ export function PauseActivityModal({
         'Não é possível pausar uma atividade de uma OM que está em andamento ou finalizada',
       );
     } else {
-      mutation.mutate();
-      setIsModalVisible(false);
+      if (isConnected) {
+        setIsModalVisible(false);
+        pauseStageMutation.mutate({
+          manPowerId: employee?.man_power_id,
+          stageId: activityId,
+        });
+      } else {
+        addActivityToPauseQueue({
+          manPowerId: employee?.man_power_id,
+          activityId,
+        });
+        Alert.alert(
+          'Sucesso',
+          'A atividade foi adicionada à fila de sincronização e será pausada assim que o dispositivo estiver conectado à internet',
+        );
+        setIsModalVisible(false);
+      }
     }
   }
 

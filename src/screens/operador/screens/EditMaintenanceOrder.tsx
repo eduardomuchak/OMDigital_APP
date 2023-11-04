@@ -1,9 +1,8 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { RefreshControl } from 'react-native-gesture-handler';
-import { useMMKVObject } from 'react-native-mmkv';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { NetworkStatus } from '../../../components/NetworkStatus';
@@ -12,23 +11,17 @@ import { useAuth } from '../../../contexts/auth';
 import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { ListMaintenanceOrder } from '../../../services/GET/Maintenance/listMaintenanceOrderById/interface';
-import { editMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder';
-import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
 import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SymptomCard } from '../components/SymptomCard';
+import useEditSymptoms from '../hooks/symptoms/useEditSymptoms.hook';
 
 export function EditMaintenanceOrder() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
 
   const queryClient = useQueryClient();
-
-  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
-    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
-  if (queuedEditMaintenanceOrder === undefined)
-    setQueuedEditMaintenanceOrder([]);
-
+  const { addOMToQueue, editMaintenanceOrderMutation } = useEditSymptoms();
   const { isConnected } = useCheckInternetConnection();
   const { goBack } = useNavigation();
   const route = useRoute();
@@ -80,44 +73,6 @@ export function EditMaintenanceOrder() {
     setOmSymptoms(newSymptoms);
   };
 
-  const mutation = useMutation({
-    mutationFn: editMaintenanceOrder,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return.message);
-        goBack();
-      } else {
-        Alert.alert('Erro', JSON.stringify(response.data.return));
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
-  const addOMToQueue = (om: EditedMaintenanceOrder) => {
-    if (!queuedEditMaintenanceOrder) return;
-    // Find if the OM is already in the queue
-    const omIndex = queuedEditMaintenanceOrder.findIndex(
-      (queuedOM) => queuedOM.id === om.id,
-    );
-    if (omIndex !== -1) {
-      const newQueue = queuedEditMaintenanceOrder.map((queuedOM, index) => {
-        if (index === omIndex) {
-          return om;
-        }
-        return queuedOM;
-      });
-      setQueuedEditMaintenanceOrder(newQueue);
-      return;
-    } else {
-      setQueuedEditMaintenanceOrder([...queuedEditMaintenanceOrder, om]);
-    }
-  };
-
   function handleEditOM() {
     const payload = {
       id: omID,
@@ -147,7 +102,7 @@ export function EditMaintenanceOrder() {
     };
 
     if (isConnected) {
-      mutation.mutate(payload);
+      editMaintenanceOrderMutation.mutate(payload);
     } else if (!isConnected) {
       addOMToQueue(payload);
       Alert.alert(

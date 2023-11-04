@@ -1,7 +1,11 @@
 import { api } from '../../../api';
 import { SaveRequest } from './saveRequest.interface';
 
-export const saveRequest = async (payload: SaveRequest) => {
+interface RequestIndex {
+  requestIndex?: number;
+}
+
+export const saveRequest = async (payload: SaveRequest & RequestIndex) => {
   const formattedPayload = new FormData();
   formattedPayload.append('asset_code', payload.asset_code);
   formattedPayload.append('counter', payload.counter.toString());
