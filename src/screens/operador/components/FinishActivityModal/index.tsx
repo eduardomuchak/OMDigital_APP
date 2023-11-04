@@ -1,11 +1,11 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Square, Trash } from 'phosphor-react-native';
 import { useState } from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { CustomModal } from '../../../../components/ui/Modal';
 import { useAuth } from '../../../../contexts/auth';
-import { endStage } from '../../../../services/POST/Stages/endStage';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
+import useEndStage from '../../hooks/stages/useEndStage.hook';
 
 interface FinishActivityModalProps {
   isSwipeableTrigger?: boolean;
@@ -21,31 +21,30 @@ export function FinishActivityModal({
   maintenanceOrderStatus,
 }: FinishActivityModalProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  // const [endDate, setEndDate] = useState<Date>(new Date());
-  const queryClient = useQueryClient();
   const { employee } = useAuth();
   if (!employee?.man_power_id) return <></>;
 
-  const mutation = useMutation({
-    mutationFn: () => endStage(activityId, employee.man_power_id),
-    onSuccess: (response) => {
-      const isStatusTrue = response.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.return[0]);
-      } else {
-        Alert.alert('Erro', response.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const { isConnected } = useCheckInternetConnection();
+  const { addActivityToEndQueue, endStageMutation } = useEndStage();
 
   function handleFinishActivity() {
-    mutation.mutate();
-    setIsModalVisible(false);
+    if (isConnected) {
+      endStageMutation.mutate({
+        manPowerId: employee?.man_power_id,
+        stageId: activityId,
+      });
+      setIsModalVisible(false);
+    } else {
+      addActivityToEndQueue({
+        manPowerId: employee?.man_power_id,
+        activityId,
+      });
+      Alert.alert(
+        'Sucesso',
+        'A atividade foi adicionada à fila de sincronização e será finalizada assim que o dispositivo estiver conectado à internet',
+      );
+      setIsModalVisible(false);
+    }
   }
 
   return (
@@ -96,12 +95,6 @@ export function FinishActivityModal({
             <Text className="mb-8 font-poppinsRegular text-base">
               Você deseja finalizar esta etapa?
             </Text>
-            {/* <CustomDateTimePicker
-          value={endDate}
-          onDateSelect={setEndDate}
-          label="Data e hora de término"
-          mode="datetime"
-        /> */}
             <View className="mt-8 flex flex-row justify-between">
               <View className="w-[48%]">
                 <CustomButton

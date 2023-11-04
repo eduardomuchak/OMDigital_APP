@@ -71,28 +71,58 @@ export namespace ListMaintenanceOrder {
     name: string;
     path: string;
   }
+
   export interface Stages {
     id: number;
     maintenance_order_id: number;
     status: number;
     description: string;
-    man_power_id?: null;
-    start_date: string;
-    start_hr: string;
-    end_date: string;
-    end_hr: string;
-    task_protheus?: null;
-    stage_protheus?: null;
-    obs?: null;
+    man_power_id: string;
+    start_prev_date: string;
+    start_prev_hr: string;
+    end_prev_date: string;
+    end_prev_hr: string;
+    start_datetime: string;
+    start_pause_datetime: string;
+    end_pause_datetime: string | null;
+    end_datetime: string | null;
+    task_protheus: string | null;
+    stage_protheus: string | null;
+    obs: string | null;
     datetime: string;
+    alt_id: number;
     resp_id: number;
     st: number;
+    executor_name: string;
     asset_code: string;
     service_type: string;
-    service_code?: null;
+    service_code: string;
     mo_status: number;
     images: Images[];
   }
+
+  // export interface Stages {
+  //   id: number;
+  //   maintenance_order_id: number;
+  //   status: number;
+  //   description: string;
+  //   man_power_id?: null;
+  //   start_date: string;
+  //   start_hr: string;
+  //   end_date: string;
+  //   end_hr: string;
+  //   task_protheus?: null;
+  //   stage_protheus?: null;
+  //   obs?: null;
+  //   datetime: string;
+  //   resp_id: number;
+  //   st: number;
+  //   asset_code: string;
+  //   service_type: string;
+  //   service_code?: null;
+  //   mo_status: number;
+  //   images: Images[];
+  // }
   export interface BranchObj {
     name: string;
     branch: string;

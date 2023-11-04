@@ -6,17 +6,21 @@ import { RefreshControl } from 'react-native';
 import { CardContainer } from '../../../components/CardContainer';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { SolicitationCard } from '../../../components/SolicitationCard';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listUserRequestById } from '../../../services/GET/Solicitations/listUserRequest';
 import { fetchSolicitationsStatus } from '../../../services/GET/Status/fetchSolicitationsStatus';
 import { AddNewRequestButton } from '../components/AddNewRequestButton';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SolicitanteFilterModal } from '../components/SolicitanteFilterModal';
 
 export function Home() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
+  const { isConnected } = useCheckInternetConnection();
 
   const queryClient = useQueryClient();
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
@@ -94,6 +98,8 @@ export function Home() {
         </ScrollView>
       )}
       <AddNewRequestButton />
+      {!isConnected && <NetworkStatus />}
+      {isConnected && <RedirectToSyncScreen />}
     </View>
   );
 }

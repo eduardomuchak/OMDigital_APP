@@ -4,6 +4,13 @@ import { useMMKVObject } from 'react-native-mmkv';
 import { CustomButton } from '../../../../components/ui/CustomButton';
 import { NewMaintenanceOrder } from '../../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
 import { EditedMaintenanceOrder } from '../../../../services/POST/OMs/editMaintenanceOrder/index.interface';
+import { Stage } from '../../../../services/POST/Stages/stages.interface';
+import { Symptom } from '../../../../services/POST/Symptoms/symptom.interface';
+
+interface StageQueue {
+  activityId: number;
+  manPowerId: string | null | undefined;
+}
 
 export function RedirectToSyncScreen() {
   const { navigate } = useNavigation();
@@ -20,22 +27,116 @@ export function RedirectToSyncScreen() {
   if (queuedEditMaintenanceOrder === undefined)
     setQueuedEditMaintenanceOrder([]);
 
+  const [queuedPauseActivity, setQueuedPauseActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedPauseActivity');
+  if (queuedPauseActivity === undefined) setQueuedPauseActivity([]);
+
+  const [queuedStartActivity, setQueuedStartActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedStartActivity');
+  if (queuedStartActivity === undefined) setQueuedStartActivity([]);
+
+  const [queuedResumeActivity, setQueuedResumeActivity] = useMMKVObject<
+    StageQueue[]
+  >('queuedResumeActivity');
+  if (queuedResumeActivity === undefined) setQueuedResumeActivity([]);
+
+  const [queuedEndActivity, setQueuedEndActivity] =
+    useMMKVObject<StageQueue[]>('queuedEndActivity');
+  if (queuedEndActivity === undefined) setQueuedEndActivity([]);
+
+  const [queuedDeleteActivity, setQueuedDeleteActivity] = useMMKVObject<
+    number[]
+  >('queuedDeleteActivity');
+  if (queuedDeleteActivity === undefined) setQueuedDeleteActivity([]);
+
+  const [queuedCreateActivity, setQueuedCreateActivity] = useMMKVObject<
+    Stage.CreateStage[]
+  >('queuedCreateActivity');
+  if (queuedCreateActivity === undefined) setQueuedCreateActivity([]);
+
+  const [queuedCreateSymptom, setQueuedCreateSymptom] = useMMKVObject<
+    Symptom.CreateNewSymptom[]
+  >('queuedCreateSymptom');
+  if (queuedCreateSymptom === undefined) setQueuedCreateSymptom([]);
+
+  const [queuedCancelMaintenanceOrder, setQueuedCancelMaintenanceOrder] =
+    useMMKVObject<number[]>('queuedCancelMaintenanceOrder');
+  if (queuedCancelMaintenanceOrder === undefined)
+    setQueuedCancelMaintenanceOrder([]);
+
+  const [queuedFinishMaintenanceOrder, setQueuedFinishMaintenanceOrder] =
+    useMMKVObject<number[]>('queuedFinishMaintenanceOrder');
+  if (queuedFinishMaintenanceOrder === undefined)
+    setQueuedFinishMaintenanceOrder([]);
+
   const isCreateOMQueueValid =
     queuedCreateNewMaintenanceOrder &&
     queuedCreateNewMaintenanceOrder.length > 0;
+
   const isEditOMQueueValid =
     queuedEditMaintenanceOrder && queuedEditMaintenanceOrder.length > 0;
 
-  const isQueueValid = isCreateOMQueueValid || isEditOMQueueValid;
+  const isPauseActivityQueueValid =
+    queuedPauseActivity && queuedPauseActivity.length > 0;
+
+  const isStartActivityQueueValid =
+    queuedStartActivity && queuedStartActivity.length > 0;
+
+  const isResumeActivityQueueValid =
+    queuedResumeActivity && queuedResumeActivity.length > 0;
+
+  const isEndActivityQueueValid =
+    queuedEndActivity && queuedEndActivity.length > 0;
+
+  const isDeleteActivityQueueValid =
+    queuedDeleteActivity && queuedDeleteActivity.length > 0;
+
+  const isCreateActivityQueueValid =
+    queuedCreateActivity && queuedCreateActivity.length > 0;
+
+  const isCreateSymptomQueueValid =
+    queuedCreateSymptom && queuedCreateSymptom.length > 0;
+
+  const isCancelOMQueueValid =
+    queuedCancelMaintenanceOrder && queuedCancelMaintenanceOrder.length > 0;
+
+  const isFinishOMQueueValid =
+    queuedFinishMaintenanceOrder && queuedFinishMaintenanceOrder.length > 0;
+
+  const isQueueValid =
+    isCreateOMQueueValid ||
+    isEditOMQueueValid ||
+    isPauseActivityQueueValid ||
+    isStartActivityQueueValid ||
+    isResumeActivityQueueValid ||
+    isEndActivityQueueValid ||
+    isDeleteActivityQueueValid ||
+    isCreateActivityQueueValid ||
+    isCreateSymptomQueueValid ||
+    isCancelOMQueueValid ||
+    isFinishOMQueueValid;
+
+  const queueLength =
+    queuedCreateNewMaintenanceOrder!.length +
+    queuedEditMaintenanceOrder!.length +
+    queuedPauseActivity!.length +
+    queuedStartActivity!.length +
+    queuedResumeActivity!.length +
+    queuedEndActivity!.length +
+    queuedDeleteActivity!.length +
+    queuedCreateActivity!.length +
+    queuedCreateSymptom!.length +
+    queuedCancelMaintenanceOrder!.length +
+    queuedFinishMaintenanceOrder!.length;
 
   return (
     <>
       {isQueueValid && (
         <View className="flex flex-col space-y-2 bg-nepomuceno-dark-blue px-5 py-2">
           <Text className="font-poppinsBold text-sm text-white">
-            Quantidade de requisições na fila para sincronizar:{' '}
-            {queuedCreateNewMaintenanceOrder!.length +
-              queuedEditMaintenanceOrder!.length}
+            Quantidade de requisições na fila para sincronizar: {queueLength}
           </Text>
           <CustomButton
             variant="finish"

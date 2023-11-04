@@ -1,53 +1,47 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Alert, Text, View } from 'react-native';
 import { AttachmentPreviewModal } from '../../../../components/AttachmentPreviewModal';
 import { CustomButton } from '../../../../components/ui/CustomButton';
-import { acceptRequestAPI } from '../../../../services/GET/Solicitations/acceptRequest';
-import { dismissRequestAPI } from '../../../../services/GET/Solicitations/dismissRequest';
+import useCheckInternetConnection from '../../../../hooks/useCheckInternetConnection';
 import { Solicitations } from '../../../../services/GET/Solicitations/solicitations.interface';
 import { formatISOStringToPTBRDateString } from '../../../../utils/formatISOStringToPTBRDateString';
 import { textCapitalizer } from '../../../../utils/textCapitalize';
+import useAcceptRequest from '../../hooks/useAcceptRequest.hook';
+import useDismissRequest from '../../hooks/useDismissRequest.hook';
 
 interface OpenedRequestCardProps {
   request: Solicitations.Fetch;
 }
 
 export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
-  const queryClient = useQueryClient();
+  const { acceptRequestMutation, addAccepetedRequestToQueue } =
+    useAcceptRequest();
+  const { dismissRequestMutation, addDismissedRequestToQueue } =
+    useDismissRequest();
+  const { isConnected } = useCheckInternetConnection();
 
-  const mutationAcceptRequest = useMutation({
-    mutationFn: acceptRequestAPI,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
-        Alert.alert('Sucesso', response.data.return[0]);
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const onAcceptRequest = () => {
+    if (isConnected) {
+      acceptRequestMutation.mutate(request.id);
+    } else {
+      addAccepetedRequestToQueue(request.id);
+      Alert.alert(
+        'Sucesso',
+        'Esta requisição foi adicionada à fila de sincronização e será sincronizada assim que houver conexão com a internet.',
+      );
+    }
+  };
 
-  const mutationDismissRequest = useMutation({
-    mutationFn: dismissRequestAPI,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listRequest'] });
-        Alert.alert('Sucesso', response.data.return[0]);
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
+  const onDismissRequest = () => {
+    if (isConnected) {
+      dismissRequestMutation.mutate(request.id);
+    } else {
+      addDismissedRequestToQueue(request.id);
+      Alert.alert(
+        'Sucesso',
+        'Esta requisição foi adicionada à fila de sincronização e será sincronizada assim que houver conexão com a internet.',
+      );
+    }
+  };
 
   return (
     <View className="relative rounded-xl bg-neutral-100 p-4">
@@ -88,22 +82,12 @@ export function OpenedRequestCard({ request }: OpenedRequestCardProps) {
 
       <View className="mt-4 flex flex-row justify-between">
         <View className="w-[48%]">
-          <CustomButton
-            variant="cancel"
-            onPress={() => {
-              mutationDismissRequest.mutate(request.id);
-            }}
-          >
+          <CustomButton variant="cancel" onPress={() => onDismissRequest()}>
             Recusar
           </CustomButton>
         </View>
         <View className="w-[48%]">
-          <CustomButton
-            variant="primary"
-            onPress={() => {
-              mutationAcceptRequest.mutate(request.id);
-            }}
-          >
+          <CustomButton variant="primary" onPress={() => onAcceptRequest()}>
             Aceitar
           </CustomButton>
         </View>

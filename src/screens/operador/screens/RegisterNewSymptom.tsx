@@ -1,31 +1,36 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, ScrollView, Text, View } from 'react-native';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { Attachment } from '../../../interfaces/Attachment.interface';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
-import { createNewSymptom } from '../../../services/POST/Symptoms';
 import {
   RegisterNewSymptomFormData,
   registerNewSymptomSchema,
 } from '../../../validations/operador/RegisterNewSymptomScreen';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
+import useCreateSymptoms from '../hooks/symptoms/useCreateSymptom.hook';
 
 export function RegisterNewSymptom() {
   const queryClient = useQueryClient();
   const router = useRoute();
   const { id } = router.params as { id: number };
   const { goBack } = useNavigation();
+  const { isConnected } = useCheckInternetConnection();
   const { user, employee } = useAuth();
+  const { createSymptomMutation, addSymptomToQueue } = useCreateSymptoms();
   if (!employee?.id) return <></>;
 
   const {
@@ -47,53 +52,71 @@ export function RegisterNewSymptom() {
     queryFn: () => listMaintenanceOrderById(employee.id),
   });
 
-  const mutation = useMutation({
-    mutationFn: createNewSymptom,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        // Invalidate and refetch
-        queryClient.invalidateQueries({ queryKey: ['listMaintenanceOrder'] });
-        Alert.alert('Sucesso', response.data.return[0]);
-        reset();
-        goBack();
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
   const takeImageHandler = (image: Attachment) => {
     setAttachment(image);
   };
 
   function onSubmit(data: RegisterNewSymptomFormData) {
-    if (attachment.uri) {
-      const fileName = attachment?.uri.split('/').pop();
+    if (isConnected) {
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
 
-      const payload = {
-        description: data.symptom,
-        resp_id: user?.id || 0,
-        maintenance_order_id: id,
-        images: {
-          name: [fileName],
-          tmp_name: [fileName],
-          base64: [attachment?.base64],
-        },
-      };
+        const payload = {
+          description: data.symptom,
+          resp_id: user?.id || 0,
+          maintenance_order_id: id,
+          images: {
+            name: [fileName],
+            tmp_name: [fileName],
+            base64: [attachment?.base64],
+          },
+        };
 
-      mutation.mutate(payload);
+        createSymptomMutation.mutate(payload);
+      } else {
+        const payload = {
+          description: data.symptom,
+          resp_id: user?.id || 0,
+          maintenance_order_id: id,
+        };
+
+        createSymptomMutation.mutate(payload);
+      }
     } else {
-      const payload = {
-        description: data.symptom,
-        resp_id: user?.id || 0,
-        maintenance_order_id: id,
-      };
+      if (attachment.uri) {
+        const fileName = attachment?.uri.split('/').pop();
 
-      mutation.mutate(payload);
+        const payload = {
+          description: data.symptom,
+          resp_id: user?.id || 0,
+          maintenance_order_id: id,
+          images: {
+            name: [fileName],
+            tmp_name: [fileName],
+            base64: [attachment?.base64],
+          },
+        };
+
+        addSymptomToQueue(payload);
+        Alert.alert(
+          'Sucesso',
+          'O sintoma foi adicionado à fila de sincronização e será cadastrado assim que o dispositivo estiver conectado à internet.',
+        );
+        goBack();
+      } else {
+        const payload = {
+          description: data.symptom,
+          resp_id: user?.id || 0,
+          maintenance_order_id: id,
+        };
+
+        addSymptomToQueue(payload);
+        Alert.alert(
+          'Sucesso',
+          'O sintoma foi adicionado à fila de sincronização e será cadastrado assim que o dispositivo estiver conectado à internet.',
+        );
+        goBack();
+      }
     }
   }
 
@@ -144,6 +167,8 @@ export function RegisterNewSymptom() {
           </CustomButton>
         </View>
       </ScrollView>
+      {!isConnected && <NetworkStatus />}
+      {isConnected && <RedirectToSyncScreen />}
     </View>
   );
 }

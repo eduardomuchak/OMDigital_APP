@@ -2,31 +2,32 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Header } from '../../../components/Header';
 import { ImagePicker } from '../../../components/ImagePicker';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { CustomButton } from '../../../components/ui/CustomButton';
 import { CustomDateTimePicker } from '../../../components/ui/CustomDateTimePicker';
 import { ErrorText } from '../../../components/ui/ErrorText';
 import { Input } from '../../../components/ui/Input';
 import { TextArea } from '../../../components/ui/TextArea';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { Attachment } from '../../../interfaces/Attachment.interface';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
-import { createNewMaintenanceOrderStage } from '../../../services/POST/Stages/createStage';
 import { handleTimezone } from '../../../utils/handleTimezone';
 import {
   RegisterNewActivityFormData,
   registerNewActivitySchema,
 } from '../../../validations/operador/RegisterNewActivityScreen';
 import { OperationInfoCard } from '../../manutencao/components/OperationInfoCard';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
+import useCreateStage from '../hooks/stages/useCreateStage.hook';
 
 export function RegisterNewActivity() {
-  const queryClient = useQueryClient();
-
   const {
     control,
     handleSubmit,
@@ -44,6 +45,9 @@ export function RegisterNewActivity() {
   const { goBack } = useNavigation();
   const { user, employee } = useAuth();
   if (!employee?.id) return <></>;
+
+  const { isConnected } = useCheckInternetConnection();
+  const { createStageMutation, addActivityToCreateQueue } = useCreateStage();
 
   const route = useRoute();
   const { id } = route.params as { id: number };
@@ -65,120 +69,36 @@ export function RegisterNewActivity() {
   const foundOM = listMaintenanceOrder.data.filter((om) => om.id === id)[0];
   const statusToHideDate = foundOM.status !== 2 && foundOM.status < 4;
 
-  const mutation = useMutation({
-    mutationFn: createNewMaintenanceOrderStage,
-    onSuccess: (response) => {
-      const isStatusTrue = response.data.status === true;
-      if (isStatusTrue) {
-        Alert.alert('Sucesso', response.data.return[0]);
-        // Invalidate and refetch
-        queryClient.invalidateQueries({
-          queryKey: ['listMaintenanceOrder'],
-        });
-        reset();
-        goBack();
-      } else {
-        Alert.alert('Erro', response.data.return[0]);
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Erro', JSON.stringify(error));
-    },
-  });
-
   const takeImageHandler = (image: Attachment) => {
     setAttachment(image);
   };
 
   const onSubmit = (data: RegisterNewActivityFormData) => {
-    if (statusToHideDate) {
-      if (!attachment.uri) {
-        const payload = {
-          maintenance_order_id: id,
-          description: data.activity,
-          obs: data.note || '',
-          start_date: null,
-          start_hr: null,
-          end_date: null,
-          end_hr: null,
-          resp_id: user?.id || 0,
-        };
-        mutation.mutate(payload);
-      } else {
-        const fileName = attachment.uri.split('/').pop();
-
-        const payload = {
-          maintenance_order_id: id,
-          description: data.activity,
-          obs: data.note || '',
-          start_date: null,
-          start_hr: null,
-          end_date: null,
-          end_hr: null,
-          resp_id: user?.id || 0,
-          images: {
-            name: [fileName],
-            tmp_name: [fileName],
-            base64: [attachment?.base64],
-          },
-        };
-        mutation.mutate(payload);
-      }
-    } else {
-      if (data.startDate.toISOString() === data.endDate.toISOString()) {
-        Alert.alert(
-          'Erro',
-          'A data de início não pode ser igual a data de término',
-        );
-
-        return;
-      } else if (data.startDate > data.endDate) {
-        Alert.alert(
-          'Erro',
-          'A data de início não pode ser maior que a data de término',
-        );
-        return;
-      } else {
-        const datesWithCorrectTimezone = {
-          startDate: handleTimezone(data.startDate),
-          endDate: handleTimezone(data.endDate),
-        };
-
-        const insertDates = {
-          ...data,
-          startDate: datesWithCorrectTimezone.startDate.toISOString(),
-          endDate: datesWithCorrectTimezone.endDate.toISOString(),
-        };
-
-        const startDay = insertDates.startDate.split('T')[0];
-        const startHour = insertDates.startDate.split('T')[1].split('.')[0];
-
-        const endDay = insertDates.endDate.split('T')[0];
-        const endHour = insertDates.endDate.split('T')[1].split('.')[0];
-
+    if (isConnected) {
+      if (statusToHideDate) {
         if (!attachment.uri) {
           const payload = {
             maintenance_order_id: id,
-            description: insertDates.activity,
-            obs: insertDates.note || '',
-            start_date: startDay,
-            start_hr: startHour,
-            end_date: endDay,
-            end_hr: endHour,
+            description: data.activity,
+            obs: data.note || '',
+            start_date: null,
+            start_hr: null,
+            end_date: null,
+            end_hr: null,
             resp_id: user?.id || 0,
           };
-          mutation.mutate(payload);
+          createStageMutation.mutate(payload);
         } else {
           const fileName = attachment.uri.split('/').pop();
 
           const payload = {
             maintenance_order_id: id,
-            description: insertDates.activity,
-            obs: insertDates.note || '',
-            start_date: startDay,
-            start_hr: startHour,
-            end_date: endDay,
-            end_hr: endHour,
+            description: data.activity,
+            obs: data.note || '',
+            start_date: null,
+            start_hr: null,
+            end_date: null,
+            end_hr: null,
             resp_id: user?.id || 0,
             images: {
               name: [fileName],
@@ -186,7 +106,192 @@ export function RegisterNewActivity() {
               base64: [attachment?.base64],
             },
           };
-          mutation.mutate(payload);
+          createStageMutation.mutate(payload);
+        }
+      } else {
+        if (data.startDate.toISOString() === data.endDate.toISOString()) {
+          Alert.alert(
+            'Erro',
+            'A data de início não pode ser igual a data de término',
+          );
+
+          return;
+        } else if (data.startDate > data.endDate) {
+          Alert.alert(
+            'Erro',
+            'A data de início não pode ser maior que a data de término',
+          );
+          return;
+        } else {
+          const datesWithCorrectTimezone = {
+            startDate: handleTimezone(data.startDate),
+            endDate: handleTimezone(data.endDate),
+          };
+
+          const insertDates = {
+            ...data,
+            startDate: datesWithCorrectTimezone.startDate.toISOString(),
+            endDate: datesWithCorrectTimezone.endDate.toISOString(),
+          };
+
+          const startDay = insertDates.startDate.split('T')[0];
+          const startHour = insertDates.startDate.split('T')[1].split('.')[0];
+
+          const endDay = insertDates.endDate.split('T')[0];
+          const endHour = insertDates.endDate.split('T')[1].split('.')[0];
+
+          if (!attachment.uri) {
+            const payload = {
+              maintenance_order_id: id,
+              description: insertDates.activity,
+              obs: insertDates.note || '',
+              start_date: startDay,
+              start_hr: startHour,
+              end_date: endDay,
+              end_hr: endHour,
+              resp_id: user?.id || 0,
+            };
+            createStageMutation.mutate(payload);
+          } else {
+            const fileName = attachment.uri.split('/').pop();
+
+            const payload = {
+              maintenance_order_id: id,
+              description: insertDates.activity,
+              obs: insertDates.note || '',
+              start_date: startDay,
+              start_hr: startHour,
+              end_date: endDay,
+              end_hr: endHour,
+              resp_id: user?.id || 0,
+              images: {
+                name: [fileName],
+                tmp_name: [fileName],
+                base64: [attachment?.base64],
+              },
+            };
+            createStageMutation.mutate(payload);
+          }
+        }
+      }
+    } else {
+      if (statusToHideDate) {
+        if (!attachment.uri) {
+          const payload = {
+            maintenance_order_id: id,
+            description: data.activity,
+            obs: data.note || '',
+            start_date: null,
+            start_hr: null,
+            end_date: null,
+            end_hr: null,
+            resp_id: user?.id || 0,
+          };
+          addActivityToCreateQueue(payload);
+          Alert.alert(
+            'Sucesso',
+            'A atividade foi adicionada à fila de sincronização e será cadastrada assim que o dispositivo estiver conectado à internet',
+          );
+          goBack();
+        } else {
+          const fileName = attachment.uri.split('/').pop();
+
+          const payload = {
+            maintenance_order_id: id,
+            description: data.activity,
+            obs: data.note || '',
+            start_date: null,
+            start_hr: null,
+            end_date: null,
+            end_hr: null,
+            resp_id: user?.id || 0,
+            images: {
+              name: [fileName],
+              tmp_name: [fileName],
+              base64: [attachment?.base64],
+            },
+          };
+          addActivityToCreateQueue(payload);
+          Alert.alert(
+            'Sucesso',
+            'A atividade foi adicionada à fila de sincronização e será cadastrada assim que o dispositivo estiver conectado à internet',
+          );
+          goBack();
+        }
+      } else {
+        if (data.startDate.toISOString() === data.endDate.toISOString()) {
+          Alert.alert(
+            'Erro',
+            'A data de início não pode ser igual a data de término',
+          );
+
+          return;
+        } else if (data.startDate > data.endDate) {
+          Alert.alert(
+            'Erro',
+            'A data de início não pode ser maior que a data de término',
+          );
+          return;
+        } else {
+          const datesWithCorrectTimezone = {
+            startDate: handleTimezone(data.startDate),
+            endDate: handleTimezone(data.endDate),
+          };
+
+          const insertDates = {
+            ...data,
+            startDate: datesWithCorrectTimezone.startDate.toISOString(),
+            endDate: datesWithCorrectTimezone.endDate.toISOString(),
+          };
+
+          const startDay = insertDates.startDate.split('T')[0];
+          const startHour = insertDates.startDate.split('T')[1].split('.')[0];
+
+          const endDay = insertDates.endDate.split('T')[0];
+          const endHour = insertDates.endDate.split('T')[1].split('.')[0];
+
+          if (!attachment.uri) {
+            const payload = {
+              maintenance_order_id: id,
+              description: insertDates.activity,
+              obs: insertDates.note || '',
+              start_date: startDay,
+              start_hr: startHour,
+              end_date: endDay,
+              end_hr: endHour,
+              resp_id: user?.id || 0,
+            };
+            addActivityToCreateQueue(payload);
+            Alert.alert(
+              'Sucesso',
+              'A atividade foi adicionada à fila de sincronização e será cadastrada assim que o dispositivo estiver conectado à internet',
+            );
+            goBack();
+          } else {
+            const fileName = attachment.uri.split('/').pop();
+
+            const payload = {
+              maintenance_order_id: id,
+              description: insertDates.activity,
+              obs: insertDates.note || '',
+              start_date: startDay,
+              start_hr: startHour,
+              end_date: endDay,
+              end_hr: endHour,
+              resp_id: user?.id || 0,
+              images: {
+                name: [fileName],
+                tmp_name: [fileName],
+                base64: [attachment?.base64],
+              },
+            };
+            addActivityToCreateQueue(payload);
+            Alert.alert(
+              'Sucesso',
+              'A atividade foi adicionada à fila de sincronização e será cadastrada assim que o dispositivo estiver conectado à internet',
+            );
+            goBack();
+          }
         }
       }
     }
@@ -283,6 +388,8 @@ export function RegisterNewActivity() {
           </CustomButton>
         </View>
       </ScrollView>
+      {!isConnected && <NetworkStatus />}
+      {isConnected && <RedirectToSyncScreen />}
     </View>
   );
 }

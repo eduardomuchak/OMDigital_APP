@@ -44,7 +44,7 @@ export function OperationInfoCard({
     <View className="bg-neutral-100 px-6 py-5">
       <View className="mb-2 flex flex-row justify-between">
         <View>
-          <Text className="font-poppinsBold text-lg">Placa:</Text>
+          <Text className="font-poppinsBold text-lg">Código do Bem:</Text>
           <Text className="font-poppinsMedium text-base ">
             {maintenanceOrder.asset_code}
           </Text>
@@ -56,17 +56,6 @@ export function OperationInfoCard({
           )
         ) : (
           <View className="flex-row">
-            {/* <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('EditMaintenanceOrder', {
-                  id: maintenanceOrder.id,
-                })
-              }
-              className="mr-2"
-              activeOpacity={0.7}
-            >
-              <PencilSimple size={24} weight="bold" />
-            </TouchableOpacity> */}
             {location.latitude !== null && location.longitude !== null && (
               <GPSLocationModal location={location} />
             )}
@@ -171,9 +160,6 @@ export function OperationInfoCard({
           </View>
         </View>
       )}
-      {/* {isOperador && maintenanceOrder.symptoms.length > 0 ? (
-        <SymptomListModal symptoms={maintenanceOrder.symptoms} />
-      ) : null} */}
     </View>
   );
 }

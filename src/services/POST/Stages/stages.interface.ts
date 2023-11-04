@@ -9,33 +9,39 @@ export namespace Stage {
     name: string;
     path: string;
   }
+
+  export interface Images {
+    name: string;
+    path: string;
+  }
   export interface StagesList {
-    asset_code: string;
-    datetime: string;
-    description: string;
-    end_date: string;
-    end_hr: string;
     id: number;
-    images: FetchImage[];
     maintenance_order_id: number;
-    man_power_id: null | number;
-    mo_status: number;
-    obs: null | string;
-    resp_id: number;
-    service_code: string;
-    service_type: string;
-    st: number;
-    stage_protheus: string;
-    start_date: string;
-    start_hr: string;
     status: number;
-    task_protheus: string;
+    description: string;
+    man_power_id: string;
     start_prev_date: string;
     start_prev_hr: string;
     end_prev_date: string;
     end_prev_hr: string;
+    start_datetime: string;
+    start_pause_datetime: string;
+    end_pause_datetime: string | null;
+    end_datetime: string | null;
+    task_protheus: string | null;
+    stage_protheus: string | null;
+    obs: string | null;
+    datetime: string;
+    alt_id: number;
+    resp_id: number;
+    st: number;
+    executor_name: string;
+    asset_code: string;
+    service_type: string;
+    service_code: string;
+    mo_status: number;
+    images: Images[];
   }
-
   export interface StagesListProps {
     stage: StagesList;
   }

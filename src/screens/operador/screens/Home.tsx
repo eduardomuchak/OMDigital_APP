@@ -2,7 +2,6 @@ import { RefreshControl, ScrollView, Text, View } from 'react-native';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
-import { useMMKVObject } from 'react-native-mmkv';
 import { Header } from '../../../components/Header';
 import { Loading } from '../../../components/Loading';
 import { NetworkStatus } from '../../../components/NetworkStatus';
@@ -12,41 +11,28 @@ import useCheckInternetConnection from '../../../hooks/useCheckInternetConnectio
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
-import { NewMaintenanceOrder } from '../../../services/POST/OMs/createNewMaintenanceOrder.ts/newMaintenanceOrder.interface';
-import { EditedMaintenanceOrder } from '../../../services/POST/OMs/editMaintenanceOrder/index.interface';
 import { AddNewMaintenanceOrderButton } from '../components/AddNewMaintenanceOrderButton';
 import { OperadorFilterModal } from '../components/OperadorFilterModal';
 import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 import { SwipeableOMCardList } from '../components/SwipeableOMCardList';
 
 export function Home() {
-  const { employee } = useAuth();
-  if (!employee?.id) return <></>;
-
   const queryClient = useQueryClient();
   const { isConnected } = useCheckInternetConnection();
-
-  const [maintenanceOrdersQueue, setMaintenanceOrdersQueue] = useMMKVObject<
-    NewMaintenanceOrder.Payload[]
-  >('queuedCreateNewMaintenanceOrder');
-  if (maintenanceOrdersQueue === undefined) setMaintenanceOrdersQueue([]);
-
-  const [queuedEditMaintenanceOrder, setQueuedEditMaintenanceOrder] =
-    useMMKVObject<EditedMaintenanceOrder[]>('queuedEditMaintenanceOrder');
-  if (queuedEditMaintenanceOrder === undefined)
-    setQueuedEditMaintenanceOrder([]);
+  const { employee } = useAuth();
+  if (!employee?.id) return <></>;
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
   const [assetCode, setAssetCode] = useState('');
   const [selectedServiceOrderType, setSelectedServiceOrderType] = useState('');
+  const [startPeriod, setStartPeriod] = useState(new Date());
+  const [endPeriod, setEndPeriod] = useState(new Date());
   const [serviceOrderTypeOptions, setServiceOrderTypeOptions] = useState([
     'Todas',
     'Preventiva',
     'Corretiva',
   ]);
-  const [startPeriod, setStartPeriod] = useState(new Date());
-  const [endPeriod, setEndPeriod] = useState(new Date());
 
   const listMaintenanceOrder = useQuery({
     queryKey: ['listMaintenanceOrder'],

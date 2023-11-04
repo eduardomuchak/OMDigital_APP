@@ -7,19 +7,23 @@ import { FooterModal } from '../../../components/FooterModal';
 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loading } from '../../../components/Loading';
+import { NetworkStatus } from '../../../components/NetworkStatus';
 import { OMCard } from '../../../components/OMCard';
 import { StatusLegend } from '../../../components/StatusLegend';
 import { useAuth } from '../../../contexts/auth';
+import useCheckInternetConnection from '../../../hooks/useCheckInternetConnection';
 import { listMaintenanceOrderById } from '../../../services/GET/Maintenance/listMaintenanceOrderById';
 import { listOperationEmployee } from '../../../services/GET/Operations/fetchOperationByID';
 import { fetchMainOrderStatus } from '../../../services/GET/Status/fetchMaintenanceOrdersStatus';
 import { ManutencaoFilterModal } from '../components/ManutencaoFilterModal';
+import RedirectToSyncScreen from '../components/RedirectToSyncScreen';
 
 export function Home() {
   const { employee } = useAuth();
   if (!employee?.id) return <></>;
   const { navigate } = useNavigation();
   const queryClient = useQueryClient();
+  const { isConnected } = useCheckInternetConnection();
 
   const [selectedStatus, setSelectedStatus] = useState<number[]>([]);
   const [selectedOperations, setSelectedOperations] = useState<number[]>([]);
@@ -132,6 +136,8 @@ export function Home() {
         </ScrollView>
       )}
 
+      {!isConnected && <NetworkStatus />}
+      {isConnected && <RedirectToSyncScreen />}
       <FooterModal />
     </View>
   );
