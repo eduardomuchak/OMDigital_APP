@@ -36,7 +36,3 @@ Estamos ansiosos para receber seus comentários e sugestões para melhorias!
   <img src="./screenshots/PlayStore_05.png" alt="Captura de Tela 5" height=1000 />
 
 </div>
-
----
-
-**Equipe EMGP Sistemas** 🚚🛠️
